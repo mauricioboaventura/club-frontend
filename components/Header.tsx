@@ -3,11 +3,14 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Search, User } from "lucide-react";
 import Sidebar from "./Sidebar";
 
 export default function Header() {
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isExplorar = pathname === "/explorar";
 
   useEffect(() => {
     document.body.style.overflow = sidebarOpen ? "hidden" : "";
@@ -18,7 +21,11 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-[100] bg-[#430904] ">
+      <header
+        className={`fixed top-0 left-0 right-0 z-[100] ${
+          isExplorar ? "bg-transparent" : "bg-[#430904]"
+        }`}
+      >
         <div className="flex items-center justify-between px-4 h-14 max-w-[480px] mx-auto relative">
           {/* Esquerda: Ícone de usuário com badge de notificação */}
           <button

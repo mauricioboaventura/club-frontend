@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,14 +5,14 @@
 :root {
   --mc-bg: #121212;
   --mc-card: #1e1e1e;
-  --mc-gold: #c4a265;
-  --mc-gold-light: #d4b87a;
-  --mc-gold-dark: #a08450;
-  --mc-gold-muted: rgba(196,162,101,0.15);
+  --mc-gold: #e5b62a;
+  --mc-gold-light: #ecc54d;
+  --mc-gold-dark: #c99a1f;
+  --mc-gold-muted: rgba(229,182,42,0.15);
   --mc-red: #8b1a1a;
   --mc-green: #2d8a4e;
   --mc-border: rgba(255,255,255,0.08);
-  --mc-border-gold: rgba(196,162,101,0.4);
+  --mc-border-gold: rgba(229,182,42,0.4);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,7 +22,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--mc-bg);
   color: #f0ece4;
-  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-montserrat), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }

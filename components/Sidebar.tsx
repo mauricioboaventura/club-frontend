@@ -52,7 +52,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="flex flex-col h-full pt-8 px-5 pb-5">
           {/* Top - CTA Button */}
           <Link
-            href="#"
+            href="/auth"
             className="flex items-center justify-center w-full py-4 px-4 rounded-xl bg-[#f9f8f0] border border-black text-[#1a1a1a] font-medium text-[17px] hover:bg-[#e5e0d5] transition-colors mb-6"
             onClick={onClose}
           >

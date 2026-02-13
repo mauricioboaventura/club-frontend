@@ -31,6 +31,8 @@ const navItems = [
 export default function BottomNav() {
   const pathname = usePathname();
 
+  if (pathname === "/auth") return null;
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 max-w-[480px] mx-auto ">
       <div className="flex items-center justify-around py-3 px-2 bg-white ">
