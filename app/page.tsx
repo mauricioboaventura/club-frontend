@@ -5,14 +5,10 @@ import ExperiencesSection from "@/components/ExperiencesSection";
 import PokerSection from "@/components/PokerSection";
 import GastronomySection from "@/components/GastronomySection";
 import ShowsSection from "@/components/ShowsSection";
-import { CtaSection } from "@/components/CtaSections";
-import AccordionSection from "@/components/AccordionSection";
-import Footer from "@/components/Footer";
-import AppDownload from "@/components/AppDownloadButton";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-mc-bg pb-20">
+    <main className="min-h-screen bg-mc-bg">
       <Header />
       <HeroCarousel />
       <DiscoverSection />
@@ -20,10 +16,6 @@ export default function Home() {
       <PokerSection />
       <GastronomySection />
       <ShowsSection />
-      <CtaSection />
-      <AccordionSection />
-      <AppDownload />
-      <Footer />
     </main>
   );
 }

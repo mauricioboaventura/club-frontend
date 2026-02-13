@@ -2,28 +2,33 @@
 
 import { useState, useRef, useEffect } from "react";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Camera } from "lucide-react";
+import SelectFilter from "@/components/SelectFilter";
 
 const HERO_SLIDES = [
   {
-    image: "https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=800&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=800&auto=format&fit=crop",
     title: "Torneio Mensal",
     subtitle: "R$ 50.000 garantidos. Inscreva-se agora e garanta sua vaga.",
     cta: "Ver torneios",
   },
   {
-    image: "https://images.unsplash.com/photo-1609743522653-52354461eb27?w=800&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1609743522653-52354461eb27?w=800&auto=format&fit=crop",
     title: "Cash Game 24h",
-    subtitle: "Mesas disponíveis agora com diversos limites para todos os níveis.",
+    subtitle:
+      "Mesas disponíveis agora com diversos limites para todos os níveis.",
     cta: "Ver mesas",
   },
   {
-    image: "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=800&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=800&auto=format&fit=crop",
     title: "Programa de Fidelidade",
-    subtitle: "Ganhe pontos a cada mão jogada e troque por benefícios exclusivos.",
+    subtitle:
+      "Ganhe pontos a cada mão jogada e troque por benefícios exclusivos.",
     cta: "Saiba mais",
   },
 ];
@@ -58,8 +63,36 @@ const BG_BEIGE = "#f9f8f0";
 const TEXT_DARK = "#1a1a1a";
 const TEXT_MUTED = "#6b6660";
 
+const TORNEIO_OPTIONS = [
+  "Todos os torneios",
+  "Monte Carlo Weekly",
+  "High Roller Sunday",
+  "Freeroll Mensal",
+  "Main Event",
+  "Deepstack",
+];
+const ANO_OPTIONS = ["Todos", "2026", "2025", "2024"];
+const MES_OPTIONS = [
+  "Todos os meses",
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
+
 export default function PokerPage() {
   const [heroIndex, setHeroIndex] = useState(0);
+  const [torneio, setTorneio] = useState(TORNEIO_OPTIONS[0]);
+  const [ano, setAno] = useState(ANO_OPTIONS[0]);
+  const [mes, setMes] = useState(MES_OPTIONS[0]);
   const heroTrackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -81,7 +114,7 @@ export default function PokerPage() {
   };
 
   return (
-    <main className="min-h-screen pt-14 pb-20">
+    <main className="min-h-screen   pb-safe-nav">
       <Header />
 
       {/* Hero Carousel - transform-based like reference HTML */}
@@ -158,28 +191,27 @@ export default function PokerPage() {
       </div>
 
       {/* Content area - light beige */}
-      <div className="max-w-[480px] mx-auto" style={{ background: BG_BEIGE }}>
+      <div className="max-w-[480px] mx-auto " style={{ background: BG_BEIGE }}>
         {/* Two feature cards */}
-        <section className="p-4 grid grid-cols-2 gap-3">
+        <section className="px-4 pt-4 grid grid-cols-2 gap-4 mb-8">
           {FEATURE_CARDS.map((card) => (
             <Link
               key={card.title}
               href={card.href}
-              className="relative aspect-square rounded-xl overflow-hidden block shadow-md"
+              className="relative aspect-square overflow-hidden rounded-2xl block shadow-sm cursor-pointer group hover:scale-[1.02] transition-transform"
             >
               <Image
                 src={card.image}
-                alt=""
+                alt={card.title}
                 fill
-                className="object-cover blur-[2px] brightness-75"
+                className="object-cover"
                 sizes="(max-width: 480px) 50vw, 240px"
               />
-              <div className="absolute inset-0 p-4 flex items-start justify-between">
-                <span className="text-white font-semibold text-lg">
-                  {card.title}
-                </span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+              <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                <h3 className="text-white font-semibold">{card.title}</h3>
                 <ChevronRight
-                  className="w-5 h-5 text-white shrink-0"
+                  className="w-5 h-5 text-white/80 shrink-0"
                   strokeWidth={2}
                 />
               </div>
@@ -188,32 +220,29 @@ export default function PokerPage() {
         </section>
 
         {/* Text sections */}
-        <section className="px-4 pb-8">
-          <div className="mb-8">
-            <h3 className="text-xl font-bold mb-3" style={{ color: TEXT_DARK }}>
+        <section className="px-4 ">
+          <div className="mb-6">
+            <h3 className="text-xl font-bold mb-2 text-[#525252]">
               Poker Monte Carlo
             </h3>
-            <p
-              className="text-[15px] leading-relaxed mb-4"
-              style={{ color: TEXT_MUTED }}
-            >
+            <p className="text-[16px] leading-relaxed mb-4 text-[#8c8c8c]">
               Experimente o poker de alto nível no Monte Carlo Poker Club. Com
               mesas de cash game funcionando 24 horas e torneios diários,
               oferecemos a melhor experiência para jogadores de todos os níveis.
             </p>
-            <div className="relative w-full aspect-[16/10] rounded-lg overflow-hidden">
+            <div className="relative w-full rounded-2xl h-[192px] overflow-hidden">
               <Image
                 src="https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=800&q=80"
                 alt=""
                 fill
                 className="object-cover"
-                sizes="(max-width: 480px) 100vw, 480px"
+                sizes=""
               />
             </div>
           </div>
 
-          <div id="cash" className="mb-8">
-            <h3 className="text-xl font-bold mb-3" style={{ color: TEXT_DARK }}>
+          <div id="cash" className="mb-6">
+            <h3 className="text-[18px] font-semibold mb-2 text-[#525252]">
               Cash Games
             </h3>
             <p
@@ -226,8 +255,8 @@ export default function PokerPage() {
             </p>
           </div>
 
-          <div id="torneios" className="mb-8">
-            <h3 className="text-xl font-bold mb-3" style={{ color: TEXT_DARK }}>
+          <div id="torneios" className="mb-6">
+            <h3 className="text-[18px] font-semibold mb-2 text-[#525252]">
               Torneios
             </h3>
             <p
@@ -240,8 +269,8 @@ export default function PokerPage() {
             </p>
           </div>
 
-          <div className="mb-8">
-            <h3 className="text-xl font-bold mb-3" style={{ color: TEXT_DARK }}>
+          <div className="mb-6">
+            <h3 className="text-[18px] font-semibold mb-3 text-[#525252]">
               A Experiência do Jogador
             </h3>
             <p
@@ -256,47 +285,43 @@ export default function PokerPage() {
         </section>
 
         {/* Photo gallery */}
-        <section className="px-4 pb-10">
-          <h3
-            className="text-xl font-bold mb-4 flex items-center gap-2"
-            style={{ color: TEXT_DARK }}
-          >
-            <Camera
-              className="h-5 w-5"
-              style={{ color: TEXT_DARK }}
-              strokeWidth={2}
-            />
+        <section className=" pb-8">
+          <h3 className="text-xl px-4 font-bold mb-4 flex items-center gap-2 text-[#525252]">
+            <Camera className="h-5 w-5" color="#525252" strokeWidth={2} />
             Galeria de Fotos
           </h3>
-          <div className="flex gap-2 mb-4 flex-wrap">
-            <button
-              type="button"
-              className="px-4 py-2 rounded-lg border text-sm"
-              style={{ borderColor: "#ccc", color: TEXT_MUTED }}
-            >
-              Temas...
-            </button>
-            <button
-              type="button"
-              className="px-4 py-2 rounded-lg border text-sm"
-              style={{ borderColor: "#ccc", color: TEXT_MUTED }}
-            >
-              Ano...
-            </button>
-            <button
-              type="button"
-              className="px-4 py-2 rounded-lg border text-sm"
-              style={{ borderColor: "#ccc", color: TEXT_MUTED }}
-            >
-              Mês...
-            </button>
+          <div className="flex px-4 gap-4 mb-4 flex-wrap">
+            <div className="flex-1 min-w-[120px]">
+              <SelectFilter
+                label="Torneio"
+                options={TORNEIO_OPTIONS}
+                value={torneio}
+                onChange={setTorneio}
+                placeholder="Todos os..."
+              />
+            </div>
+            <div className="flex-1 min-w-[100px]">
+              <SelectFilter
+                label="Ano"
+                options={ANO_OPTIONS}
+                value={ano}
+                onChange={setAno}
+                placeholder="Todos"
+              />
+            </div>
+            <div className="flex-1 min-w-[120px]">
+              <SelectFilter
+                label="Mês"
+                options={MES_OPTIONS}
+                value={mes}
+                onChange={setMes}
+                placeholder="Todos os..."
+              />
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2">
             {GALLERY_IMAGES.map((src, i) => (
-              <div
-                key={i}
-                className="relative aspect-[4/3] rounded-lg overflow-hidden"
-              >
+              <div key={i} className="relative aspect-[1/1] overflow-hidden">
                 <Image
                   src={src}
                   alt=""
@@ -307,16 +332,16 @@ export default function PokerPage() {
               </div>
             ))}
           </div>
-          <button
-            type="button"
-            className="w-full mt-6 py-3.5 rounded-lg border-2 border-[#430904] text-[#430904] font-medium text-sm bg-transparent hover:bg-[#430904]/10 transition-colors"
-          >
-            Ver mais fotos
-          </button>
+          <div className="px-4">
+            <button
+              type="button"
+              className="w-full mt-6 py-2 rounded-lg border border-[#430904] text-[#430904] font-medium text-sm bg-transparent hover:bg-[#430904]/10 transition-colors"
+            >
+              Ver mais fotos
+            </button>
+          </div>
         </section>
       </div>
-
-      <Footer />
     </main>
   );
 }

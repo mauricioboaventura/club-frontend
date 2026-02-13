@@ -13,11 +13,11 @@ type CtaBlockProps = {
 
 function CtaBlock({ title, buttonText, href }: CtaBlockProps) {
   return (
-    <div className="flex flex-col gap-3 min-h-[88px] justify-center">
-      <h3 className="text-[19px] font-bold text-white">{title}</h3>
+    <div className="flex flex-col gap-2 min-h-[88px] justify-center">
+      <h3 className="text-[18px] font-bold text-white">{title}</h3>
       <Link
         href={href}
-        className="inline-flex items-center justify-center w-fit py-2.5 px-8 rounded-full border border-white/30 text-white text-[15px] font-medium hover:border-white transition-colors"
+        className="inline-flex items-center justify-center w-fit py-2.5 px-8 rounded-full border border-white/30 text-white text-[14px] font-medium hover:border-white transition-colors"
       >
         {buttonText}
       </Link>
@@ -43,7 +43,7 @@ const ctaBlocks = [
 export function CtaSection() {
   return (
     <section className="bg-[#2a0303] px-4 py-8 max-w-[480px] mx-auto">
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-[25px]">
         {ctaBlocks.map((block) => (
           <CtaBlock
             key={block.id}
@@ -56,4 +56,3 @@ export function CtaSection() {
     </section>
   );
 }
-

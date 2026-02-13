@@ -11,6 +11,9 @@ export default function Header() {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isExplorar = pathname === "/explorar";
+  const isEventos = pathname === "/eventos";
+  const isRewards = pathname === "/rewards";
+  const isTransparent = isExplorar || isEventos || isRewards;
 
   useEffect(() => {
     document.body.style.overflow = sidebarOpen ? "hidden" : "";
@@ -22,8 +25,8 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[100] ${
-          isExplorar ? "bg-transparent" : "bg-[#430904]"
+        className={`fixed top-0 left-0 right-0 z-[100]  ${
+          isTransparent ? "bg-transparent" : "bg-[#430904]"
         }`}
       >
         <div className="flex items-center justify-between px-4 h-14 max-w-[480px] mx-auto relative">

@@ -86,7 +86,7 @@ export default function ExplorarPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-black pb-20">
+    <main className="min-h-screen bg-black   pb-safe-nav">
       <Header />
       {/* Carousel: full viewport, scrolls under transparent header */}
       <div

@@ -34,15 +34,20 @@ export default function BottomNav() {
   if (pathname === "/auth") return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 max-w-[480px] mx-auto ">
-      <div className="flex items-center justify-around py-3 px-2 bg-white ">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 max-w-[480px] mx-auto pb-[var(--safe-bottom)]">
+      <div className="flex items-center justify-around py-3 px-2 bg-white">
         {navItems.map((item) => {
           const isActive =
             item.href === "/"
               ? pathname === "/"
               : pathname.startsWith(item.href);
           const isSvg = React.isValidElement(item.icon);
-          const Icon = isSvg ? null : (item.icon as React.ComponentType<{ size?: number; strokeWidth?: number }>);
+          const Icon = isSvg
+            ? null
+            : (item.icon as React.ComponentType<{
+                size?: number;
+                strokeWidth?: number;
+              }>);
           return (
             <Link
               key={item.href}

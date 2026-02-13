@@ -19,7 +19,7 @@ export default function HeroCarousel() {
   const slide = heroSlides[current];
 
   return (
-    <section className="relative pt-14 min-h-[518px] mt-14 max-h-[518px]  flex flex-col justify-end overflow-hidden">
+    <section className="relative min-h-[518px] max-h-[518px] flex flex-col justify-end overflow-hidden">
       {/* Background */}
       {heroSlides.map((s, i) => (
         <div
