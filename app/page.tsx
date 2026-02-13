@@ -8,8 +8,7 @@ import ShowsSection from "@/components/ShowsSection";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-mc-bg">
-      <Header />
+    <main className="min-h-screen bg-mc-bg mt-[56px]">
       <HeroCarousel />
       <DiscoverSection />
       <ExperiencesSection />

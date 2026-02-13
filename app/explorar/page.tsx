@@ -87,7 +87,6 @@ export default function ExplorarPage() {
 
   return (
     <main className="min-h-screen bg-black   pb-safe-nav">
-      <Header />
       {/* Carousel: full viewport, scrolls under transparent header */}
       <div
         ref={containerRef}
@@ -156,9 +155,7 @@ export default function ExplorarPage() {
         </div>
       )}
 
-      {modalOpen && (
-        <ExplorarModal onClose={() => setModalOpen(false)} />
-      )}
+      {modalOpen && <ExplorarModal onClose={() => setModalOpen(false)} />}
 
       {/* Right-side pagination: active = vertical gold pill, inactive = small circles */}
       <div className="fixed right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-40">

@@ -75,7 +75,7 @@ const MAIS_INFOS = [
 export default function RewardsPage() {
   return (
     <main className="min-h-screen bg-[#121212]">
-      <Header />
+
 
       {/* Hero */}
       <div className="relative h-[31rem]">
@@ -108,7 +108,7 @@ export default function RewardsPage() {
           </p>
           <Link
             href="/auth"
-            className="inline-flex items-center justify-center gap-2 border h-10 py-2 bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white hover:text-[#2A0303] rounded-full px-6 transition-colors"
+            className="inline-flex items-center text-[14px] justify-center font-bold gap-2 border h-10 py-2 bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white hover:text-[#2A0303] rounded-full px-6 transition-colors"
           >
             Entrar ou Registrar
           </Link>

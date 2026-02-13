@@ -114,9 +114,7 @@ export default function PokerPage() {
   };
 
   return (
-    <main className="min-h-screen   pb-safe-nav">
-      <Header />
-
+    <main className="min-h-screen mt-[56px]">
       {/* Hero Carousel - transform-based like reference HTML */}
       <div className="relative">
         <div

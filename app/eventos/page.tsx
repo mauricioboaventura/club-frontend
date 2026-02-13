@@ -98,8 +98,6 @@ export default function EventosPage() {
 
   return (
     <main className="min-h-screen bg-[#121212]">
-      <Header />
-
       {/* Hero Carousel - 85vh */}
       <div className="relative w-full h-[85vh] overflow-hidden">
         <div

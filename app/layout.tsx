@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import SharedSections from "@/components/SharedSections";
+import Header from "@/components/Header";
 
 const montserrat = Montserrat({
   weight: ["400", "500", "600", "800"],
@@ -32,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={montserrat.variable}>
       <body className={`${montserrat.className} antialiased`}>
+        <Header />
         {children}
         <SharedSections />
         <BottomNav />
