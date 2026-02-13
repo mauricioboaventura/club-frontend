@@ -25,11 +25,17 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-[100]  ${
+        className={`fixed top-0 left-0 right-0 z-[100] ${
           isTransparent ? "bg-transparent" : "bg-[#430904]"
         }`}
       >
-        <div className="flex items-center justify-between px-4 h-14 max-w-[480px] mx-auto relative">
+        {isTransparent && (
+          <div
+            className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/75 via-black/30 to-transparent pointer-events-none"
+            aria-hidden
+          />
+        )}
+        <div className="relative z-10 flex items-center justify-between px-4 h-14 max-w-[480px] mx-auto">
           {/* Esquerda: Ícone de usuário com badge de notificação */}
           <button
             type="button"

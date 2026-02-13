@@ -33,7 +33,7 @@ function YoutubeIcon({ size = 18 }: { size?: number }) {
 
 export default function Footer() {
   return (
-    <footer className="bg-[#2a0303] px-4 pt-8 pb-10 max-w-[480px] mx-auto text-left">
+    <footer className="bg-[#2a0303] px-4 pt-8 pb-24 max-w-[480px] mx-auto text-left">
       {/* Logo */}
       <div className="flex items-center gap-3 mb-6">
         <Image

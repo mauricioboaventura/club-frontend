@@ -59,6 +59,7 @@ const GALLERY_IMAGES = [
   "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&q=80",
 ];
 
+const HERO_AUTOPLAY_MS = 4000;
 const BG_BEIGE = "#f9f8f0";
 const TEXT_DARK = "#1a1a1a";
 const TEXT_MUTED = "#6b6660";
@@ -90,6 +91,7 @@ const MES_OPTIONS = [
 
 export default function PokerPage() {
   const [heroIndex, setHeroIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [torneio, setTorneio] = useState(TORNEIO_OPTIONS[0]);
   const [ano, setAno] = useState(ANO_OPTIONS[0]);
   const [mes, setMes] = useState(MES_OPTIONS[0]);
@@ -100,6 +102,27 @@ export default function PokerPage() {
   const goToSlide = (index: number) => {
     setHeroIndex(Math.max(0, Math.min(index, HERO_SLIDES.length - 1)));
   };
+
+  // Autoplay + progress bar
+  useEffect(() => {
+    setProgress(0);
+    const startTime = Date.now();
+
+    const progressInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const p = Math.min((elapsed / HERO_AUTOPLAY_MS) * 100, 100);
+      setProgress(p);
+    }, 50);
+
+    const slideTimer = setTimeout(() => {
+      setHeroIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, HERO_AUTOPLAY_MS);
+
+    return () => {
+      clearInterval(progressInterval);
+      clearTimeout(slideTimer);
+    };
+  }, [heroIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -168,7 +191,7 @@ export default function PokerPage() {
               ))}
             </div>
           </div>
-          {/* Pagination - bar progress style */}
+          {/* Pagination - bar progress style (fills over 4s, then auto next) */}
           <div className="absolute bottom-3 left-4 right-4 flex gap-2">
             {HERO_SLIDES.map((_, i) => (
               <button
@@ -179,8 +202,15 @@ export default function PokerPage() {
                 aria-label={`Slide ${i + 1}`}
               >
                 <div
-                  className="h-full bg-white transition-all duration-300 ease-linear"
-                  style={{ width: heroIndex === i ? "100%" : "0%" }}
+                  className="h-full bg-white transition-all duration-75 ease-linear"
+                  style={{
+                    width:
+                      heroIndex === i
+                        ? `${progress}%`
+                        : heroIndex > i
+                          ? "100%"
+                          : "0%",
+                  }}
                 />
               </button>
             ))}
