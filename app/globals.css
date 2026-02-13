@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --mc-bg: #121212;
+  --mc-card: #1e1e1e;
+  --mc-gold: #c4a265;
+  --mc-gold-light: #d4b87a;
+  --mc-gold-dark: #a08450;
+  --mc-gold-muted: rgba(196,162,101,0.15);
+  --mc-red: #8b1a1a;
+  --mc-green: #2d8a4e;
+  --mc-border: rgba(255,255,255,0.08);
+  --mc-border-gold: rgba(196,162,101,0.4);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--mc-bg);
+  color: #f0ece4;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--mc-bg); }
+::-webkit-scrollbar-thumb { background: var(--mc-gold-dark); border-radius: 3px; }
+
+/* Horizontal scroll containers - hide scrollbar */
+.scroll-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scroll-hidden::-webkit-scrollbar { display: none; }
+
+/* Gold bordered button */
+.btn-outline-gold {
+  display: inline-block;
+  padding: 12px 28px;
+  border: 1.5px solid var(--mc-border-gold);
+  color: var(--mc-gold-light);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 8px;
+  transition: all 0.3s;
+  background: rgba(196,162,101,0.06);
+}
+.btn-outline-gold:hover {
+  background: var(--mc-gold-muted);
+  border-color: var(--mc-gold);
+}
+
+/* Subtle outline button */
+.btn-outline-subtle {
+  display: inline-block;
+  padding: 10px 24px;
+  border: 1px solid var(--mc-border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #9e9a92;
+  transition: all 0.2s;
+}
+.btn-outline-subtle:hover {
+  border-color: var(--mc-border-gold);
+  color: var(--mc-gold);
+}
+
+/* Gold accent link */
+.link-gold {
+  font-size: 12px;
+  color: var(--mc-gold);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+}
+.link-gold:hover { color: var(--mc-gold-light); }
+
+/* Card base */
+.mc-card {
+  background: var(--mc-card);
+  border: 1px solid var(--mc-border);
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+.mc-card:hover {
+  border-color: rgba(255,255,255,0.12);
+}
+
+/* Badge */
+.badge-green {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--mc-green);
+  color: white;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Hero dot */
+.hero-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  transition: all 0.3s;
+}
+.hero-dot.active {
+  background: white;
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* Tab pill */
+.tab-pill {
+  padding: 7px 16px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  background: var(--mc-card);
+  color: #9e9a92;
+  border: 1px solid var(--mc-border);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.tab-pill.active {
+  background: var(--mc-red);
+  color: white;
+  border-color: var(--mc-red);
+}
+.tab-pill:hover:not(.active) {
+  border-color: rgba(255,255,255,0.15);
+  color: #f0ece4;
+}
