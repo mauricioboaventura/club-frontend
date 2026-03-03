@@ -1,14 +1,21 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { heroSlides } from "@/lib/data";
 
 export default function HeroCarousel() {
   const [current, setCurrent] = useState(0);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   const next = useCallback(() => {
     setCurrent((c) => (c + 1) % heroSlides.length);
+  }, []);
+
+  const goTo = useCallback((index: number) => {
+    setCurrent(Math.max(0, Math.min(index, heroSlides.length - 1)));
   }, []);
 
   useEffect(() => {
@@ -16,70 +23,83 @@ export default function HeroCarousel() {
     return () => clearInterval(timer);
   }, [next]);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) next();
+      else setCurrent((c) => (c - 1 + heroSlides.length) % heroSlides.length);
+    }
+  };
+
   const slide = heroSlides[current];
 
   return (
-    <section className="relative min-h-[518px] max-h-[518px] flex flex-col justify-end overflow-hidden">
-      {/* Background */}
-      {heroSlides.map((s, i) => (
+    <section
+      className="relative w-full"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      <div className="overflow-hidden">
         <div
-          key={s.id}
-          className={`absolute inset-0 transition-opacity duration-[1200ms] ${
-            i === current ? "opacity-100" : "opacity-0"
-          }`}
-          style={{ background: s.bgGradient }}
-        />
-      ))}
-
-      {/* Card visuals */}
-      <div className="absolute top-[76px] left-1/2 -translate-x-1/2 w-[320px] h-[200px]">
-        <div className="absolute w-[100px] h-[140px] rounded-lg bg-gradient-to-br from-[#c41e1e] to-[#8b1414] shadow-[0_8px_30px_rgba(0,0,0,0.5)] border-2 border-white/10 flex items-center justify-center text-[2.5rem] text-white -rotate-[20deg] -translate-x-[60px] translate-y-[10px] z-[1]">
-          ♠
-        </div>
-        <div className="absolute w-[100px] h-[140px] rounded-lg bg-gradient-to-br from-[#c41e1e] to-[#8b1414] shadow-[0_8px_30px_rgba(0,0,0,0.5)] border-2 border-white/10 flex items-center justify-center text-[2.5rem] text-white -rotate-[5deg] -translate-x-[20px] left-1/2 top-1/2 -translate-y-1/2 z-[2]">
-          ♥
-        </div>
-        <div className="absolute w-[100px] h-[140px] rounded-lg bg-gradient-to-br from-[#c41e1e] to-[#8b1414] shadow-[0_8px_30px_rgba(0,0,0,0.5)] border-2 border-white/10 flex items-center justify-center text-[2.5rem] text-white rotate-[8deg] translate-x-[20px] translate-y-[5px] left-1/2 top-1/2 -translate-y-1/2 z-[3]">
-          ♦
-        </div>
-        <div className="absolute w-[100px] h-[140px] rounded-lg bg-gradient-to-br from-[#c41e1e] to-[#8b1414] shadow-[0_8px_30px_rgba(0,0,0,0.5)] border-2 border-white/10 flex items-center justify-center text-[2.5rem] text-white rotate-[22deg] translate-x-[60px] translate-y-[15px] right-0 z-[2]">
-          ♣
+          className="flex transition-transform duration-500 ease-out"
+          style={{ transform: `translate3d(-${current * 100}%, 0px, 0px)` }}
+        >
+          {heroSlides.map((s) => (
+            <div
+              key={s.id}
+              className="relative flex-[0_0_100%] min-w-0 aspect-[4/5] lg:aspect-[21/9]"
+            >
+              <Image
+                src={s.image}
+                alt={s.title.replace(/\n/g, " ")}
+                fill
+                className="object-cover"
+                sizes="100vw"
+                priority={s.id === 1}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Overlay */}
-      <div
-        className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgba(18,18,18,0.3)] to-[rgba(18,18,18,1)]"
-        style={{ backgroundPosition: "0 40%" }}
-      />
-
-      {/* Content */}
-      <div className="relative z-10 px-6 pb-7 text-center">
-        <h1 className="text-[31px] font-bold leading-[1.15] mb-2.5 text-white whitespace-pre-line">
-          {slide.title}
-        </h1>
-        <p className="text-[16px] leading-[1.5] text-text-secondary mb-5 max-w-[300px] mx-auto">
-          {slide.subtitle}
-        </p>
-        <div className="my-10">
+      {/* Bottom content - overlays the slider */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 pb-8 lg:pb-16">
+        <div className="text-center space-y-4 lg:max-w-2xl lg:mx-auto">
+          <div className="space-y-1">
+            <h1 className="text-3xl lg:text-5xl font-bold tracking-wide text-white whitespace-pre-line">
+              {slide.title}
+            </h1>
+          </div>
+          <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
+            {slide.subtitle}
+          </p>
           <Link
             href={slide.ctaLink}
-            className="border-2 border-white rounded-[12px] py-3 px-6 font-bold text-[17px]"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md h-10 mt-4 px-8 py-3 text-base font-semibold tracking-wide border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#121212] transition-all duration-300"
           >
             {slide.cta}
           </Link>
-        </div>
-
-        {/* Dots */}
-        <div className="flex gap-1.5 justify-center mt-[18px]">
-          {heroSlides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`hero-dot ${i === current ? "active" : ""}`}
-              aria-label={`Slide ${i + 1}`}
-            />
-          ))}
+          <div className="flex justify-center gap-2 pt-4">
+            {heroSlides.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goTo(i)}
+                className={`rounded-full transition-all duration-300 ${
+                  i === current
+                    ? "h-2 w-6 bg-white"
+                    : "w-2 h-2 bg-white/30"
+                }`}
+                aria-label={`Slide ${i + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,29 +1,4 @@
 import Link from "next/link";
-import {
-  AppDownloadButton,
-  appStoreIcon,
-  googlePlayIcon,
-} from "./AppDownloadButton";
-
-type CtaBlockProps = {
-  title: string;
-  buttonText: string;
-  href: string;
-};
-
-function CtaBlock({ title, buttonText, href }: CtaBlockProps) {
-  return (
-    <div className="flex flex-col gap-2 min-h-[88px] justify-center">
-      <h3 className="text-[18px] font-bold text-white">{title}</h3>
-      <Link
-        href={href}
-        className="inline-flex items-center justify-center w-fit py-2.5 px-8 rounded-full border border-white/30 text-white text-[14px] font-medium hover:border-white transition-colors"
-      >
-        {buttonText}
-      </Link>
-    </div>
-  );
-}
 
 const ctaBlocks = [
   {
@@ -36,23 +11,28 @@ const ctaBlocks = [
     id: 2,
     title: "Entre ou cadastre-se",
     buttonText: "Receber ofertas",
-    href: "#",
+    href: "/auth",
   },
 ];
 
 export function CtaSection() {
   return (
-    <section className="bg-[#2a0303] px-4 py-8 max-w-[480px] mx-auto">
-      <div className="flex flex-col gap-[25px]">
-        {ctaBlocks.map((block) => (
-          <CtaBlock
-            key={block.id}
-            title={block.title}
-            buttonText={block.buttonText}
-            href={block.href}
-          />
+    <div className="border-b border-white/10 px-4 py-8 bg-[#2a0303]">
+      <div className="max-w-4xl mx-auto">
+        {ctaBlocks.map((block, i) => (
+          <div key={block.id} className={i > 0 ? "mt-8" : ""}>
+            <h3 className="text-lg font-semibold text-white mb-3">
+              {block.title}
+            </h3>
+            <Link
+              href={block.href}
+              className="inline-flex items-center justify-center px-6 py-2.5 border border-white/30 rounded-full text-sm text-white hover:bg-white/10 transition-colors"
+            >
+              {block.buttonText}
+            </Link>
+          </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }

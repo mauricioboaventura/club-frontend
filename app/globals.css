@@ -143,3 +143,13 @@ body {
   border-color: rgba(255,255,255,0.15);
   color: #f0ece4;
 }
+
+/* Header gradient - transparent pages */
+.gradient-header {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.75) 0%,
+    rgba(0, 0, 0, 0.3) 40%,
+    transparent 100%
+  );
+}

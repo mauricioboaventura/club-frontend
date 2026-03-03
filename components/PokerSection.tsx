@@ -3,28 +3,41 @@ import { pokerSections } from "@/lib/data";
 
 export default function PokerSection() {
   return (
-    <section className="px-4 py-7 max-w-[480px] mx-auto bg-[#fcfaf6]">
-      <div className="mb-3">
-        <h2 className="text-[15px] uppercase font-extrabold tracking-[0.5px] text-[#8c8c8c]">
-          POKER
-        </h2>
-      </div>
-      <div className="grid grid-cols-2 gap-4">
+    <section className="px-4 py-6 max-w-[480px] mx-auto lg:max-w-7xl lg:px-6 bg-[#fcfaf6]">
+      <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c] mb-4">
+        Poker
+      </h2>
+      <div className="grid grid-cols-2 gap-3">
         {pokerSections.map((item) => (
           <Link
             key={item.id}
             href={item.link}
-            className="rounded-[14px] bg-[#2d2d2d] p-4 min-h-[128px] flex flex-col justify-between hover:bg-[#252525] transition-colors"
+            className="relative rounded-xl overflow-hidden p-4 flex flex-col h-32 cursor-pointer hover:scale-[1.02] transition-transform group"
           >
-            <h3 className="text-[16px] font-bold text-white mb-2 leading-tight">
-              {item.title}
-            </h3>
-            <p className="text-[12px] text-[#b8b8b8] leading-[1.5] mb-4">
-              {item.description}
-            </p>
-            <span className="text-[12px] font-bold text-center text-white">
-              {item.linkLabel}
-            </span>
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage:
+                  "url('/assets/mc-pattern-poker-C52pi154.jpeg')",
+                backgroundColor: "#1a1510",
+              }}
+              aria-hidden
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60"
+              aria-hidden
+            />
+            <div className="relative z-10 flex flex-col h-full">
+              <h3 className="text-base font-bold text-white mb-1">
+                {item.title}
+              </h3>
+              <p className="text-xs text-white/70 mb-auto leading-relaxed">
+                {item.description}
+              </p>
+              <span className="inline-flex items-center justify-center rounded-md px-3 w-full h-8 text-xs font-medium text-white group-hover:bg-white/10 mt-2 transition-colors">
+                {item.linkLabel}
+              </span>
+            </div>
           </Link>
         ))}
       </div>
