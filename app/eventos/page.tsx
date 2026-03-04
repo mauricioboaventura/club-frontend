@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Header from "@/components/Header";
 import Image from "next/image";
+import Link from "next/link";
 import { SlidersHorizontal, ChevronDown } from "lucide-react";
+
+const HERO_AUTOPLAY_MS = 4000;
 
 const HERO_SLIDES = [
   {
@@ -76,13 +79,32 @@ const EVENTOS = [
 
 export default function EventosPage() {
   const [heroIndex, setHeroIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
   const heroTrackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
+  const nextSlide = useCallback(() => {
+    setHeroIndex((c) => (c + 1) % HERO_SLIDES.length);
+  }, []);
+
   const goToSlide = (index: number) => {
     setHeroIndex(Math.max(0, Math.min(index, HERO_SLIDES.length - 1)));
   };
+
+  useEffect(() => {
+    setProgress(0);
+    const startTime = Date.now();
+    const progressInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      setProgress(Math.min((elapsed / HERO_AUTOPLAY_MS) * 100, 100));
+    }, 50);
+    const slideTimer = setTimeout(nextSlide, HERO_AUTOPLAY_MS);
+    return () => {
+      clearInterval(progressInterval);
+      clearTimeout(slideTimer);
+    };
+  }, [heroIndex, nextSlide]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -91,21 +113,23 @@ export default function EventosPage() {
     touchEndX.current = e.changedTouches[0].clientX;
     const diff = touchStartX.current - touchEndX.current;
     if (Math.abs(diff) > 50) {
-      if (diff > 0) goToSlide(heroIndex + 1);
-      else goToSlide(heroIndex - 1);
+      if (diff > 0) nextSlide();
+      else setHeroIndex((c) => (c - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
     }
   };
 
   return (
-    <main className="min-h-screen bg-[#121212]">
-      {/* Hero Carousel - 85vh */}
-      <div className="relative w-full h-[85vh] overflow-hidden">
+    <main className="min-h-screen bg-[#f9f8f0]">
+      {/* Hero Carousel - autoplay */}
+      <div
+        className="relative w-full h-[85vh] overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <div
           ref={heroTrackRef}
-          className="flex h-full transition-transform duration-300 ease-out"
+          className="flex h-full transition-transform duration-500 ease-out"
           style={{ transform: `translate3d(${-heroIndex * 100}%, 0px, 0px)` }}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
         >
           {HERO_SLIDES.map((slide, index) => (
             <div
@@ -145,49 +169,60 @@ export default function EventosPage() {
                   type="button"
                   aria-label={`Slide ${i + 1}`}
                   onClick={() => goToSlide(i)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    heroIndex === i ? "w-6 bg-white" : "w-1.5 bg-white/40"
-                  }`}
-                />
+                  className="flex-1 h-1 rounded-full bg-white/30 overflow-hidden max-w-12"
+                >
+                  <div
+                    className="h-full bg-white transition-all duration-75 ease-linear"
+                    style={{
+                      width:
+                        heroIndex === i
+                          ? `${progress}%`
+                          : heroIndex > i
+                            ? "100%"
+                            : "0%",
+                    }}
+                  />
+                </button>
               ))}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Próximos Eventos - light bg */}
-      <div className="bg-[#f9f8f0]">
-        <h2 className="text-xl font-bold text-[#525252] px-4 pt-6 pb-4">
+      {/* Próximos Eventos */}
+      <div className="bg-[#f9f8f0] max-w-[480px] mx-auto lg:max-w-7xl lg:px-6">
+        <h2 className="text-xl font-bold text-[#1a1a1a] px-4 pt-6 pb-4">
           Próximos Eventos
         </h2>
-        <div className="flex gap-2 overflow-x-auto scroll-hidden px-4 pb-4">
+        <div className="flex gap-2 overflow-x-auto scroll-hidden px-4 pb-4 lg:justify-start">
           <button
             type="button"
-            className="flex items-center gap-2 h-9 px-4 rounded-full border border-[#430904]/30 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#f5f0e8] transition-colors shrink-0"
+            className="flex items-center gap-2 h-9 px-4 rounded-full border border-[#8b1a1a]/30 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#f5f0e8] transition-colors shrink-0"
           >
             <SlidersHorizontal className="h-4 w-4" strokeWidth={2} />
             Filtrar
           </button>
           <button
             type="button"
-            className="flex items-center gap-1 h-9 px-4 rounded-full border border-[#430904]/30 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#f5f0e8] transition-colors shrink-0"
+            className="flex items-center gap-1 h-9 px-4 rounded-full border border-[#8b1a1a]/30 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#f5f0e8] transition-colors shrink-0"
           >
             Categoria
             <ChevronDown className="h-4 w-4" strokeWidth={2} />
           </button>
           <button
             type="button"
-            className="flex items-center gap-1 h-9 px-4 rounded-full border border-[#430904]/30 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#f5f0e8] transition-colors shrink-0"
+            className="flex items-center gap-1 h-9 px-4 rounded-full border border-[#8b1a1a]/30 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#f5f0e8] transition-colors shrink-0"
           >
             Data
             <ChevronDown className="h-4 w-4" strokeWidth={2} />
           </button>
         </div>
-        <div className="px-4 space-y-4 pb-10">
+        <div className="px-4 space-y-4 pb-24 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0 lg:pb-16">
           {EVENTOS.map((evento, i) => (
-            <article
+            <Link
               key={i}
-              className="bg-[#1e1e1e] overflow-hidden rounded-2xl shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+              href="#"
+              className="bg-white overflow-hidden rounded-2xl border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow block"
             >
               <div className="relative h-48">
                 <Image
@@ -195,31 +230,26 @@ export default function EventosPage() {
                   alt={evento.title}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 480px) 100vw, 480px"
+                  sizes="(max-width: 1024px) 100vw, 33vw"
                 />
                 <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                  {[0, 1, 2, 3, 4].map((j) => (
-                    <span
-                      key={j}
-                      className={`rounded-full ${
-                        j === 0 ? "w-5 h-1 bg-white" : "w-1 h-1 bg-white/50"
-                      }`}
-                      aria-hidden
-                    />
-                  ))}
+                  <span className="w-5 h-1 bg-white rounded-full" />
+                  <span className="w-1 h-1 bg-white/50 rounded-full" />
+                  <span className="w-1 h-1 bg-white/50 rounded-full" />
+                  <span className="w-1 h-1 bg-white/50 rounded-full" />
+                  <span className="w-1 h-1 bg-white/50 rounded-full" />
                 </div>
               </div>
               <div
                 className="relative p-4 text-center overflow-hidden"
                 style={{
-                  background:
-                    "linear-gradient(135deg, #1e1e1e 0%, #252525 50%, #1a1a1a 100%)",
-                  backgroundImage:
-                    "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h4v4H0V0zm8 0h4v4H8V0zm8 0h4v4h-4V0zM0 8h4v4H0V8zm8 0h4v4H8V8zm8 0h4v4h-4V8zM0 16h4v4H0v-4zm8 0h4v4H8v-4zm8 0h4v4h-4v-4z' fill='%23333' fill-opacity='0.3' fill-rule='evenodd'/%3E%3C/svg%3E\")",
+                  backgroundImage: "url('/assets/mc-pattern-dark-CpniB2E9.jpeg')",
+                  backgroundColor: "#1a1a1a",
+                  backgroundSize: "cover",
                 }}
               >
-                <div className="relative z-10 font-sans">
-                  <h3 className="text-xl font-bold text-white mb-1">
+                <div className="relative z-10">
+                  <h3 className="font-serif text-xl font-bold text-white mb-1">
                     {evento.title}
                   </h3>
                   <p className="text-white/70 text-sm">{evento.date}</p>
@@ -230,7 +260,7 @@ export default function EventosPage() {
                   </div>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </div>

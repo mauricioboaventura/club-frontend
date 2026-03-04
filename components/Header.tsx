@@ -96,9 +96,9 @@ export default function Header() {
                       onClick={() => setPokerOpen((o) => !o)}
                       className={`group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none ${
                         isTransparent
-                          ? "text-white/80 hover:bg-white/10 hover:text-white data-[state=open]:bg-white/10"
+                          ? "text-white/80 hover:bg-white/10 hover:text-white"
                           : "text-white/90 hover:bg-white/10 hover:text-white"
-                      } ${pokerOpen ? "bg-white/10 text-white" : ""}`}
+                      } ${pokerOpen || pathname.startsWith("/poker") ? "bg-white/10 text-white" : ""}`}
                       aria-expanded={pokerOpen}
                     >
                       Poker
@@ -125,18 +125,22 @@ export default function Header() {
                       </div>
                     )}
                   </li>
-                  {NAV_LINKS.map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        className={`inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white ${
-                          isTransparent ? "text-white/80" : "text-white/90"
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {NAV_LINKS.map((link) => {
+                    const isActive =
+                      pathname === link.href || pathname.startsWith(`${link.href}/`);
+                    return (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          className={`inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white ${
+                            isTransparent ? "text-white/80" : "text-white/90"
+                          } ${isActive ? "bg-white/10 text-white" : ""}`}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </nav>
 
