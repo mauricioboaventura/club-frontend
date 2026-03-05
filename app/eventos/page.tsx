@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import Header from "@/components/Header";
 import Image from "next/image";
 import Link from "next/link";
@@ -84,27 +84,30 @@ export default function EventosPage() {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  const nextSlide = useCallback(() => {
-    setHeroIndex((c) => (c + 1) % HERO_SLIDES.length);
-  }, []);
-
   const goToSlide = (index: number) => {
     setHeroIndex(Math.max(0, Math.min(index, HERO_SLIDES.length - 1)));
   };
 
+  // Autoplay + progress bar (igual ao hero do Poker)
   useEffect(() => {
     setProgress(0);
     const startTime = Date.now();
+
     const progressInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
-      setProgress(Math.min((elapsed / HERO_AUTOPLAY_MS) * 100, 100));
+      const p = Math.min((elapsed / HERO_AUTOPLAY_MS) * 100, 100);
+      setProgress(p);
     }, 50);
-    const slideTimer = setTimeout(nextSlide, HERO_AUTOPLAY_MS);
+
+    const slideTimer = setTimeout(() => {
+      setHeroIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, HERO_AUTOPLAY_MS);
+
     return () => {
       clearInterval(progressInterval);
       clearTimeout(slideTimer);
     };
-  }, [heroIndex, nextSlide]);
+  }, [heroIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -113,8 +116,8 @@ export default function EventosPage() {
     touchEndX.current = e.changedTouches[0].clientX;
     const diff = touchStartX.current - touchEndX.current;
     if (Math.abs(diff) > 50) {
-      if (diff > 0) nextSlide();
-      else setHeroIndex((c) => (c - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+      if (diff > 0) goToSlide(heroIndex + 1);
+      else goToSlide(heroIndex - 1);
     }
   };
 
@@ -162,14 +165,14 @@ export default function EventosPage() {
             >
               Garantir Entrada
             </button>
-            <div className="flex justify-center gap-2 pt-2">
+            <div className="flex justify-center gap-2 pt-2 w-full max-w-2xl mx-auto px-4">
               {HERO_SLIDES.map((_, i) => (
                 <button
                   key={i}
                   type="button"
                   aria-label={`Slide ${i + 1}`}
                   onClick={() => goToSlide(i)}
-                  className="flex-1 h-1 rounded-full bg-white/30 overflow-hidden max-w-12"
+                  className="flex-1 h-1 rounded-full bg-white/30 overflow-hidden"
                 >
                   <div
                     className="h-full bg-white transition-all duration-75 ease-linear"

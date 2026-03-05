@@ -15,7 +15,7 @@ const POKER_LINKS = [
 const NAV_LINKS = [
   { label: "Eventos", href: "/eventos" },
   { label: "Rewards", href: "/rewards" },
-  { label: "Gastronomia", href: "/gastronomia" },
+  { label: "Gastronomia", href: "/explorar" },
   { label: "Vida Noturna", href: "/eventos" },
 ];
 

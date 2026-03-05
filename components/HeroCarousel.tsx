@@ -4,19 +4,45 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { heroSlides } from "@/lib/data";
+import { fetchBanners, type HeroSlide } from "@/lib/api/banners";
+
+const fallbackSlides: HeroSlide[] = heroSlides.map((s) => ({
+  id: s.id,
+  image: s.image,
+  title: s.title,
+  subtitle: s.subtitle,
+  cta: s.cta,
+  ctaLink: s.ctaLink,
+}));
 
 export default function HeroCarousel() {
+  const [slides, setSlides] = useState<HeroSlide[]>(fallbackSlides);
   const [current, setCurrent] = useState(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  const next = useCallback(() => {
-    setCurrent((c) => (c + 1) % heroSlides.length);
+  useEffect(() => {
+    fetchBanners("HOME_HERO").then((data) => {
+      if (data.length > 0) {
+        setSlides(data);
+      }
+    });
   }, []);
 
-  const goTo = useCallback((index: number) => {
-    setCurrent(Math.max(0, Math.min(index, heroSlides.length - 1)));
-  }, []);
+  useEffect(() => {
+    setCurrent((c) => Math.min(c, Math.max(0, slides.length - 1)));
+  }, [slides.length]);
+
+  const next = useCallback(() => {
+    setCurrent((c) => (c + 1) % slides.length);
+  }, [slides.length]);
+
+  const goTo = useCallback(
+    (index: number) => {
+      setCurrent(Math.max(0, Math.min(index, slides.length - 1)));
+    },
+    [slides.length],
+  );
 
   useEffect(() => {
     const timer = setInterval(next, 5000);
@@ -32,11 +58,11 @@ export default function HeroCarousel() {
     const diff = touchStartX.current - touchEndX.current;
     if (Math.abs(diff) > 50) {
       if (diff > 0) next();
-      else setCurrent((c) => (c - 1 + heroSlides.length) % heroSlides.length);
+      else setCurrent((c) => (c - 1 + slides.length) % slides.length);
     }
   };
 
-  const slide = heroSlides[current];
+  const slide = slides[current] ?? slides[0];
 
   return (
     <section
@@ -49,18 +75,18 @@ export default function HeroCarousel() {
           className="flex transition-transform duration-500 ease-out"
           style={{ transform: `translate3d(-${current * 100}%, 0px, 0px)` }}
         >
-          {heroSlides.map((s) => (
+          {slides.map((s) => (
             <div
               key={s.id}
               className="relative flex-[0_0_100%] min-w-0 aspect-[4/5] lg:aspect-[21/9]"
             >
               <Image
                 src={s.image}
-                alt={s.title.replace(/\n/g, " ")}
+                alt={s.imageAlt ?? s.title.replace(/\n/g, " ")}
                 fill
                 className="object-cover"
                 sizes="100vw"
-                priority={s.id === 1}
+                priority={slides[0]?.id === s.id}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
             </div>
@@ -77,24 +103,22 @@ export default function HeroCarousel() {
             </h1>
           </div>
           <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
-            {slide.subtitle}
+            {slide?.subtitle}
           </p>
           <Link
-            href={slide.ctaLink}
+            href={slide?.ctaLink ?? "#"}
             className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md h-10 mt-4 px-8 py-3 text-base font-semibold tracking-wide border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#121212] transition-all duration-300"
           >
-            {slide.cta}
+            {slide?.cta}
           </Link>
           <div className="flex justify-center gap-2 pt-4">
-            {heroSlides.map((_, i) => (
+            {slides.map((_, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => goTo(i)}
                 className={`rounded-full transition-all duration-300 ${
-                  i === current
-                    ? "h-2 w-6 bg-white"
-                    : "w-2 h-2 bg-white/30"
+                  i === current ? "h-2 w-6 bg-white" : "w-2 h-2 bg-white/30"
                 }`}
                 aria-label={`Slide ${i + 1}`}
               />
