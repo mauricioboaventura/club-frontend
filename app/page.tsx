@@ -8,7 +8,14 @@ import TextBlocksSection from "@/components/TextBlocksSection";
 import { fetchHomePage } from "@/lib/api/pages";
 
 export default async function Home() {
-  const { heroBanners, featureCards, textBlocks } = await fetchHomePage();
+  const {
+    heroBanners,
+    featureCards,
+    textBlocks,
+    featuredEvents,
+    ctaSections,
+    accordionItems,
+  } = await fetchHomePage();
 
   return (
     <main className="min-h-screen bg-[#fcfaf6] mt-[56px]">
@@ -18,7 +25,7 @@ export default async function Home() {
       {textBlocks.length > 0 && <TextBlocksSection textBlocks={textBlocks} />}
       <PokerSection />
       <GastronomySection />
-      <ShowsSection />
+      <ShowsSection featuredEvents={featuredEvents} />
     </main>
   );
 }
