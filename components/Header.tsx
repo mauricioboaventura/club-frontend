@@ -9,8 +9,8 @@ import Sidebar from "./Sidebar";
 
 const NAV_LINKS = [
   { label: "Eventos", href: "/eventos" },
-  { label: "Gastronomia", href: "/explorar" },
-  { label: "Vida Noturna", href: "/eventos" },
+  { label: "Gastronomia", href: "/gastronomia" },
+  { label: "Vida Noturna", href: "/explorar" },
 ];
 
 export default function Header() {
@@ -71,6 +71,16 @@ export default function Header() {
                 className="relative z-10 flex max-w-max flex-1 items-center justify-center mx-8"
               >
                 <ul className="flex list-none items-center justify-center gap-1">
+                  <li>
+                    <Link
+                      href="/"
+                      className={`inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white ${
+                        isTransparent ? "text-white/80" : "text-white/90"
+                      } ${pathname === "/" ? "bg-white/10 text-white" : ""}`}
+                    >
+                      Home
+                    </Link>
+                  </li>
                   <li>
                     <Link
                       href="/poker"
