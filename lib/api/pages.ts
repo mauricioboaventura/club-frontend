@@ -1,6 +1,6 @@
 import type { HeroSlide } from "./banners";
 
-const PAGES_API_URL = "https://api.rdc-dev.com.br/api/pages/home";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://api.rdc-dev.com.br/api";
 
 export type HeroBanner = {
   id: string;
@@ -43,18 +43,79 @@ export type TextBlock = {
   isActive: boolean;
 };
 
-type HeroBannersResponse = {
-  data: HeroBanner[];
-  count: number;
+export type FeaturedEvent = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  coverImageUrl: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  location: string | null;
+  isActive: boolean;
+  isFeatured: boolean;
+  event_images?: { id: string; imageUrl: string; imageAlt: string | null }[];
 };
 
-type FeatureCardsResponse = {
-  data: FeatureCard[];
-  count: number;
+export type CtaSection = {
+  id: string;
+  pageSlug: string;
+  title: string;
+  ctaLabel: string | null;
+  ctaLink: string | null;
+  imageUrl: string | null;
+  sortOrder: number;
+  isActive: boolean;
 };
 
-type TextBlocksResponse = {
-  data: TextBlock[];
+export type AccordionItem = {
+  id: string;
+  pageSlug: string;
+  sectionSlug: string | null;
+  title: string;
+  content: string;
+  sortOrder: number;
+  isActive: boolean;
+};
+
+export type EventCategory = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  iconUrl: string | null;
+  color: string | null;
+  sortOrder: number;
+  isActive: boolean;
+};
+
+export type EventItem = {
+  id: string;
+  categoryId: string | null;
+  title: string;
+  slug: string;
+  description: string | null;
+  shortDescription: string | null;
+  coverImageUrl: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  location: string | null;
+  priceInfo: string | null;
+  isFeatured: boolean;
+  isActive: boolean;
+  tags: string[] | null;
+  event_images?: { id: string; imageUrl: string; imageAlt: string | null }[];
+  event_categories?: {
+    id: string;
+    name: string;
+    slug: string;
+    color: string | null;
+    description?: string | null;
+  } | null;
+};
+
+type PaginatedResponse<T> = {
+  data: T[];
   count: number;
 };
 
@@ -62,6 +123,18 @@ export type HomePageData = {
   heroBanners: HeroSlide[];
   featureCards: FeatureCard[];
   textBlocks: TextBlock[];
+  featuredEvents: FeaturedEvent[];
+  ctaSections: CtaSection[];
+  accordionItems: AccordionItem[];
+};
+
+export type EventosPageData = {
+  heroBanners: HeroSlide[];
+  events: EventItem[];
+  featuredEvents: FeaturedEvent[];
+  eventCategories: EventCategory[];
+  ctaSections: CtaSection[];
+  accordionItems: AccordionItem[];
 };
 
 function mapHeroBannerToSlide(b: HeroBanner): HeroSlide {
@@ -79,7 +152,7 @@ function mapHeroBannerToSlide(b: HeroBanner): HeroSlide {
 
 export async function fetchHomePage(): Promise<HomePageData> {
   try {
-    const res = await fetch(PAGES_API_URL, {
+    const res = await fetch(`${API_BASE}/pages/home`, {
       next: { revalidate: 60 },
     });
 
@@ -89,9 +162,14 @@ export async function fetchHomePage(): Promise<HomePageData> {
 
     const json = await res.json();
 
-    const heroRaw: HeroBannersResponse = json.heroBanners ?? { data: [], count: 0 };
-    const featureRaw: FeatureCardsResponse = json.featureCards ?? { data: [], count: 0 };
-    const textRaw: TextBlocksResponse = json.textBlocks ?? { data: [], count: 0 };
+    const heroRaw: PaginatedResponse<HeroBanner> = json.heroBanners ?? { data: [], count: 0 };
+    const featureRaw: PaginatedResponse<FeatureCard> = json.featureCards ?? { data: [], count: 0 };
+    const textRaw: PaginatedResponse<TextBlock> = json.textBlocks ?? { data: [], count: 0 };
+    const ctaRaw: PaginatedResponse<CtaSection> = json.ctaSections ?? { data: [], count: 0 };
+    const accordionRaw: PaginatedResponse<AccordionItem> = json.accordionItems ?? { data: [], count: 0 };
+
+    // featuredEvents vem como array direto (não paginado)
+    const featuredEvents: FeaturedEvent[] = json.featuredEvents ?? [];
 
     const heroBanners = (heroRaw.data ?? [])
       .filter((b) => b.isActive === true)
@@ -106,19 +184,125 @@ export async function fetchHomePage(): Promise<HomePageData> {
       .filter((t) => t.isActive === true)
       .sort((a, b) => a.sortOrder - b.sortOrder);
 
+    const ctaSections = (ctaRaw.data ?? [])
+      .filter((c) => c.isActive === true)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+
+    const accordionItems = (accordionRaw.data ?? [])
+      .filter((a) => a.isActive === true)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+
     return {
       heroBanners,
       featureCards,
       textBlocks,
+      featuredEvents,
+      ctaSections,
+      accordionItems,
     };
   } catch (err) {
     if (process.env.NODE_ENV === "development") {
-      console.warn("[fetchHomePage]", err);
+      console.error("[fetchHomePage]", err);
     }
     return {
       heroBanners: [],
       featureCards: [],
       textBlocks: [],
+      featuredEvents: [],
+      ctaSections: [],
+      accordionItems: [],
     };
+  }
+}
+
+export async function fetchEventosPage(): Promise<EventosPageData> {
+  try {
+    const res = await fetch(`${API_BASE}/pages/eventos`, {
+      next: { revalidate: 60 },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Pages API error: ${res.status}`);
+    }
+
+    const json = await res.json();
+
+    const heroRaw: PaginatedResponse<HeroBanner> = json.heroBanners ?? { data: [], count: 0 };
+    const eventsRaw: PaginatedResponse<EventItem> = json.events ?? { data: [], count: 0 };
+    const categoriesRaw: PaginatedResponse<EventCategory> = json.eventCategories ?? {
+      data: [],
+      count: 0,
+    };
+    const ctaRaw: PaginatedResponse<CtaSection> = json.ctaSections ?? { data: [], count: 0 };
+    const accordionRaw: PaginatedResponse<AccordionItem> = json.accordionItems ?? { data: [], count: 0 };
+    const featuredEvents: FeaturedEvent[] = json.featuredEvents ?? [];
+
+    const heroBanners = (heroRaw.data ?? [])
+      .filter((b) => b.isActive === true)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(mapHeroBannerToSlide);
+
+    const events = (eventsRaw.data ?? []).filter((e) => e.isActive === true);
+
+    const eventCategories = (categoriesRaw.data ?? [])
+      .filter((c) => c.isActive === true)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+
+    const ctaSections = (ctaRaw.data ?? [])
+      .filter((c) => c.isActive === true)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+
+    const accordionItems = (accordionRaw.data ?? [])
+      .filter((a) => a.isActive === true)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+
+    return {
+      heroBanners,
+      events,
+      featuredEvents,
+      eventCategories,
+      ctaSections,
+      accordionItems,
+    };
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("[fetchEventosPage]", err);
+    }
+    return {
+      heroBanners: [],
+      events: [],
+      featuredEvents: [],
+      eventCategories: [],
+      ctaSections: [],
+      accordionItems: [],
+    };
+  }
+}
+
+export async function fetchEventById(id: string): Promise<EventItem | null> {
+  try {
+    const res = await fetch(`${API_BASE}/events/${id}`, {
+      next: { revalidate: 60 },
+    });
+
+    if (res.status === 404) {
+      return null;
+    }
+
+    if (!res.ok) {
+      throw new Error(`Event API error: ${res.status}`);
+    }
+
+    const json = (await res.json()) as EventItem;
+    if (!json?.id) {
+      return null;
+    }
+
+    return json;
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("[fetchEventById]", err);
+    }
+    return null;
   }
 }

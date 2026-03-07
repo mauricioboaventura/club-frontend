@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { fetchBanners, type HeroSlide } from "@/lib/api/banners";
+import type { HeroSlide } from "@/lib/api/banners";
 
 type HeroCarouselProps = {
   initialSlides?: HeroSlide[];
@@ -18,13 +18,7 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   useEffect(() => {
     if (initialSlides && initialSlides.length > 0) {
       setSlides(initialSlides);
-      return;
     }
-    fetchBanners("HOME_HERO").then((data) => {
-      if (data.length > 0) {
-        setSlides(data);
-      }
-    });
   }, [initialSlides]);
 
   useEffect(() => {

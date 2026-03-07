@@ -1,4 +1,5 @@
-const BANNERS_API_URL = "https://api.rdc-dev.com.br/api/banners";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://api.rdc-dev.com.br/api";
+const BANNERS_API_URL = `${API_BASE}/banners`;
 
 export type Banner = {
   id: string;
