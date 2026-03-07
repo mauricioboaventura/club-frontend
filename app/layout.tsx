@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   description:
     "Monte Carlo Poker Club - Experiência exclusiva em poker, gastronomia e entretenimento",
 };
-
+  
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  viewportFit: "cover",
+  viewportFit: "cover",   
 };
 
 export default function RootLayout({

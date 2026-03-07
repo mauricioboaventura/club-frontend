@@ -1,20 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, User, ChevronDown } from "lucide-react";
+import { Search, User } from "lucide-react";
 import Sidebar from "./Sidebar";
-
-const POKER_LINKS = [
-  { label: "Cash Game", href: "/poker#cash" },
-  { label: "Torneios", href: "/poker#torneios" },
-];
 
 const NAV_LINKS = [
   { label: "Eventos", href: "/eventos" },
-  { label: "Rewards", href: "/rewards" },
   { label: "Gastronomia", href: "/explorar" },
   { label: "Vida Noturna", href: "/eventos" },
 ];
@@ -22,13 +16,10 @@ const NAV_LINKS = [
 export default function Header() {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [pokerOpen, setPokerOpen] = useState(false);
-  const pokerRef = useRef<HTMLLIElement>(null);
 
   const isExplorar = pathname === "/explorar";
   const isEventos = pathname === "/eventos";
-  const isRewards = pathname === "/rewards";
-  const isTransparent = isExplorar || isEventos || isRewards;
+  const isTransparent = isExplorar || isEventos;
 
   useEffect(() => {
     document.body.style.overflow = sidebarOpen ? "hidden" : "";
@@ -36,16 +27,6 @@ export default function Header() {
       document.body.style.overflow = "";
     };
   }, [sidebarOpen]);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (pokerRef.current && !pokerRef.current.contains(e.target as Node)) {
-        setPokerOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const headerBg = isTransparent ? "gradient-header" : "bg-[#430904]";
 
@@ -90,40 +71,15 @@ export default function Header() {
                 className="relative z-10 flex max-w-max flex-1 items-center justify-center mx-8"
               >
                 <ul className="flex list-none items-center justify-center gap-1">
-                  <li ref={pokerRef} className="relative">
-                    <button
-                      type="button"
-                      onClick={() => setPokerOpen((o) => !o)}
-                      className={`group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus:outline-none ${
-                        isTransparent
-                          ? "text-white/80 hover:bg-white/10 hover:text-white"
-                          : "text-white/90 hover:bg-white/10 hover:text-white"
-                      } ${pokerOpen || pathname.startsWith("/poker") ? "bg-white/10 text-white" : ""}`}
-                      aria-expanded={pokerOpen}
+                  <li>
+                    <Link
+                      href="/poker"
+                      className={`inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white ${
+                        isTransparent ? "text-white/80" : "text-white/90"
+                      } ${pathname === "/poker" || pathname.startsWith("/poker/") ? "bg-white/10 text-white" : ""}`}
                     >
                       Poker
-                      <ChevronDown
-                        className={`ml-1 h-4 w-4 transition duration-200 ${pokerOpen ? "rotate-180" : ""}`}
-                        strokeWidth={2}
-                      />
-                    </button>
-                    {pokerOpen && (
-                      <div className="absolute left-0 top-full pt-1">
-                        <ul className="min-w-[160px] rounded-md bg-black/90 py-2 shadow-lg">
-                          {POKER_LINKS.map((link) => (
-                            <li key={link.href}>
-                              <Link
-                                href={link.href}
-                                className="block px-4 py-2 text-sm text-white/90 hover:bg-white/10 hover:text-white"
-                                onClick={() => setPokerOpen(false)}
-                              >
-                                {link.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                    </Link>
                   </li>
                   {NAV_LINKS.map((link) => {
                     const isActive =
