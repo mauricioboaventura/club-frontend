@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Header from "@/components/Header";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-import { pokerTournaments } from "./poker-tournaments.service";
+import { ChevronRight, Camera } from "lucide-react";
+import SelectFilter from "@/components/SelectFilter";
 
 const HERO_SLIDES = [
   {
@@ -47,13 +48,53 @@ const FEATURE_CARDS = [
   },
 ];
 
+const GALLERY_IMAGES = [
+  "https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=400&q=80",
+  "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&q=80",
+  "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&q=80",
+  "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80",
+  "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80",
+  "https://images.unsplash.com/photo-1518458028785-8fbcd101ebb9?w=400&q=80",
+  "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80",
+  "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&q=80",
+];
+
 const HERO_AUTOPLAY_MS = 4000;
 const BG_BEIGE = "#f9f8f0";
+const TEXT_DARK = "#1a1a1a";
 const TEXT_MUTED = "#6b6660";
+
+const TORNEIO_OPTIONS = [
+  "Todos os torneios",
+  "Monte Carlo Weekly",
+  "High Roller Sunday",
+  "Freeroll Mensal",
+  "Main Event",
+  "Deepstack",
+];
+const ANO_OPTIONS = ["Todos", "2026", "2025", "2024"];
+const MES_OPTIONS = [
+  "Todos os meses",
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
 
 export default function PokerPage() {
   const [heroIndex, setHeroIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [torneio, setTorneio] = useState(TORNEIO_OPTIONS[0]);
+  const [ano, setAno] = useState(ANO_OPTIONS[0]);
+  const [mes, setMes] = useState(MES_OPTIONS[0]);
   const heroTrackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -271,52 +312,61 @@ export default function PokerPage() {
           </div>
         </section>
 
-        <section className="px-4 pb-8">
-          <h3 className="text-xl font-bold mb-4 text-[#525252]">Agenda de Torneios</h3>
-
-          <div className="rounded-xl border border-[#5C0F08]/25 bg-white p-4 mb-4">
-            <p className="text-[#525252] mb-1">
-              <span className="font-bold">PROGRAMAÇÃO:</span> 24 horas por dia
-            </p>
-            <p className="text-[#525252]">
-              <span className="font-bold">MODALIDADES:</span> Texas Hold&apos;em e Omaha
-            </p>
+        {/* Photo gallery */}
+        <section className=" pb-8">
+          <h3 className="text-xl px-4 font-bold mb-4 flex items-center gap-2 text-[#525252]">
+            <Camera className="h-5 w-5" color="#525252" strokeWidth={2} />
+            Galeria de Fotos
+          </h3>
+          <div className="flex px-4 gap-4 mb-4 flex-wrap">
+            <div className="flex-1 min-w-[120px]">
+              <SelectFilter
+                label="Torneio"
+                options={TORNEIO_OPTIONS}
+                value={torneio}
+                onChange={setTorneio}
+                placeholder="Todos os..."
+              />
+            </div>
+            <div className="flex-1 min-w-[100px]">
+              <SelectFilter
+                label="Ano"
+                options={ANO_OPTIONS}
+                value={ano}
+                onChange={setAno}
+                placeholder="Todos"
+              />
+            </div>
+            <div className="flex-1 min-w-[120px]">
+              <SelectFilter
+                label="Mês"
+                options={MES_OPTIONS}
+                value={mes}
+                onChange={setMes}
+                placeholder="Todos os..."
+              />
+            </div>
           </div>
-
-          <div className="space-y-3">
-            {pokerTournaments.map((tournament) => (
-              <article
-                key={tournament.id}
-                className="p-4 rounded-xl border border-[#5C0F08] bg-white shadow-sm"
-              >
-                <div className="flex justify-between items-start gap-2 mb-2">
-                  <h4 className="font-semibold text-[#2A0303]">{tournament.name}</h4>
-                  {tournament.highlight && (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-[#5C0F08] text-white">
-                      Destaque
-                    </span>
-                  )}
-                </div>
-                <p className="text-sm text-[#6b6660] mb-3">
-                  {new Date(tournament.date).toLocaleDateString("pt-BR", {
-                    weekday: "short",
-                    day: "numeric",
-                    month: "short",
-                  })}{" "}
-                  • {tournament.time}
-                </p>
-                <div className="flex justify-between items-center pt-2 border-t border-[#e7e2da]">
-                  <div>
-                    <p className="text-xs text-[#6b6660]">Buy-in</p>
-                    <p className="font-medium text-[#2A0303]">{tournament.buyIn}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-[#6b6660]">Garantido</p>
-                    <p className="font-medium text-[#5C0F08]">{tournament.guaranteed}</p>
-                  </div>
-                </div>
-              </article>
+          <div className="grid grid-cols-2">
+            {GALLERY_IMAGES.map((src, i) => (
+              <div key={i} className="relative aspect-[1/1] overflow-hidden">
+                <Image
+                  src={src}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 480px) 50vw, 240px"
+                />
+              </div>
             ))}
+          </div>
+          <div className="px-4">
+            <button
+              type="button"
+              className="w-full mt-6 py-2 rounded-lg border border-[#430904] text-[#430904] font-medium text-sm bg-transparent hover:bg-[#430904]/10 transition-colors"
+            >
+              Ver mais fotos
+            </button>
           </div>
         </section>
       </div>
