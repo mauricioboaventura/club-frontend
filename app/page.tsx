@@ -22,7 +22,7 @@ export default async function Home() {
       <HeroCarousel initialSlides={heroBanners} />
       <DiscoverSection />
       <ExperiencesSection featureCards={featureCards} />
-      {textBlocks.length > 0 && <TextBlocksSection textBlocks={textBlocks} />}
+      {/* {textBlocks.length > 0 && <TextBlocksSection textBlocks={textBlocks} />} */}
       <PokerSection />
       <GastronomySection />
       <ShowsSection featuredEvents={featuredEvents} />
