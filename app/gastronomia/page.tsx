@@ -67,7 +67,7 @@ export default function GastronomiaPage() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="animate-pulse rounded-2xl bg-white overflow-hidden shadow-sm"
+                className="animate-pulse rounded-2xl bg-white overflow-hidden shadow-md border border-[#e5e0d5]"
               >
                 <div className="h-48 bg-[#e5e0d5]" />
                 <div className="p-5 space-y-3">
@@ -80,7 +80,7 @@ export default function GastronomiaPage() {
           </div>
         ) : restaurants.length === 0 ? (
           <div className="px-4 pb-24">
-            <div className="rounded-2xl bg-white p-8 text-center text-[#6b6660]">
+            <div className="rounded-2xl bg-white p-8 text-center text-[#6b6660] shadow-md border border-[#e5e0d5]">
               Nenhum restaurante disponível no momento.
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function GastronomiaPage() {
               <Link
                 key={restaurant.id}
                 href={`/gastronomia/${restaurant.id}`}
-                className="bg-white overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-shadow block"
+                className="bg-white overflow-hidden rounded-2xl shadow-md border border-[#e5e0d5] hover:shadow-lg transition-shadow block"
               >
                 <div className="relative h-48">
                   <Image

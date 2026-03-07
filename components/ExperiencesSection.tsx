@@ -37,7 +37,7 @@ const fallbackExperiences = [
     title: "Jantar Especial",
     subtitle: "Menu degustação exclusivo",
     cta: "Reservar",
-    ctaLink: "/gastronomia/degustacao",
+    ctaLink: "/gastronomia/550e8400-e29b-41d4-a716-446655440000",
     image:
       "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&h=800&fit=crop",
   },

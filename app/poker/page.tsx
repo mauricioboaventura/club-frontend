@@ -32,10 +32,14 @@ export default function PokerPage() {
   const [viewMode, setViewMode] = useState<"torneios" | "cashgame">("torneios");
   const [tournaments, setTournaments] = useState<PokerTournament[]>([]);
   const [selectedTournament, setSelectedTournament] = useState<PokerTournament | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Fetch tournaments from API
   useEffect(() => {
-    fetchPokerTournaments().then(setTournaments);
+    fetchPokerTournaments().then((data) => {
+      setTournaments(data);
+      setLoading(false);
+    });
   }, []);
 
   return (
@@ -111,12 +115,37 @@ export default function PokerPage() {
           {/* Torneios View */}
           {viewMode === "torneios" && (
             <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
-              {tournaments.length === 0 && (
-                <p className="text-center text-[#6b6660] py-8">
+              {loading ? (
+                // Loading skeleton
+                [1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="animate-pulse p-4 rounded-xl border border-[#e5e0d5] shadow-sm bg-white"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex-1">
+                        <div className="h-5 w-3/4 rounded bg-[#e5e0d5] mb-2" />
+                        <div className="h-4 w-1/2 rounded bg-[#e5e0d5]" />
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center pt-2 border-t border-[#e5e0d5] mt-2">
+                      <div className="flex-1">
+                        <div className="h-3 w-12 rounded bg-[#e5e0d5] mb-1" />
+                        <div className="h-5 w-20 rounded bg-[#e5e0d5]" />
+                      </div>
+                      <div className="flex-1 text-right">
+                        <div className="h-3 w-16 rounded bg-[#e5e0d5] mb-1 ml-auto" />
+                        <div className="h-5 w-24 rounded bg-[#e5e0d5] ml-auto" />
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : tournaments.length === 0 ? (
+                <p className="col-span-full text-center text-[#6b6660] py-8 rounded-2xl bg-white shadow-md border border-[#e5e0d5]">
                   Nenhum torneio disponível no momento.
                 </p>
-              )}
-              {tournaments.map((t) => (
+              ) : (
+                tournaments.map((t) => (
                 <div
                   key={t.id}
                   onClick={() => setSelectedTournament(t)}
@@ -152,7 +181,8 @@ export default function PokerPage() {
                     </div>
                   </div>
                 </div>
-              ))}
+              ))
+              )}
             </div>
           )}
 

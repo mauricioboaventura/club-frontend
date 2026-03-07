@@ -20,7 +20,7 @@ const gastronomyCards = [
     badge: "Reservas abertas",
     image:
       "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=300&fit=crop",
-    link: "/gastronomia/degustacao",
+    link: "/gastronomia/550e8400-e29b-41d4-a716-446655440000",
   },
 ];
 

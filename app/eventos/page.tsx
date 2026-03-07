@@ -14,109 +14,6 @@ import {
 
 const HERO_AUTOPLAY_MS = 4000;
 
-const FALLBACK_HERO_SLIDES: HeroSlide[] = [
-  {
-    id: "fallback-1",
-    image:
-      "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&h=900&fit=crop",
-    imageAlt: "Noite de Jazz Especial",
-    title: "Noite de Jazz Especial",
-    subtitle:
-      "Aproveite uma noite de jazz especial no Monte Carlo com os melhores músicos da cidade!",
-    cta: "Garantir Entrada",
-    ctaLink: "#",
-  },
-  {
-    id: "fallback-2",
-    image:
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=900&fit=crop",
-    imageAlt: "Menu Degustação Especial",
-    title: "Menu Degustação Especial",
-    subtitle:
-      "Uma experiência gastronômica única com os chefs do Monte Carlo.",
-    cta: "Garantir Entrada",
-    ctaLink: "#",
-  },
-  {
-    id: "fallback-3",
-    image:
-      "https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=800&h=900&fit=crop",
-    imageAlt: "DJ Night Premium",
-    title: "DJ Night Premium",
-    subtitle:
-      "As melhores batidas para uma noite inesquecível no Monte Carlo",
-    cta: "Garantir Entrada",
-    ctaLink: "#",
-  },
-];
-
-const FALLBACK_EVENTOS: EventItem[] = [
-  {
-    id: "fallback-e1",
-    categoryId: null,
-    title: "Noite de Jazz",
-    slug: "noite-de-jazz",
-    description: null,
-    shortDescription: null,
-    coverImageUrl:
-      "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&auto=format&fit=crop",
-    startDate: "2026-02-15T21:00:00",
-    endDate: null,
-    location: null,
-    priceInfo: null,
-    isFeatured: false,
-    isActive: true,
-    tags: null,
-    event_categories: { id: "cat-show", name: "Show", slug: "show", color: null },
-  },
-  {
-    id: "fallback-e2",
-    categoryId: null,
-    title: "Menu Degustação Especial",
-    slug: "menu-degustacao",
-    description: null,
-    shortDescription: null,
-    coverImageUrl:
-      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop",
-    startDate: "2026-02-20T20:00:00",
-    endDate: null,
-    location: null,
-    priceInfo: null,
-    isFeatured: false,
-    isActive: true,
-    tags: null,
-    event_categories: {
-      id: "cat-gastro",
-      name: "Gastronomia",
-      slug: "gastronomia",
-      color: null,
-    },
-  },
-  {
-    id: "fallback-e3",
-    categoryId: null,
-    title: "DJ Night com Resident",
-    slug: "dj-night-resident",
-    description: null,
-    shortDescription: null,
-    coverImageUrl:
-      "https://images.unsplash.com/photo-1566417713940-fe7c737a9ef2?w=600&auto=format&fit=crop",
-    startDate: "2026-02-22T23:00:00",
-    endDate: null,
-    location: null,
-    priceInfo: null,
-    isFeatured: false,
-    isActive: true,
-    tags: null,
-    event_categories: {
-      id: "cat-nightlife",
-      name: "Nightlife",
-      slug: "nightlife",
-      color: null,
-    },
-  },
-];
-
 const DATE_OPTIONS = ["Todas as datas", "Hoje", "Próximos 7 dias", "Este mês"];
 
 function formatEventDate(date: string | null): string {
@@ -170,10 +67,10 @@ export default function EventosPage() {
   const [categorias, setCategorias] = useState<EventCategory[]>([]);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todas");
   const [dataSelecionada, setDataSelecionada] = useState("Todas as datas");
+  const [loading, setLoading] = useState(true);
   const heroTrackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
-  const slides = heroSlides.length > 0 ? heroSlides : FALLBACK_HERO_SLIDES;
 
   const categoriasMap = useMemo(
     () => new Map(categorias.map((categoria) => [categoria.id, categoria.name])),
@@ -182,7 +79,7 @@ export default function EventosPage() {
 
   const categoriasDisponiveis = useMemo(() => {
     const fromApi = categorias.map((c) => c.name);
-    const fromEvents = (eventos.length > 0 ? eventos : FALLBACK_EVENTOS)
+    const fromEvents = eventos
       .map(
         (evento) =>
           evento.event_categories?.name ??
@@ -194,9 +91,7 @@ export default function EventosPage() {
   }, [categorias, categoriasMap, eventos]);
 
   const eventosFiltrados = useMemo(() => {
-    const source = eventos.length > 0 ? eventos : FALLBACK_EVENTOS;
-
-    return source.filter((evento) => {
+    return eventos.filter((evento) => {
       const categoriaEvento =
         evento.event_categories?.name ??
         (evento.categoryId ? categoriasMap.get(evento.categoryId) : undefined) ??
@@ -211,7 +106,7 @@ export default function EventosPage() {
   }, [categoriaSelecionada, categoriasMap, dataSelecionada, eventos]);
 
   const goToSlide = (index: number) => {
-    setHeroIndex(Math.max(0, Math.min(index, slides.length - 1)));
+    setHeroIndex(Math.max(0, Math.min(index, heroSlides.length - 1)));
   };
 
   useEffect(() => {
@@ -224,6 +119,7 @@ export default function EventosPage() {
       setHeroSlides(pageData.heroBanners);
       setEventos(pageData.events);
       setCategorias(pageData.eventCategories);
+      setLoading(false);
     };
 
     loadPage();
@@ -234,14 +130,14 @@ export default function EventosPage() {
   }, []);
 
   useEffect(() => {
-    if (heroIndex > slides.length - 1) {
+    if (heroIndex > heroSlides.length - 1) {
       setHeroIndex(0);
     }
-  }, [heroIndex, slides.length]);
+  }, [heroIndex, heroSlides.length]);
 
   // Autoplay + progress bar (igual ao hero do Poker)
   useEffect(() => {
-    if (slides.length === 0) return;
+    if (heroSlides.length === 0) return;
     setProgress(0);
     const startTime = Date.now();
 
@@ -252,14 +148,14 @@ export default function EventosPage() {
     }, 50);
 
     const slideTimer = setTimeout(() => {
-      setHeroIndex((prev) => (prev + 1) % slides.length);
+      setHeroIndex((prev) => (prev + 1) % heroSlides.length);
     }, HERO_AUTOPLAY_MS);
 
     return () => {
       clearInterval(progressInterval);
       clearTimeout(slideTimer);
     };
-  }, [heroIndex, slides.length]);
+  }, [heroIndex, heroSlides.length]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -276,73 +172,98 @@ export default function EventosPage() {
   return (
     <main className="min-h-screen bg-[#f9f8f0]">
       {/* Hero Carousel - autoplay */}
-      <div
-        className="relative w-full h-[85vh] overflow-hidden"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div
-          ref={heroTrackRef}
-          className="flex h-full transition-transform duration-500 ease-out"
-          style={{ transform: `translate3d(${-heroIndex * 100}%, 0px, 0px)` }}
-        >
-          {slides.map((slide, index) => (
-            <div
-              key={slide.id}
-              className="flex-[0_0_100%] min-w-0 relative h-full"
-            >
-              <Image
-                src={slide.image}
-                alt={slide.imageAlt ?? slide.title}
-                fill
-                className="object-cover"
-                sizes="100vw"
-                priority={index === 0}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
-            </div>
-          ))}
-        </div>
-        <div className="absolute inset-x-0 bottom-0 pb-12 px-6">
-          <div className="text-center space-y-4">
-            <h1 className="text-2xl font-bold tracking-wide text-white">
-              {slides[heroIndex]?.title}
-            </h1>
-            <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
-              {slides[heroIndex]?.subtitle}
-            </p>
-            <button
-              type="button"
-              className="inline-flex items-center justify-center gap-2 border px-4 py-2 w-full max-w-sm mx-auto h-12 text-base font-medium tracking-wide border-white/60 bg-transparent text-white hover:bg-white/10 rounded-lg transition-colors"
-            >
-              Garantir Entrada
-            </button>
-            <div className="flex justify-center gap-2 pt-2 w-full max-w-2xl mx-auto px-4">
-              {slides.map((slide, i) => (
-                <button
-                  key={slide.id}
-                  type="button"
-                  aria-label={`Slide ${i + 1}`}
-                  onClick={() => goToSlide(i)}
-                  className="flex-1 h-1 rounded-full bg-white/30 overflow-hidden"
-                >
-                  <div
-                    className="h-full bg-white transition-all duration-75 ease-linear"
-                    style={{
-                      width:
-                        heroIndex === i
-                          ? `${progress}%`
-                          : heroIndex > i
-                            ? "100%"
-                            : "0%",
-                    }}
-                  />
-                </button>
-              ))}
+      {loading ? (
+        <div className="relative w-full h-[85vh] overflow-hidden bg-[#e5e0d5] animate-pulse">
+          <div className="absolute inset-x-0 bottom-0 pb-12 px-6">
+            <div className="text-center space-y-4">
+              <div className="h-8 w-64 bg-white/20 rounded mx-auto" />
+              <div className="h-4 w-80 bg-white/20 rounded mx-auto" />
+              <div className="h-12 w-80 bg-white/20 rounded-lg mx-auto" />
             </div>
           </div>
         </div>
-      </div>
+      ) : heroSlides.length === 0 ? (
+        <div className="relative w-full h-[85vh] overflow-hidden bg-gradient-to-b from-[#430904] to-[#2a0303]">
+          <div className="absolute inset-x-0 bottom-0 pb-12 px-6">
+            <div className="text-center space-y-4">
+              <h1 className="text-2xl font-bold tracking-wide text-white">
+                Eventos Monte Carlo
+              </h1>
+              <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
+                Acompanhe os próximos eventos
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="relative w-full h-[85vh] overflow-hidden"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div
+            ref={heroTrackRef}
+            className="flex h-full transition-transform duration-500 ease-out"
+            style={{ transform: `translate3d(${-heroIndex * 100}%, 0px, 0px)` }}
+          >
+            {heroSlides.map((slide, index) => (
+              <div
+                key={slide.id}
+                className="flex-[0_0_100%] min-w-0 relative h-full"
+              >
+                <Image
+                  src={slide.image}
+                  alt={slide.imageAlt ?? slide.title}
+                  fill
+                  className="object-cover"
+                  sizes="100vw"
+                  priority={index === 0}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
+              </div>
+            ))}
+          </div>
+          <div className="absolute inset-x-0 bottom-0 pb-12 px-6">
+            <div className="text-center space-y-4">
+              <h1 className="text-2xl font-bold tracking-wide text-white">
+                {heroSlides[heroIndex]?.title}
+              </h1>
+              <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
+                {heroSlides[heroIndex]?.subtitle}
+              </p>
+              <button
+                type="button"
+                className="inline-flex items-center justify-center gap-2 border px-4 py-2 w-full max-w-sm mx-auto h-12 text-base font-medium tracking-wide border-white/60 bg-transparent text-white hover:bg-white/10 rounded-lg transition-colors"
+              >
+                Garantir Entrada
+              </button>
+              <div className="flex justify-center gap-2 pt-2 w-full max-w-2xl mx-auto px-4">
+                {heroSlides.map((slide, i) => (
+                  <button
+                    key={slide.id}
+                    type="button"
+                    aria-label={`Slide ${i + 1}`}
+                    onClick={() => goToSlide(i)}
+                    className="flex-1 h-1 rounded-full bg-white/30 overflow-hidden"
+                  >
+                    <div
+                      className="h-full bg-white transition-all duration-75 ease-linear"
+                      style={{
+                        width:
+                          heroIndex === i
+                            ? `${progress}%`
+                            : heroIndex > i
+                              ? "100%"
+                              : "0%",
+                      }}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Próximos Eventos */}
       <div className="bg-[#f9f8f0] max-w-[480px] mx-auto lg:max-w-7xl lg:px-6">
@@ -374,8 +295,25 @@ export default function EventosPage() {
             onChange={setDataSelecionada}
           />
         </div>
-        <div className="px-4 space-y-4 pb-24 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0 lg:pb-16">
-          {eventosFiltrados.map((evento) => {
+        {loading ? (
+          <div className="px-4 space-y-4 pb-24 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0 lg:pb-16">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="animate-pulse rounded-2xl bg-white overflow-hidden shadow-sm border border-[#e5e0d5]"
+              >
+                <div className="h-48 bg-[#e5e0d5]" />
+                <div className="p-4 space-y-3">
+                  <div className="h-6 w-3/4 rounded bg-[#e5e0d5] mx-auto" />
+                  <div className="h-4 w-1/2 rounded bg-[#e5e0d5] mx-auto" />
+                  <div className="h-6 w-20 rounded-full bg-[#e5e0d5] mx-auto" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="px-4 space-y-4 pb-24 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0 lg:pb-16">
+            {eventosFiltrados.map((evento) => {
             const categoriaEvento =
               evento.event_categories?.name ??
               (evento.categoryId ? categoriasMap.get(evento.categoryId) : undefined) ??
@@ -432,12 +370,13 @@ export default function EventosPage() {
               </Link>
             );
           })}
-          {eventosFiltrados.length === 0 && (
-            <div className="col-span-full rounded-2xl bg-white p-8 text-center text-[#6b6660]">
-              Nenhum evento encontrado para os filtros selecionados.
-            </div>
-          )}
-        </div>
+            {eventosFiltrados.length === 0 && (
+              <div className="col-span-full rounded-2xl bg-white p-8 text-center text-[#6b6660] shadow-md border border-[#e5e0d5]">
+                Nenhum evento encontrado para os filtros selecionados.
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </main>
   );

@@ -1,80 +1,121 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import { MapPin, CalendarDays, Utensils } from "lucide-react";
+import { MapPin, Utensils, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   fetchRestaurantById,
-  fetchMenusByRestaurant,
-  formatMenuDate,
+  fetchWeeklyMenus,
+  type Restaurant,
   type DailyMenu,
 } from "@/lib/api/restaurants";
+import MenuCard from "@/components/MenuCard";
 
-type RestaurantDetailPageProps = {
-  params: { id: string };
-};
-
-function MenuCard({ menu }: { menu: DailyMenu }) {
-  const sections = [
-    { label: "Proteínas", value: menu.proteins },
-    { label: "Acompanhamentos", value: menu.garnishes },
-    { label: "Massas", value: menu.pastas },
-    { label: "Saladas", value: menu.salads },
-  ].filter((s) => s.value);
-
-  return (
-    <div className="rounded-2xl bg-white shadow-sm overflow-hidden">
-      {/* Cabeçalho do cardápio */}
-      <div
-        className="relative px-5 py-4 text-white"
-        style={{ backgroundColor: "#430904" }}
-      >
-        <div className="flex items-center gap-2 text-white/70 text-xs mb-1">
-          <CalendarDays className="h-3.5 w-3.5" />
-          <span className="capitalize">{formatMenuDate(menu.menuDate)}</span>
-        </div>
-        {(menu.title || menu.theme) && (
-          <h3 className="text-lg font-bold">{menu.title || menu.theme}</h3>
-        )}
-      </div>
-
-      {/* Itens do cardápio */}
-      <div className="p-5 space-y-4">
-        {sections.map((section) => (
-          <div key={section.label}>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-[#8b1a1a] mb-1">
-              {section.label}
-            </h4>
-            <p className="text-sm text-[#4f4a44] leading-relaxed">
-              {section.value}
-            </p>
-          </div>
-        ))}
-
-        {menu.description && sections.length === 0 && (
-          <p className="text-sm text-[#4f4a44] leading-relaxed">
-            {menu.description}
-          </p>
-        )}
-
-        {sections.length === 0 && !menu.description && (
-          <p className="text-sm text-[#8c8c8c] italic">
-            Cardápio ainda não detalhado.
-          </p>
-        )}
-      </div>
-    </div>
-  );
+function getMonday(date: Date): Date {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  d.setDate(diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
-export default async function RestaurantDetailPage({
-  params,
-}: RestaurantDetailPageProps) {
-  const [restaurant, menus] = await Promise.all([
-    fetchRestaurantById(params.id),
-    fetchMenusByRestaurant(params.id),
-  ]);
+function toDateString(date: Date): string {
+  return date.toISOString().split("T")[0];
+}
 
-  if (!restaurant) {
-    notFound();
+function formatWeekRange(monday: Date): string {
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const fmt = (d: Date) =>
+    d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+  return `${fmt(monday)} — ${fmt(sunday)}`;
+}
+
+export default function RestaurantDetailPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const [menus, setMenus] = useState<DailyMenu[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [weekStart, setWeekStart] = useState<Date>(() => getMonday(new Date()));
+  const [menusLoading, setMenusLoading] = useState(false);
+  const [notFoundState, setNotFoundState] = useState(false);
+
+  // Carregar restaurante uma vez
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      const r = await fetchRestaurantById(params.id);
+      if (!mounted) return;
+      if (!r) {
+        setNotFoundState(true);
+      } else {
+        setRestaurant(r);
+      }
+      setLoading(false);
+    };
+    load();
+    return () => { mounted = false; };
+  }, [params.id]);
+
+  // Carregar cardápios da semana selecionada
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      setMenusLoading(true);
+      const data = await fetchWeeklyMenus(toDateString(weekStart), params.id);
+      if (!mounted) return;
+      setMenus(data);
+      setMenusLoading(false);
+    };
+    load();
+    return () => { mounted = false; };
+  }, [weekStart, params.id]);
+
+  const prevWeek = () => {
+    setWeekStart((prev) => {
+      const d = new Date(prev);
+      d.setDate(d.getDate() - 7);
+      return d;
+    });
+  };
+
+  const nextWeek = () => {
+    setWeekStart((prev) => {
+      const d = new Date(prev);
+      d.setDate(d.getDate() + 7);
+      return d;
+    });
+  };
+
+  const goToCurrentWeek = () => setWeekStart(getMonday(new Date()));
+
+  const isCurrentWeek = useMemo(
+    () => toDateString(weekStart) === toDateString(getMonday(new Date())),
+    [weekStart],
+  );
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#f9f8f0]">
+        <div className="h-[50vh] min-h-[320px] bg-[#e5e0d5] animate-pulse" />
+        <div className="mx-auto max-w-4xl px-4 py-8 space-y-4">
+          <div className="h-6 w-1/3 rounded bg-[#e5e0d5] animate-pulse" />
+          <div className="h-40 rounded-2xl bg-[#e5e0d5] animate-pulse" />
+        </div>
+      </main>
+    );
+  }
+
+  if (notFoundState || !restaurant) {
+    return (
+      <main className="min-h-screen bg-[#f9f8f0] flex items-center justify-center">
+        <p className="text-[#6b6660]">Restaurante não encontrado.</p>
+      </main>
+    );
   }
 
   const imageUrl =
@@ -106,7 +147,7 @@ export default async function RestaurantDetailPage({
       {/* Info */}
       <section className="mx-auto max-w-4xl px-4 py-6">
         {restaurant.address && (
-          <div className="flex items-center gap-2 rounded-2xl bg-white p-4 shadow-sm text-sm text-[#5f5a54]">
+          <div className="flex items-center gap-2 rounded-2xl bg-white p-4 shadow-md border border-[#e5e0d5] text-sm text-[#5f5a54]">
             <MapPin className="h-4 w-4 text-[#8b1a1a] shrink-0" />
             <span>{restaurant.address}</span>
           </div>
@@ -120,9 +161,62 @@ export default async function RestaurantDetailPage({
           <h2 className="text-lg font-semibold text-[#1a1a1a]">Cardápios</h2>
         </div>
 
-        {menus.length === 0 ? (
-          <div className="rounded-2xl bg-white p-8 text-center text-[#6b6660]">
-            Nenhum cardápio disponível no momento.
+        {/* Navegação por semana */}
+        <div className="flex items-center justify-between rounded-xl bg-white shadow-md border border-[#e5e0d5] px-4 py-3 mb-5">
+          <button
+            type="button"
+            onClick={prevWeek}
+            className="flex items-center justify-center h-8 w-8 rounded-full hover:bg-[#f5f0e8] text-[#1a1a1a] transition-colors"
+            aria-label="Semana anterior"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          <div className="text-center">
+            <p className="text-sm font-semibold text-[#1a1a1a] capitalize">
+              {formatWeekRange(weekStart)}
+            </p>
+            {!isCurrentWeek && (
+              <button
+                type="button"
+                onClick={goToCurrentWeek}
+                className="text-xs text-[#8b1a1a] font-medium hover:underline mt-0.5"
+              >
+                Voltar para semana atual
+              </button>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={nextWeek}
+            className="flex items-center justify-center h-8 w-8 rounded-full hover:bg-[#f5f0e8] text-[#1a1a1a] transition-colors"
+            aria-label="Próxima semana"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Cardápios da semana */}
+        {menusLoading ? (
+          <div className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="animate-pulse rounded-2xl bg-white overflow-hidden shadow-md border border-[#e5e0d5]"
+              >
+                <div className="h-14 bg-[#430904]/20" />
+                <div className="p-5 space-y-3">
+                  <div className="h-4 w-2/3 rounded bg-[#e5e0d5]" />
+                  <div className="h-4 w-full rounded bg-[#e5e0d5]" />
+                  <div className="h-4 w-1/2 rounded bg-[#e5e0d5]" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : menus.length === 0 ? (
+          <div className="rounded-2xl bg-white p-8 text-center text-[#6b6660] shadow-md border border-[#e5e0d5]">
+            Nenhum cardápio disponível para esta semana.
           </div>
         ) : (
           <div className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">

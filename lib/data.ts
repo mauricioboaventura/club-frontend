@@ -87,7 +87,7 @@ export const restaurants = [
     cuisine: "Menu degustação exclusivo",
     image: "/images/experiencia-gastronomica.jpg",
     isOpen: false,
-    link: "/gastronomia/degustacao",
+    link: "/gastronomia/550e8400-e29b-41d4-a716-446655440000",
   },
 ];
 

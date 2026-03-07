@@ -62,6 +62,18 @@ export default function ExplorarPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
+  const [slides, setSlides] = useState<typeof SLIDES>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simular carregamento de slides da API
+    // TODO: Substituir por chamada real de API quando endpoint estiver disponível
+    const timer = setTimeout(() => {
+      setSlides(SLIDES);
+      setLoading(false);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -86,14 +98,36 @@ export default function ExplorarPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-black   pb-safe-nav">
-      {/* Carousel: full viewport, scrolls under transparent header */}
-      <div
-        ref={containerRef}
-        className="h-screen overflow-y-auto snap-y snap-mandatory scroll-hidden"
-        style={{ scrollbarWidth: "none" }}
-      >
-        {SLIDES.map((slide, index) => (
+    <main className="min-h-screen bg-black pb-safe-nav">
+      {loading ? (
+        // Loading skeleton
+        <div className="h-screen w-full flex items-end">
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/20 animate-pulse" />
+          <div
+            className="relative z-10 px-6 w-full"
+            style={{
+              paddingBottom: "calc(12rem + env(safe-area-inset-bottom, 0px))",
+            }}
+          >
+            <div className="h-3 w-24 rounded bg-white/20 mb-3" />
+            <div className="h-9 w-3/4 rounded bg-white/20 mb-2" />
+            <div className="h-6 w-2/3 rounded bg-white/20 mb-6" />
+            <div className="h-12 w-32 rounded-full bg-white/20" />
+          </div>
+        </div>
+      ) : slides.length === 0 ? (
+        // Empty state
+        <div className="h-screen w-full flex items-center justify-center">
+          <p className="text-white/70">Nenhum conteúdo disponível no momento.</p>
+        </div>
+      ) : (
+        // Carousel: full viewport, scrolls under transparent header
+        <div
+          ref={containerRef}
+          className="h-screen overflow-y-auto snap-y snap-mandatory scroll-hidden"
+          style={{ scrollbarWidth: "none" }}
+        >
+          {slides.map((slide, index) => (
           <section
             key={index}
             data-slide-index={index}
@@ -142,9 +176,10 @@ export default function ExplorarPage() {
           </section>
         ))}
       </div>
+      )}
 
       {/* Seta animada - borda inferior, só no primeiro slide */}
-      {activeIndex === 0 && (
+      {!loading && activeIndex === 0 && (
         <div
           className="fixed left-1/2 -translate-x-1/2 bottom-24 z-40 flex justify-center"
           aria-hidden
@@ -158,8 +193,9 @@ export default function ExplorarPage() {
       {modalOpen && <ExplorarModal onClose={() => setModalOpen(false)} />}
 
       {/* Right-side pagination: active = vertical gold pill, inactive = small circles */}
-      <div className="fixed right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-40">
-        {SLIDES.map((_, index) => (
+      {!loading && slides.length > 0 && (
+        <div className="fixed right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-40">
+          {slides.map((_, index) => (
           <button
             key={index}
             type="button"
@@ -176,8 +212,9 @@ export default function ExplorarPage() {
                 : "h-1.5 bg-white/40 hover:bg-white/60"
             }`}
           />
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </main>
   );
 }

@@ -97,6 +97,31 @@ export async function fetchMenusByRestaurant(
   }
 }
 
+export async function fetchWeeklyMenus(
+  startDate: string,
+  restaurantId?: string,
+): Promise<DailyMenu[]> {
+  try {
+    let url = `${API_BASE}/daily-menus/weekly?startDate=${startDate}`;
+    if (restaurantId) {
+      url += `&restaurantId=${encodeURIComponent(restaurantId)}`;
+    }
+    const res = await fetch(url, { next: { revalidate: 60 } });
+
+    if (!res.ok) {
+      throw new Error(`Weekly Menus API error: ${res.status}`);
+    }
+
+    const json: DailyMenu[] = await res.json();
+    return json.filter((m) => m.isActive === true);
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[fetchWeeklyMenus]", err);
+    }
+    return [];
+  }
+}
+
 export async function fetchUpcomingMenus(limit = 7): Promise<DailyMenu[]> {
   try {
     const res = await fetch(
