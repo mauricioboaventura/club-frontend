@@ -3,31 +3,29 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { heroSlides } from "@/lib/data";
 import { fetchBanners, type HeroSlide } from "@/lib/api/banners";
 
-const fallbackSlides: HeroSlide[] = heroSlides.map((s) => ({
-  id: s.id,
-  image: s.image,
-  title: s.title,
-  subtitle: s.subtitle,
-  cta: s.cta,
-  ctaLink: s.ctaLink,
-}));
+type HeroCarouselProps = {
+  initialSlides?: HeroSlide[];
+};
 
-export default function HeroCarousel() {
-  const [slides, setSlides] = useState<HeroSlide[]>(fallbackSlides);
+export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
+  const [slides, setSlides] = useState<HeroSlide[]>(initialSlides ?? []);
   const [current, setCurrent] = useState(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
   useEffect(() => {
+    if (initialSlides && initialSlides.length > 0) {
+      setSlides(initialSlides);
+      return;
+    }
     fetchBanners("HOME_HERO").then((data) => {
       if (data.length > 0) {
         setSlides(data);
       }
     });
-  }, []);
+  }, [initialSlides]);
 
   useEffect(() => {
     setCurrent((c) => Math.min(c, Math.max(0, slides.length - 1)));
@@ -61,6 +59,8 @@ export default function HeroCarousel() {
       else setCurrent((c) => (c - 1 + slides.length) % slides.length);
     }
   };
+
+  if (slides.length === 0) return null;
 
   const slide = slides[current] ?? slides[0];
 

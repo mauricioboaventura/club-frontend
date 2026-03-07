@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import type { FeatureCard } from "@/lib/api/pages";
 
-const experiences = [
+const fallbackExperiences = [
   {
-    id: 1,
+    id: "1",
     title: "Torneio em Destaque",
     subtitle: "Main Event | R$ 50.000 GTD",
     cta: "Ver detalhes",
@@ -14,7 +15,7 @@ const experiences = [
       "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=600&h=800&fit=crop",
   },
   {
-    id: 2,
+    id: "2",
     title: "Cash Game Premium",
     subtitle: "Mesa VIP disponível",
     cta: "Ver detalhes",
@@ -23,7 +24,7 @@ const experiences = [
       "https://images.unsplash.com/photo-1609902726285-00668009f004?w=600&h=800&fit=crop",
   },
   {
-    id: 3,
+    id: "3",
     title: "Show da Semana",
     subtitle: "Jazz Night - Sexta-feira",
     cta: "Ver programação",
@@ -32,7 +33,7 @@ const experiences = [
       "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&h=800&fit=crop",
   },
   {
-    id: 4,
+    id: "4",
     title: "Jantar Especial",
     subtitle: "Menu degustação exclusivo",
     cta: "Reservar",
@@ -42,7 +43,23 @@ const experiences = [
   },
 ];
 
-export default function ExperiencesSection() {
+type ExperiencesSectionProps = {
+  featureCards?: FeatureCard[];
+};
+
+export default function ExperiencesSection({ featureCards }: ExperiencesSectionProps) {
+  const items =
+    featureCards && featureCards.length > 0
+      ? featureCards.map((c) => ({
+          id: c.id,
+          title: c.title,
+          subtitle: c.subtitle,
+          cta: "Ver detalhes",
+          ctaLink: c.linkHref.startsWith("/") ? c.linkHref : `/${c.linkHref}`,
+          image: c.imageUrl,
+        }))
+      : fallbackExperiences;
+
   return (
     <section className="py-6 max-w-[480px] mx-auto lg:max-w-7xl lg:px-6 bg-[#fcfaf6]">
       <div className="flex items-center justify-between px-4 mb-4">
@@ -58,7 +75,7 @@ export default function ExperiencesSection() {
       </div>
 
       <div className="flex gap-3 overflow-x-auto scroll-hidden px-4 pb-2 lg:grid lg:grid-cols-4 lg:gap-4">
-        {experiences.map((exp) => (
+        {items.map((exp) => (
           <Link
             key={exp.id}
             href={exp.ctaLink}

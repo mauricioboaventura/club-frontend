@@ -40,7 +40,6 @@ monte-carlo/
 
 Todo o conteúdo está centralizado em `lib/data.ts`:
 
-- `heroSlides` — Slides do hero
 - `discoverCategories` — Categorias "Descubra"
 - `experienceTabs` + `experiences` — Tabs e cards de experiências
 - `pokerSections` — Seção Poker

@@ -13,45 +13,6 @@ export const siteConfig = {
   associateForm: "https://forms.office.com/r/zScWTERp2K",
 };
 
-export const heroSlides = [
-  {
-    id: 1,
-    title: "Ganhe com o que\nvocê ama",
-    subtitle:
-      "Obtenha as melhores taxas, desbloqueie benefícios exclusivos e ganhe pontos resgatáveis",
-    cta: "Reserve Mesa",
-    ctaLink: "#",
-    bgGradient:
-      "linear-gradient(170deg, #2a1510 0%, #1a1210 30%, #181412 60%, #121212 100%)",
-    image:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop",
-  },
-  {
-    id: 2,
-    title: "Poker em\nGrande Estilo",
-    subtitle:
-      "24 horas por dia, 7 dias por semana. Dealers treinados e ambiente sofisticado.",
-    cta: "Reserve Mesa",
-    ctaLink: "#",
-    bgGradient:
-      "linear-gradient(170deg, #15101a 0%, #0d1520 30%, #1a1510 60%, #121212 100%)",
-    image:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop",
-  },
-  {
-    id: 3,
-    title: "Alta Gastronomia\n& Entretenimento",
-    subtitle:
-      "Sabores de diversas partes do mundo em um ambiente único e sofisticado.",
-    cta: "Reserve Mesa",
-    ctaLink: "#",
-    bgGradient:
-      "linear-gradient(170deg, #1a1015 0%, #150d10 30%, #10150d 60%, #121212 100%)",
-    image:
-      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop",
-  },
-];
-
 export const discoverCategories = [
   { id: 1, label: "Shows", icon: "🎵", href: "/shows" },
   { id: 2, label: "Gastronomia", icon: "🍽️", href: "/gastronomia" },
