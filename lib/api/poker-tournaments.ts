@@ -14,6 +14,24 @@ export type PokerTournament = {
   status: string;
   tournamentType: string;
   coverImageUrl: string | null;
+  // Novos campos da grade
+  lateRegister: string | null;
+  blindDuration: string | null;
+  buyPromoChips: number | null;
+  buyPromoCents: number | null;
+  startingStack: number | null;
+  rebuyChips: number | null;
+  rebuyCents: number | null;
+  rebuyPromoChips: number | null;
+  rebuyPromoCents: number | null;
+  addonChips: number | null;
+  addonCents: number | null;
+  staffTaxChips: number | null;
+  staffTaxCents: number | null;
+  bonusRankingChips: number | null;
+  timeChipChips: number | null;
+  hasRabbit: boolean | null;
+  chipLeaderBonusCents: number | null;
 };
 
 type TournamentsResponse = {

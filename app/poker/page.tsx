@@ -288,12 +288,147 @@ function PokerContent() {
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-2">
+              <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
                 <span className="text-[#6b6660]">Garantido</span>
                 <span className="font-medium text-[#5C0F08]">
                   {formatCentsToReal(selectedTournament.guaranteedPrizeCents)}
                 </span>
               </div>
+
+              {selectedTournament.startingStack && (
+                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
+                  <span className="text-[#6b6660]">Stack Inicial</span>
+                  <span className="font-medium text-[#1a1a1a]">
+                    {(selectedTournament.startingStack / 1000).toFixed(0)}K
+                  </span>
+                </div>
+              )}
+
+              {selectedTournament.blindDuration && (
+                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
+                  <span className="text-[#6b6660]">Duração dos Blinds</span>
+                  <span className="font-medium text-[#1a1a1a]">
+                    {selectedTournament.blindDuration}
+                  </span>
+                </div>
+              )}
+
+              {selectedTournament.lateRegister && (
+                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
+                  <span className="text-[#6b6660]">Late Register</span>
+                  <span className="font-medium text-[#1a1a1a]">
+                    {selectedTournament.lateRegister}
+                  </span>
+                </div>
+              )}
+
+              {selectedTournament.buyPromoCents && (
+                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
+                  <span className="text-[#6b6660]">Buy Promo (1º Nível)</span>
+                  <span className="font-medium text-[#1a1a1a]">
+                    {formatCentsToReal(selectedTournament.buyPromoCents)}
+                    {selectedTournament.buyPromoChips && (
+                      <span className="text-xs text-[#6b6660] ml-1">
+                        ({(selectedTournament.buyPromoChips / 1000).toFixed(0)}K fichas)
+                      </span>
+                    )}
+                  </span>
+                </div>
+              )}
+
+              {selectedTournament.rebuyCents && (
+                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
+                  <span className="text-[#6b6660]">Rebuy</span>
+                  <span className="font-medium text-[#1a1a1a]">
+                    {formatCentsToReal(selectedTournament.rebuyCents)}
+                    {selectedTournament.rebuyChips && (
+                      <span className="text-xs text-[#6b6660] ml-1">
+                        ({(selectedTournament.rebuyChips / 1000).toFixed(0)}K fichas)
+                      </span>
+                    )}
+                  </span>
+                </div>
+              )}
+
+              {selectedTournament.rebuyPromoCents && (
+                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
+                  <span className="text-[#6b6660]">Rebuy Promo</span>
+                  <span className="font-medium text-[#1a1a1a]">
+                    {formatCentsToReal(selectedTournament.rebuyPromoCents)}
+                    {selectedTournament.rebuyPromoChips && (
+                      <span className="text-xs text-[#6b6660] ml-1">
+                        ({(selectedTournament.rebuyPromoChips / 1000).toFixed(0)}K fichas)
+                      </span>
+                    )}
+                  </span>
+                </div>
+              )}
+
+              {selectedTournament.addonCents && (
+                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
+                  <span className="text-[#6b6660]">Addon</span>
+                  <span className="font-medium text-[#1a1a1a]">
+                    {formatCentsToReal(selectedTournament.addonCents)}
+                    {selectedTournament.addonChips && (
+                      <span className="text-xs text-[#6b6660] ml-1">
+                        ({(selectedTournament.addonChips / 1000).toFixed(0)}K fichas)
+                      </span>
+                    )}
+                  </span>
+                </div>
+              )}
+
+              {selectedTournament.staffTaxCents && (
+                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
+                  <span className="text-[#6b6660]">Taxa Staff</span>
+                  <span className="font-medium text-[#1a1a1a]">
+                    {formatCentsToReal(selectedTournament.staffTaxCents)}
+                    {selectedTournament.staffTaxChips && (
+                      <span className="text-xs text-[#6b6660] ml-1">
+                        ({(selectedTournament.staffTaxChips / 1000).toFixed(0)}K fichas)
+                      </span>
+                    )}
+                  </span>
+                </div>
+              )}
+
+              {(selectedTournament.bonusRankingChips || selectedTournament.timeChipChips || selectedTournament.hasRabbit || selectedTournament.chipLeaderBonusCents) && (
+                <div className="pt-2 border-t border-[#e5e0d5]">
+                  <p className="text-xs font-semibold text-[#6b6660] mb-2 uppercase">Bônus e Extras</p>
+                  <div className="space-y-2">
+                    {selectedTournament.bonusRankingChips && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[#6b6660]">Bônus Ranking</span>
+                        <span className="text-sm font-medium text-[#1a1a1a]">
+                          {(selectedTournament.bonusRankingChips / 1000).toFixed(0)}K fichas
+                        </span>
+                      </div>
+                    )}
+                    {selectedTournament.timeChipChips && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[#6b6660]">Time Chip</span>
+                        <span className="text-sm font-medium text-[#1a1a1a]">
+                          {(selectedTournament.timeChipChips / 1000).toFixed(0)}K fichas
+                        </span>
+                      </div>
+                    )}
+                    {selectedTournament.hasRabbit && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[#6b6660]">Rabbit</span>
+                        <span className="text-sm font-medium text-green-700">Sim</span>
+                      </div>
+                    )}
+                    {selectedTournament.chipLeaderBonusCents && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-[#6b6660]">Chip Leader Bônus</span>
+                        <span className="text-sm font-medium text-[#5C0F08]">
+                          {formatCentsToReal(selectedTournament.chipLeaderBonusCents)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             <button
