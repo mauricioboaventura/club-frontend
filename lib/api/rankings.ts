@@ -1,3 +1,5 @@
+import { withCache, TTL } from "./cache";
+
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ?? "https://api.rdc-dev.com.br/api";
 
@@ -26,10 +28,14 @@ export type RankingEntry = {
   updatedAt: string;
 };
 
-export async function fetchActiveRankings(): Promise<Ranking[]> {
+export function fetchActiveRankings(): Promise<Ranking[]> {
+  return withCache("rankings:list", _fetchActiveRankings, TTL.SHORT);
+}
+
+async function _fetchActiveRankings(): Promise<Ranking[]> {
   try {
     const res = await fetch(`${API_BASE}/rankings?orderBy=name&orderDirection=asc`, {
-      cache: "no-store",
+      next: { revalidate: 120 },
     });
 
     if (!res.ok) {
@@ -47,10 +53,14 @@ export async function fetchActiveRankings(): Promise<Ranking[]> {
   }
 }
 
-export async function fetchRankingById(id: string): Promise<Ranking | null> {
+export function fetchRankingById(id: string): Promise<Ranking | null> {
+  return withCache(`rankings:${id}`, () => _fetchRankingById(id), TTL.SHORT);
+}
+
+async function _fetchRankingById(id: string): Promise<Ranking | null> {
   try {
     const res = await fetch(`${API_BASE}/rankings/${encodeURIComponent(id)}`, {
-      cache: "no-store",
+      next: { revalidate: 120 },
     });
 
     if (res.status === 404) return null;
@@ -68,13 +78,19 @@ export async function fetchRankingById(id: string): Promise<Ranking | null> {
   }
 }
 
-export async function fetchRankingEntries(
-  rankingId: string,
-): Promise<RankingEntry[]> {
+export function fetchRankingEntries(rankingId: string): Promise<RankingEntry[]> {
+  return withCache(
+    `ranking-entries:${rankingId}`,
+    () => _fetchRankingEntries(rankingId),
+    TTL.SHORT,
+  );
+}
+
+async function _fetchRankingEntries(rankingId: string): Promise<RankingEntry[]> {
   try {
     const res = await fetch(
       `${API_BASE}/ranking-entries/ranking/${encodeURIComponent(rankingId)}`,
-      { cache: "no-store" },
+      { next: { revalidate: 120 } },
     );
 
     if (!res.ok) {

@@ -1,3 +1,5 @@
+import { withCache, TTL } from "./cache";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://api.rdc-dev.com.br/api";
 const BANNERS_API_URL = `${API_BASE}/banners`;
 
@@ -34,10 +36,18 @@ export type HeroSlide = {
 };
 
 export async function fetchBanners(section: string): Promise<HeroSlide[]> {
+  return withCache(
+    `banners:${section}`,
+    () => _fetchBanners(section),
+    TTL.LONG,
+  );
+}
+
+async function _fetchBanners(section: string): Promise<HeroSlide[]> {
   try {
-    const res = await fetch(
-      `${BANNERS_API_URL}?page=1&limit=10`
-    );
+    const res = await fetch(`${BANNERS_API_URL}?page=1&limit=10`, {
+      next: { revalidate: 600 },
+    });
 
     if (!res.ok) {
       throw new Error(`Banners API error: ${res.status}`);

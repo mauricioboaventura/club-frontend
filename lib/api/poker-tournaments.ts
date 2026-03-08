@@ -1,3 +1,5 @@
+import { withCache, TTL } from "./cache";
+
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ?? "https://api.rdc-dev.com.br/api";
 const TOURNAMENTS_API_URL = `${API_BASE}/poker-tournaments`;
@@ -39,10 +41,15 @@ type TournamentsResponse = {
   count: number;
 };
 
-export async function fetchPokerTournaments(): Promise<PokerTournament[]> {
+export function fetchPokerTournaments(): Promise<PokerTournament[]> {
+  return withCache("poker-tournaments", _fetchPokerTournaments, TTL.DEFAULT);
+}
+
+async function _fetchPokerTournaments(): Promise<PokerTournament[]> {
   try {
     const res = await fetch(
-      `${TOURNAMENTS_API_URL}?page=1&limit=50&orderBy=startDate&orderDirection=asc`
+      `${TOURNAMENTS_API_URL}?page=1&limit=50&orderBy=startDate&orderDirection=asc`,
+      { next: { revalidate: 300 } },
     );
 
     if (!res.ok) {
