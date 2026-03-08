@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Search, User } from "lucide-react";
+import { Search, User, ChevronDown } from "lucide-react";
 import Sidebar from "./Sidebar";
+
+export type RankingNav = {
+  id: string;
+  name: string;
+};
 
 const NAV_LINKS = [
   { label: "Eventos", href: "/eventos" },
@@ -13,13 +18,16 @@ const NAV_LINKS = [
   { label: "Vida Noturna", href: "/explorar" },
 ];
 
-export default function Header() {
+export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [rankingsOpen, setRankingsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLLIElement>(null);
 
   const isExplorar = pathname === "/explorar";
   const isEventos = pathname === "/eventos";
   const isTransparent = isExplorar || isEventos;
+  const isRankingActive = pathname.startsWith("/rankings");
 
   useEffect(() => {
     document.body.style.overflow = sidebarOpen ? "hidden" : "";
@@ -27,6 +35,16 @@ export default function Header() {
       document.body.style.overflow = "";
     };
   }, [sidebarOpen]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setRankingsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const headerBg = isTransparent ? "gradient-header" : "bg-[#430904]";
 
@@ -91,6 +109,46 @@ export default function Header() {
                       Poker
                     </Link>
                   </li>
+                  {rankings.length > 0 && (
+                    <li ref={dropdownRef} className="relative">
+                      <button
+                        type="button"
+                        className={`inline-flex h-10 items-center justify-center gap-1 rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white ${
+                          isTransparent ? "text-white/80" : "text-white/90"
+                        } ${isRankingActive ? "bg-white/10 text-white" : ""}`}
+                        onClick={() => setRankingsOpen((prev) => !prev)}
+                        onMouseEnter={() => setRankingsOpen(true)}
+                      >
+                        Rankings
+                        <ChevronDown
+                          className={`h-3.5 w-3.5 transition-transform ${rankingsOpen ? "rotate-180" : ""}`}
+                          strokeWidth={2}
+                        />
+                      </button>
+                      {rankingsOpen && (
+                        <ul
+                          className="absolute top-full left-0 mt-1 min-w-[200px] rounded-lg bg-[#2A0303] border border-white/10 shadow-xl py-1 z-50"
+                          onMouseLeave={() => setRankingsOpen(false)}
+                        >
+                          {rankings.map((r) => (
+                            <li key={r.id}>
+                              <Link
+                                href={`/rankings/${r.id}`}
+                                className={`block px-4 py-2.5 text-sm transition-colors hover:bg-white/10 ${
+                                  pathname === `/rankings/${r.id}`
+                                    ? "text-white bg-white/10"
+                                    : "text-white/80"
+                                }`}
+                                onClick={() => setRankingsOpen(false)}
+                              >
+                                {r.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  )}
                   {NAV_LINKS.map((link) => {
                     const isActive =
                       pathname === link.href || pathname.startsWith(`${link.href}/`);
@@ -176,7 +234,7 @@ export default function Header() {
         </div>
       </header>
 
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} rankings={rankings} />
     </>
   );
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Calendar, MapPin } from "lucide-react";
 import type { FeaturedEvent } from "@/lib/api/pages";
+import { useEffect } from "react";
 
 const fallbackCards = [
   {
@@ -52,6 +53,11 @@ type ShowsSectionProps = {
 };
 
 export default function ShowsSection({ featuredEvents }: ShowsSectionProps) {
+  useEffect(() => {
+    if (featuredEvents) {
+      console.log("Featured events:", featuredEvents);
+    }
+  }, [featuredEvents]);
   const items =
     featuredEvents && featuredEvents.length > 0
       ? featuredEvents.map((e) => ({
@@ -63,7 +69,7 @@ export default function ShowsSection({ featuredEvents }: ShowsSectionProps) {
             e.coverImageUrl ??
             e.event_images?.[0]?.imageUrl ??
             "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
-          link: `/eventos/${e.slug}`,
+          link: `/eventos/${e.id}`,
         }))
       : fallbackCards;
 

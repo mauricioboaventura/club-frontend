@@ -1,4 +1,5 @@
 import type { HeroSlide } from "./banners";
+import type { Restaurant } from "./restaurants";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "https://api.rdc-dev.com.br/api";
 
@@ -126,6 +127,7 @@ export type HomePageData = {
   featuredEvents: FeaturedEvent[];
   ctaSections: CtaSection[];
   accordionItems: AccordionItem[];
+  restaurants: Restaurant[];
 };
 
 export type EventosPageData = {
@@ -171,6 +173,10 @@ export async function fetchHomePage(): Promise<HomePageData> {
     // featuredEvents vem como array direto (não paginado)
     const featuredEvents: FeaturedEvent[] = json.featuredEvents ?? [];
 
+    const restaurants: Restaurant[] = (json.restaurants ?? []).filter(
+      (r: Restaurant) => r.isActive === true,
+    );
+
     const heroBanners = (heroRaw.data ?? [])
       .filter((b) => b.isActive === true)
       .sort((a, b) => a.sortOrder - b.sortOrder)
@@ -192,6 +198,7 @@ export async function fetchHomePage(): Promise<HomePageData> {
       .filter((a) => a.isActive === true)
       .sort((a, b) => a.sortOrder - b.sortOrder);
 
+      
     return {
       heroBanners,
       featureCards,
@@ -199,6 +206,7 @@ export async function fetchHomePage(): Promise<HomePageData> {
       featuredEvents,
       ctaSections,
       accordionItems,
+      restaurants,
     };
   } catch (err) {
     if (process.env.NODE_ENV === "development") {
@@ -211,6 +219,7 @@ export async function fetchHomePage(): Promise<HomePageData> {
       featuredEvents: [],
       ctaSections: [],
       accordionItems: [],
+      restaurants: [],
     };
   }
 }

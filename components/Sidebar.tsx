@@ -11,16 +11,24 @@ import {
   Phone,
   Settings,
   ChevronDown,
+  Trophy,
 } from "lucide-react";
+
+type RankingNav = {
+  id: string;
+  name: string;
+};
 
 type SidebarProps = {
   isOpen: boolean;
   onClose: () => void;
+  rankings?: RankingNav[];
 };
 
-export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose, rankings = [] }: SidebarProps) {
   const [appsOpen, setAppsOpen] = useState(false);
   const [politicasOpen, setPoliticasOpen] = useState(false);
+  const [rankingsOpen, setRankingsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -97,7 +105,43 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
           <div className="border-t border-gray-200 my-4" />
 
-          {/* Group 3 - Information & Legal */}
+          {/* Group 3 - Rankings */}
+          {rankings.length > 0 && (
+            <>
+              <nav className="flex flex-col">
+                <button
+                  className={`${linkBase} w-full justify-between`}
+                  onClick={() => setRankingsOpen(!rankingsOpen)}
+                >
+                  <span className="flex items-center gap-3">
+                    <Trophy size={20} className="text-[#1a1a1a] flex-shrink-0" />
+                    Rankings
+                  </span>
+                  <ChevronDown
+                    size={18}
+                    className={`text-[#666] transition-transform ${rankingsOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+                {rankingsOpen && (
+                  <div className="pl-8 py-1 flex flex-col gap-0.5">
+                    {rankings.map((r) => (
+                      <Link
+                        key={r.id}
+                        href={`/rankings/${r.id}`}
+                        className="py-2.5 text-[16px] text-[#555] hover:text-[#1a1a1a] transition-colors"
+                        onClick={onClose}
+                      >
+                        {r.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </nav>
+              <div className="border-t border-gray-200 my-4" />
+            </>
+          )}
+
+          {/* Group 4 - Information & Legal */}
           <nav className="flex flex-col">
             <Link href="/sobre" className={linkBase} onClick={onClose}>
               Sobre o Monte Carlo

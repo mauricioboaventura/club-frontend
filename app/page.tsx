@@ -15,6 +15,7 @@ export default async function Home() {
     featuredEvents,
     ctaSections,
     accordionItems,
+    restaurants,
   } = await fetchHomePage();
 
   return (
@@ -24,7 +25,7 @@ export default async function Home() {
       <ExperiencesSection featureCards={featureCards} />
       {/* {textBlocks.length > 0 && <TextBlocksSection textBlocks={textBlocks} />} */}
       <PokerSection />
-      <GastronomySection />
+      <GastronomySection restaurants={restaurants} />
       <ShowsSection featuredEvents={featuredEvents} />
     </main>
   );
