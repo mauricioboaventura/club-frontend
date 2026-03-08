@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { List, Layers, X } from "lucide-react";
 import {
@@ -28,8 +29,12 @@ const CASH_TABLES = {
 
 const BG_BEIGE = "#f9f8f0";
 
-export default function PokerPage() {
-  const [viewMode, setViewMode] = useState<"torneios" | "cashgame">("torneios");
+function PokerContent() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const [viewMode, setViewMode] = useState<"torneios" | "cashgame">(
+    tabParam === "cashgame" ? "cashgame" : "torneios"
+  );
   const [tournaments, setTournaments] = useState<PokerTournament[]>([]);
   const [selectedTournament, setSelectedTournament] = useState<PokerTournament | null>(null);
   const [loading, setLoading] = useState(true);
@@ -302,5 +307,13 @@ export default function PokerPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function PokerPage() {
+  return (
+    <Suspense>
+      <PokerContent />
+    </Suspense>
   );
 }

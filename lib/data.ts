@@ -60,14 +60,14 @@ export const pokerSections = [
     id: 1,
     title: "Cash Games",
     description: "Mesas abertas diariamente, 24h",
-    link: "/poker/cash-games",
+    link: "/poker?tab=cashgame",
     linkLabel: "Ver mesas →",
   },
   {
     id: 2,
     title: "Torneios",
     description: "Os principais torneios do clube",
-    link: "/poker/torneios",
+    link: "/poker?tab=torneios",
     linkLabel: "Ver agenda →",
   },
 ];
