@@ -271,17 +271,6 @@ export default function EventosPage() {
           Próximos Eventos
         </h2>
         <div className="grid grid-cols-1 gap-3 px-4 pb-4 md:grid-cols-3">
-          <button
-            type="button"
-            onClick={() => {
-              setCategoriaSelecionada("Todas");
-              setDataSelecionada("Todas as datas");
-            }}
-            className="flex items-center gap-2 h-9 px-4 rounded-full border border-[#8b1a1a]/30 bg-white text-[#1a1a1a] text-sm font-medium hover:bg-[#f5f0e8] transition-colors shrink-0"
-          >
-            <SlidersHorizontal className="h-4 w-4" strokeWidth={2} />
-            Limpar filtros
-          </button>
           <SelectFilter
             label="Categoria"
             options={categoriasDisponiveis}
@@ -294,7 +283,22 @@ export default function EventosPage() {
             value={dataSelecionada}
             onChange={setDataSelecionada}
           />
+             <div className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-[#6b6660]">Filtros:</span>
+            <button
+              type="button"
+              onClick={() => {
+                setCategoriaSelecionada("Todas");
+                setDataSelecionada("Todas as datas");
+              }}
+              className="flex items-center gap-2 h-9 px-3 rounded-md border border-[#e5e0d5] bg-white text-[#1a1a1a] text-xs font-medium hover:bg-[#f5f0e8] transition-colors shrink-0"
+            >
+              <SlidersHorizontal className="h-4 w-4" strokeWidth={2} />
+              Limpar filtros
+            </button>
+          </div>
         </div>
+        
         {loading ? (
           <div className="px-4 space-y-4 pb-24 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0 lg:pb-16">
             {[1, 2, 3, 4, 5, 6].map((i) => (

@@ -109,6 +109,23 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
                       Poker
                     </Link>
                   </li>
+               
+                  {NAV_LINKS.map((link) => {
+                    const isActive =
+                      pathname === link.href || pathname.startsWith(`${link.href}/`);
+                    return (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          className={`inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white ${
+                            isTransparent ? "text-white/80" : "text-white/90"
+                          } ${isActive ? "bg-white/10 text-white" : ""}`}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
                   {rankings.length > 0 && (
                     <li ref={dropdownRef} className="relative">
                       <button
@@ -149,33 +166,17 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
                       )}
                     </li>
                   )}
-                  {NAV_LINKS.map((link) => {
-                    const isActive =
-                      pathname === link.href || pathname.startsWith(`${link.href}/`);
-                    return (
-                      <li key={link.href}>
-                        <Link
-                          href={link.href}
-                          className={`inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-white/10 hover:text-white ${
-                            isTransparent ? "text-white/80" : "text-white/90"
-                          } ${isActive ? "bg-white/10 text-white" : ""}`}
-                        >
-                          {link.label}
-                        </Link>
-                      </li>
-                    );
-                  })}
                 </ul>
               </nav>
 
               <div className="flex items-center gap-3 flex-shrink-0">
-                <button
+                {/* <button
                   type="button"
                   className="inline-flex h-9 w-9 items-center justify-center rounded-md text-white hover:bg-white/10 hover:text-white transition-colors"
                   aria-label="Buscar"
                 >
                   <Search className="h-4 w-4" strokeWidth={1.5} />
-                </button>
+                </button> */}
                 <Link
                   href="/auth"
                   className="inline-flex h-10 items-center justify-center rounded-md border border-white/60 bg-transparent px-5 py-2 text-sm font-medium text-white hover:bg-white hover:text-[#2A0303] transition-colors"
