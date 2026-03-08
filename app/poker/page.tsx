@@ -393,7 +393,7 @@ function PokerContent() {
               )}
 
               {(selectedTournament.bonusRankingChips || selectedTournament.timeChipChips || selectedTournament.hasRabbit || selectedTournament.chipLeaderBonusCents) && (
-                <div className="pt-2 border-t border-[#e5e0d5]">
+                <div className="pt-2">
                   <p className="text-xs font-semibold text-[#6b6660] mb-2 uppercase">Bônus e Extras</p>
                   <div className="space-y-2">
                     {selectedTournament.bonusRankingChips && (
