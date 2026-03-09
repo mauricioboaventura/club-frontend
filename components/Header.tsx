@@ -15,7 +15,7 @@ export type RankingNav = {
 const NAV_LINKS = [
   { label: "Eventos", href: "/eventos" },
   { label: "Gastronomia", href: "/gastronomia" },
-  { label: "Vida Noturna", href: "/explorar" },
+  // { label: "Vida Noturna", href: "/explorar" },
 ];
 
 export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
