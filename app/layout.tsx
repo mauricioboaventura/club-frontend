@@ -46,6 +46,25 @@ export default async function RootLayout({
           src="https://d335luupugsy2.cloudfront.net/js/loader-scripts/e46f5ce2-3634-45e4-ade3-4151ca43fc3a-loader.js"
           strategy="afterInteractive"
         />
+        <Script id="rdstation-fix" strategy="lazyOnload">{`
+          (function() {
+            if (window.innerWidth >= 1024) return;
+            function applyFix() {
+              var wrapper = document.querySelector('.floating-button[class*="rdstation-popup-position"]');
+              if (!wrapper) return;
+              wrapper.style.setProperty('bottom', '64px', 'important');
+              var btn = wrapper.querySelector('.bricks--floating--button');
+              if (btn) {
+                btn.style.setProperty('bottom', '0px', 'important');
+              }
+            }
+            var count = 0;
+            var interval = setInterval(function() {
+              applyFix();
+              if (++count >= 50) clearInterval(interval);
+            }, 300);
+          })();
+        `}</Script>
       </body>
     </html>
   );

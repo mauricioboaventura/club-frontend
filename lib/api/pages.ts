@@ -8,6 +8,7 @@ export type HeroBanner = {
   id: string;
   section: string;
   imageUrl: string;
+  mobileImageUrl?: string | null;
   imageAlt: string | null;
   highlight: string | null;
   title: string;
@@ -51,6 +52,7 @@ export type FeaturedEvent = {
   slug: string;
   description: string | null;
   coverImageUrl: string | null;
+  mobileImageUrl?: string | null;
   startDate: string | null;
   endDate: string | null;
   location: string | null;
@@ -99,6 +101,7 @@ export type EventItem = {
   description: string | null;
   shortDescription: string | null;
   coverImageUrl: string | null;
+  mobileImageUrl?: string | null;
   startDate: string | null;
   endDate: string | null;
   location: string | null;
@@ -144,6 +147,7 @@ function mapHeroBannerToSlide(b: HeroBanner): HeroSlide {
   return {
     id: b.id,
     image: b.imageUrl,
+    mobileImage: b.mobileImageUrl ?? undefined,
     imageAlt: b.imageAlt ?? undefined,
     title: b.title,
     subtitle: b.subtitle ?? "",

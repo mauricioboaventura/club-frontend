@@ -68,6 +68,7 @@ export default function EventosPage() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todas");
   const [dataSelecionada, setDataSelecionada] = useState("Todas as datas");
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const heroTrackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -108,6 +109,14 @@ export default function EventosPage() {
   const goToSlide = (index: number) => {
     setHeroIndex(Math.max(0, Math.min(index, heroSlides.length - 1)));
   };
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -212,7 +221,7 @@ export default function EventosPage() {
                 className="flex-[0_0_100%] min-w-0 relative h-full"
               >
                 <Image
-                  src={slide.image}
+                  src={isMobile && slide.mobileImage ? slide.mobileImage : slide.image}
                   alt={slide.imageAlt ?? slide.title}
                   fill
                   className="object-cover"

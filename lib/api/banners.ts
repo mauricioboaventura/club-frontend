@@ -7,6 +7,7 @@ export type Banner = {
   id: string;
   section: string;
   imageUrl: string;
+  mobileImageUrl?: string | null;
   imageAlt: string | null;
   highlight: string | null;
   title: string;
@@ -27,6 +28,7 @@ type BannersResponse = {
 export type HeroSlide = {
   id: string | number;
   image: string;
+  mobileImage?: string;
   imageAlt?: string;
   title: string;
   subtitle: string;
@@ -65,6 +67,7 @@ async function _fetchBanners(section: string): Promise<HeroSlide[]> {
     return filtered.map((b) => ({
       id: b.id,
       image: b.imageUrl,
+      mobileImage: b.mobileImageUrl ?? undefined,
       imageAlt: b.imageAlt ?? undefined,
       title: b.title,
       subtitle: b.subtitle ?? "",

@@ -76,7 +76,7 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
                   className="h-8 w-auto"
                 />
                 <Image
-                  src="/images/logo-montecarlo-text.png"
+                  src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/gallery-photos/logo-nome-MC.svg"
                   alt="Monte Carlo"
                   width={120}
                   height={36}

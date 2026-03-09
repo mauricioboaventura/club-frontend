@@ -12,8 +12,17 @@ type HeroCarouselProps = {
 export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   const [slides, setSlides] = useState<HeroSlide[]>(initialSlides ?? []);
   const [current, setCurrent] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     if (initialSlides && initialSlides.length > 0) {
@@ -75,7 +84,7 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
               className="relative flex-[0_0_100%] min-w-0 aspect-[4/5] lg:aspect-[21/9]"
             >
               <Image
-                src={s.image}
+                src={isMobile && s.mobileImage ? s.mobileImage : s.image}
                 alt={s.imageAlt ?? s.title.replace(/\n/g, " ")}
                 fill
                 className="object-cover"

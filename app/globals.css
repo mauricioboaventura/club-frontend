@@ -154,11 +154,12 @@ body {
   );
 }
 
-/* RD Station floating button - position above bottom nav */
-#bricks-component--eUdzB8Wd1NFo4XtfrXIug-wrapper.rdstation-popup-position-center.floating-button.floating-button--close {
-  top: auto !important;
-  right: 0px !important;
-  bottom: 60px !important;
-  left: auto !important;
-  transform: translate(0, 0) !important;
+/* RD Station floating button - position above bottom nav on mobile */
+@media (max-width: 1023px) {
+  .floating-button[class*="rdstation-popup-position"] {
+    bottom: 64px !important;
+  }
+  .floating-button[class*="rdstation-popup-position"] .bricks--floating--button {
+    bottom: 0px !important;
+  }
 }

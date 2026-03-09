@@ -37,10 +37,27 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
     event.event_images?.[0]?.imageUrl ??
     "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&auto=format&fit=crop";
 
+  const mobileImageUrl = event.mobileImageUrl ?? null;
+
   return (
     <main className="min-h-screen bg-[#f9f8f0]">
       <section className="relative h-[50vh] min-h-[320px] w-full">
-        <Image src={imageUrl} alt={event.title} fill className="object-cover" priority />
+        {mobileImageUrl && (
+          <Image
+            src={mobileImageUrl}
+            alt={event.title}
+            fill
+            className="object-cover lg:hidden"
+            priority
+          />
+        )}
+        <Image
+          src={imageUrl}
+          alt={event.title}
+          fill
+          className={`object-cover ${mobileImageUrl ? "hidden lg:block" : ""}`}
+          priority
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
           <h1 className="text-3xl font-bold">{event.title}</h1>
