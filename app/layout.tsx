@@ -52,7 +52,7 @@ export default async function RootLayout({
             function applyFix() {
               var wrapper = document.querySelector('.floating-button[class*="rdstation-popup-position"]');
               if (!wrapper) return;
-              wrapper.style.setProperty('bottom', '64px', 'important');
+              wrapper.style.setProperty('bottom', '80px', 'important');
               var btn = wrapper.querySelector('.bricks--floating--button');
               if (btn) {
                 btn.style.setProperty('bottom', '0px', 'important');

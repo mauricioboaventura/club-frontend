@@ -4,9 +4,17 @@ import { pokerSections } from "@/lib/data";
 export default function PokerSection() {
   return (
     <section className="px-4 py-6 max-w-[480px] mx-auto lg:max-w-7xl lg:px-6 bg-[#fcfaf6]">
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c] mb-4">
-        Poker
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c]">
+          Poker
+        </h2>
+        <Link
+          href="/poker"
+          className="text-sm text-[#8c8c8c] underline underline-offset-2 hover:text-[#525252] transition-colors"
+        >
+          Ver tudo
+        </Link>
+      </div>
       <div className="grid grid-cols-2 gap-3">
         {pokerSections.map((item) => (
           <Link

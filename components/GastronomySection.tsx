@@ -12,9 +12,17 @@ interface GastronomySectionProps {
 export default function GastronomySection({ restaurants }: GastronomySectionProps) {
   return (
     <section className="py-6 max-w-[480px] mx-auto lg:max-w-7xl lg:px-6 bg-[#fcfaf6]">
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c] mb-4 px-4">
-        Gastronomia
-      </h2>
+      <div className="flex items-center justify-between px-4 mb-4">
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c]">
+          Gastronomia
+        </h2>
+        <Link
+          href="/gastronomia"
+          className="text-sm text-[#8c8c8c] underline underline-offset-2 hover:text-[#525252] transition-colors"
+        >
+          Ver tudo
+        </Link>
+      </div>
       <div className="flex gap-4 overflow-x-auto scroll-hidden px-4 pb-2 lg:grid lg:grid-cols-3 lg:gap-4">
         {restaurants.map((restaurant) => (
           <Link
