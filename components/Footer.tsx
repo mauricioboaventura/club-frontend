@@ -45,6 +45,25 @@ export default function Footer() {
           reservados.
         </p>
 
+        {/* Poker Links */}
+        <div className="space-y-2 mb-6">
+          <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-2">
+            Poker
+          </p>
+          <Link
+            href="/poker?tab=torneios"
+            className="block text-sm text-white/70 hover:text-white underline transition-colors"
+          >
+            Torneios
+          </Link>
+          <Link
+            href="/poker?tab=cashgame"
+            className="block text-sm text-white/70 hover:text-white underline transition-colors"
+          >
+            Cash Game
+          </Link>
+        </div>
+
         {/* Legal Links */}
         <div className="space-y-2 mb-6">
           <Link

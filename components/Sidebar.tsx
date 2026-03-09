@@ -29,6 +29,7 @@ export default function Sidebar({ isOpen, onClose, rankings = [] }: SidebarProps
   const [appsOpen, setAppsOpen] = useState(false);
   const [politicasOpen, setPoliticasOpen] = useState(false);
   const [rankingsOpen, setRankingsOpen] = useState(false);
+  const [sobreOpen, setSobreOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -141,12 +142,63 @@ export default function Sidebar({ isOpen, onClose, rankings = [] }: SidebarProps
             </>
           )}
 
+          {/* Group 5 - Poker */}
+          <nav className="flex flex-col">
+            <Link href="/poker?tab=torneios" className={linkBase} onClick={onClose}>
+              Torneios
+            </Link>
+            <Link href="/poker?tab=cashgame" className={linkBase} onClick={onClose}>
+              Cash Game
+            </Link>
+          </nav>
+
+          <div className="border-t border-gray-200 my-4" />
+
           {/* Group 4 - Information & Legal */}
           <nav className="flex flex-col">
-            <Link href="/sobre" className={linkBase} onClick={onClose}>
+            <button
+              className={`${linkBase} w-full justify-between`}
+              onClick={() => setSobreOpen(!sobreOpen)}
+            >
               Sobre o Monte Carlo
-            </Link>
-            <Link href="#" className={linkBase} onClick={onClose}>
+              <ChevronDown
+                size={18}
+                className={`text-[#666] transition-transform ${sobreOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {sobreOpen && (
+              <div className="pl-2 py-1 flex flex-col gap-0.5">
+                <Link
+                  href="/sobre#nossa-historia"
+                  className="py-2.5 text-[16px] text-[#555] hover:text-[#1a1a1a] transition-colors"
+                  onClick={onClose}
+                >
+                  Nossa História
+                </Link>
+                <Link
+                  href="/sobre#estrutura"
+                  className="py-2.5 text-[16px] text-[#555] hover:text-[#1a1a1a] transition-colors"
+                  onClick={onClose}
+                >
+                  Estrutura do Clube
+                </Link>
+                <Link
+                  href="/sobre#localizacao"
+                  className="py-2.5 text-[16px] text-[#555] hover:text-[#1a1a1a] transition-colors"
+                  onClick={onClose}
+                >
+                  Localização
+                </Link>
+                <Link
+                  href="/sobre#contato"
+                  className="py-2.5 text-[16px] text-[#555] hover:text-[#1a1a1a] transition-colors"
+                  onClick={onClose}
+                >
+                  Fale Conosco
+                </Link>
+              </div>
+            )}
+            <Link href="/jogo-responsavel" className={linkBase} onClick={onClose}>
               Jogo Responsável
             </Link>
             <button
@@ -175,8 +227,28 @@ export default function Sidebar({ isOpen, onClose, rankings = [] }: SidebarProps
               />
             </button>
             {politicasOpen && (
-              <div className="pl-0 py-2 text-[16px] text-[#555]">
-                {/* Subitens expandíveis - placeholder */}
+              <div className="pl-2 py-1 flex flex-col gap-0.5">
+                <Link
+                  href="/institucional/termos"
+                  className="py-2.5 text-[16px] text-[#555] hover:text-[#1a1a1a] transition-colors"
+                  onClick={onClose}
+                >
+                  Termos de Uso
+                </Link>
+                <Link
+                  href="/institucional/privacidade"
+                  className="py-2.5 text-[16px] text-[#555] hover:text-[#1a1a1a] transition-colors"
+                  onClick={onClose}
+                >
+                  Política de Privacidade
+                </Link>
+                <Link
+                  href="/institucional/cookies"
+                  className="py-2.5 text-[16px] text-[#555] hover:text-[#1a1a1a] transition-colors"
+                  onClick={onClose}
+                >
+                  Política de Cookies
+                </Link>
               </div>
             )}
           </nav>

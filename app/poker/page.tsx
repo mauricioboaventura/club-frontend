@@ -40,6 +40,11 @@ function PokerContent() {
   const [selectedTournament, setSelectedTournament] = useState<PokerTournament | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Sync viewMode with URL tab param (handles client-side navigation)
+  useEffect(() => {
+    setViewMode(tabParam === "cashgame" ? "cashgame" : "torneios");
+  }, [tabParam]);
+
   // Fetch tournaments from API
   useEffect(() => {
     fetchPokerTournaments().then((data) => {
