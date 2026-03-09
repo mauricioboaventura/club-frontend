@@ -3,8 +3,8 @@ import { pokerSections } from "@/lib/data";
 
 export default function PokerSection() {
   return (
-    <section className="px-4 py-6 max-w-[480px] mx-auto lg:max-w-7xl lg:px-6 bg-[#fcfaf6]">
-      <div className="flex items-center justify-between mb-4">
+    <section className="py-6 max-w-[480px] mx-auto lg:max-w-7xl lg:px-6 bg-[#fcfaf6]">
+      <div className="flex items-center justify-between px-4 mb-4">
         <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c]">
           Poker
         </h2>
@@ -15,7 +15,7 @@ export default function PokerSection() {
           Ver tudo
         </Link>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 px-4">
         {pokerSections.map((item) => (
           <Link
             key={item.id}
