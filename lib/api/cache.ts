@@ -9,9 +9,9 @@ type CacheEntry<T> = { data: T; expiresAt: number };
 const store = new Map<string, CacheEntry<unknown>>();
 
 export const TTL = {
-  SHORT: 2 * 60 * 1000,   // 2 min  — rankings (dinâmico)
-  DEFAULT: 5 * 60 * 1000, // 5 min  — torneios, restaurantes, páginas
-  LONG: 10 * 60 * 1000,   // 10 min — banners (semi-estático)
+  SHORT: 1 * 60 * 1000,   // 2 min  — rankings (dinâmico)
+  DEFAULT: 1 * 60 * 1000, // 5 min  — torneios, restaurantes, páginas
+  LONG: 1 * 60 * 1000,   // 10 min — banners (semi-estático)
 } as const;
 
 export async function withCache<T>(
