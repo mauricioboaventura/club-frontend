@@ -67,7 +67,7 @@ export default function ExperiencesSection({ featureCards }: ExperiencesSectionP
           Experiências que você pode gostar
         </h2>
         <Link
-          href="/explorar"
+          href="/eventos"
           className="text-sm text-[#8c8c8c] underline underline-offset-2 hover:text-[#525252] transition-colors"
         >
           Ver tudo

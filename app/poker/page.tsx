@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { List, Layers, X } from "lucide-react";
 import {
   fetchPokerTournaments,
@@ -258,7 +259,7 @@ function PokerContent() {
           onClick={() => setSelectedTournament(null)}
         >
           <div
-            className="bg-white rounded-2xl p-6 max-w-md w-[calc(100%-2rem)] relative"
+            className="bg-white rounded-2xl p-6 max-w-md w-[calc(100%-2rem)] relative max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -431,13 +432,12 @@ function PokerContent() {
               )}
             </div>
 
-            <button
-              type="button"
-              onClick={() => setSelectedTournament(null)}
-              className="w-full mt-6 h-12 rounded-full bg-[#2A0303] hover:bg-[#420804] text-white font-semibold text-base transition-colors"
+            <Link
+              href="/auth"
+              className="w-full mt-6 h-12 rounded-full bg-[#2A0303] hover:bg-[#420804] text-white font-semibold text-base transition-colors flex items-center justify-center"
             >
               Realizar inscrição!
-            </button>
+            </Link>
           </div>
         </div>
       )}

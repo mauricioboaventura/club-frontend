@@ -5,6 +5,7 @@ import BottomNav from "@/components/BottomNav";
 import SharedSections from "@/components/SharedSections";
 import Header from "@/components/Header";
 import { fetchActiveRankings } from "@/lib/api/rankings";
+import Script from "next/script";
 
 const montserrat = Montserrat({
   weight: ["400", "500", "600", "800"],
@@ -41,6 +42,10 @@ export default async function RootLayout({
         {children}
         <SharedSections />
         <BottomNav />
+        <Script
+          src="https://d335luupugsy2.cloudfront.net/js/loader-scripts/e46f5ce2-3634-45e4-ade3-4151ca43fc3a-loader.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
