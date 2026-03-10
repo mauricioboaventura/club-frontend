@@ -156,11 +156,18 @@ function PokerContent() {
                   Nenhum torneio disponível no momento.
                 </p>
               ) : (
-                tournaments.map((t) => (
+                tournaments.map((t) => {
+                  const slug = t.slug?.toLowerCase() ?? "";
+                  const isSpt = slug.includes("spt") || slug.includes("sigma");
+                  return (
                 <div
                   key={t.id}
                   onClick={() => setSelectedTournament(t)}
-                  className="p-4 rounded-xl border border-[#5C0F08] shadow-sm cursor-pointer hover:shadow-md transition-shadow bg-white"
+                  className="p-4 rounded-xl border shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                  style={{
+                    background: isSpt ? "#f3f0fa" : "#ffffff",
+                    borderColor: isSpt ? "#9b7fd4" : "#5C0F08",
+                  }}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div>
@@ -192,7 +199,8 @@ function PokerContent() {
                     </div>
                   </div>
                 </div>
-              ))
+                  );
+                })
               )}
             </div>
           )}
@@ -264,7 +272,7 @@ function PokerContent() {
           onClick={() => setSelectedTournament(null)}
         >
           <div
-            className="bg-white rounded-2xl p-6 max-w-md w-[calc(100%-2rem)] relative max-h-[80vh] overflow-y-auto"
+            className="bg-white rounded-2xl p-6 max-w-md w-[calc(100%-2rem)] relative max-h-[70vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -437,12 +445,12 @@ function PokerContent() {
               )}
             </div>
 
-            <Link
+            {/* <Link
               href="/auth"
               className="w-full mt-6 h-12 rounded-full bg-[#2A0303] hover:bg-[#420804] text-white font-semibold text-base transition-colors flex items-center justify-center"
             >
               Realizar inscrição!
-            </Link>
+            </Link> */}
           </div>
         </div>
       )}
