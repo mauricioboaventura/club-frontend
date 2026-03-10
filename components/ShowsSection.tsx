@@ -93,7 +93,7 @@ export default function ShowsSection({ featuredEvents }: ShowsSectionProps) {
             href={card.link}
             className="relative flex-shrink-0 w-72 lg:w-auto rounded-xl overflow-hidden bg-white border border-[#8b1a1a]/10 hover:border-[#8b1a1a]/20 transition-colors"
           >
-            <div className="relative h-32">
+            <div className="relative h-40">
               <Image
                 src={card.image}
                 alt={card.title}
