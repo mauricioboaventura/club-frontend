@@ -13,7 +13,7 @@ export default function SharedSections() {
 
   return (
     <>
-      <CtaSection />
+      {/* <CtaSection /> */}
       <AccordionSection />
       {/* <AppDownload /> */}
       <Footer />
