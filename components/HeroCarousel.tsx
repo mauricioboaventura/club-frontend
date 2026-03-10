@@ -105,7 +105,7 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
               {slide.title}
             </h1>
           </div>
-          <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
+          <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto hidden sm:block">
             {slide?.subtitle}
           </p>
           <Link

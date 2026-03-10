@@ -61,14 +61,16 @@ export const pokerSections = [
     title: "Cash Games",
     description: "Mesas abertas diariamente, 24h",
     link: "/poker?tab=cashgame",
-    linkLabel: "Ver mesas →",
+    linkLabel: "Ver mesas",
+    image: "https://assets.rdc-dev.com.br/storage/v1/object/public/gallery-photos/imagens-botoes-site-Cashgame-WEB-.png",
   },
   {
     id: 2,
     title: "Torneios",
     description: "Os principais torneios do clube",
     link: "/poker?tab=torneios",
-    linkLabel: "Ver agenda →",
+    linkLabel: "Ver agenda",
+    image: "https://assets.rdc-dev.com.br/storage/v1/object/public/gallery-photos/imagens-botoes-site-torneios-WEB.png",
   },
 ];
 
@@ -138,7 +140,7 @@ export const accordionItems = [
       { label: "Fale Conosco", href: "/sobre#contato" },
       { label: "WhatsApp", href: "https://wa.me/5511941213898" },
       { label: "Reservas", href: "/sobre#contato" },
-      { label: "Dúvidas Frequentes", href: "/sobre#contato" },
+      // { label: "Dúvidas Frequentes", href: "/sobre#contato" },
     ],
   },
   {

@@ -15,7 +15,7 @@ export default function SharedSections() {
     <>
       <CtaSection />
       <AccordionSection />
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </>
   );
