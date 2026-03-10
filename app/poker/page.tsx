@@ -73,7 +73,7 @@ function PokerContent() {
       <div className="relative">
         <div className="relative w-full h-56">
           <Image
-            src="https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=800&auto=format&fit=crop"
+            src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-WEB-SPCity.png"
             alt="Torneios"
             fill
             className="object-cover"
