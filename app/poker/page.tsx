@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { List, Layers, X } from "lucide-react";
 import {
-  fetchPokerTournaments,
+  fetchPokerTournamentsPaginated,
   formatCentsToReal,
   formatTournamentDate,
   type PokerTournament,
@@ -39,6 +39,9 @@ function PokerContent() {
   const [tournaments, setTournaments] = useState<PokerTournament[]>([]);
   const [selectedTournament, setSelectedTournament] = useState<PokerTournament | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   // Sync viewMode with URL tab param (handles client-side navigation)
   useEffect(() => {
@@ -47,11 +50,22 @@ function PokerContent() {
 
   // Fetch tournaments from API
   useEffect(() => {
-    fetchPokerTournaments().then((data) => {
+    fetchPokerTournamentsPaginated(1).then(({ data, total }) => {
       setTournaments(data);
+      setHasMore(data.length < total);
       setLoading(false);
     });
   }, []);
+
+  const loadMore = async () => {
+    const nextPage = page + 1;
+    setLoadingMore(true);
+    const { data, total } = await fetchPokerTournamentsPaginated(nextPage);
+    setTournaments((prev) => [...prev, ...data]);
+    setPage(nextPage);
+    setHasMore(tournaments.length + data.length < total);
+    setLoadingMore(false);
+  };
 
   return (
     <main className="min-h-screen mt-[56px]">
@@ -125,6 +139,7 @@ function PokerContent() {
 
           {/* Torneios View */}
           {viewMode === "torneios" && (
+          <>
             <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
               {loading ? (
                 // Loading skeleton
@@ -163,7 +178,7 @@ function PokerContent() {
                 <div
                   key={t.id}
                   onClick={() => setSelectedTournament(t)}
-                  className="p-4 rounded-xl border shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                  className="p-4 rounded-xl border shadow-sm cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-200"
                   style={{
                     background: isSpt ? "#f3f0fa" : "#ffffff",
                     borderColor: isSpt ? "#9b7fd4" : "#5C0F08",
@@ -203,6 +218,21 @@ function PokerContent() {
                 })
               )}
             </div>
+
+            {/* Carregar mais */}
+            {!loading && hasMore && tournaments.length > 0 && (
+              <div className="flex justify-center mt-6">
+                <button
+                  type="button"
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="px-6 py-2.5 rounded-lg text-sm font-medium border border-[#5C0F08] text-[#5C0F08] hover:bg-[#5C0F08] hover:text-white transition-colors disabled:opacity-50"
+                >
+                  {loadingMore ? "Carregando..." : "Carregar mais"}
+                </button>
+              </div>
+            )}
+          </>
           )}
 
           {/* Cash Game View */}

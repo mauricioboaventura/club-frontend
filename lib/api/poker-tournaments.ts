@@ -41,8 +41,47 @@ type TournamentsResponse = {
   count: number;
 };
 
+export type PaginatedTournaments = {
+  data: PokerTournament[];
+  total: number;
+};
+
+const PAGE_SIZE = 10;
+
 export function fetchPokerTournaments(): Promise<PokerTournament[]> {
   return withCache("poker-tournaments", _fetchPokerTournaments, TTL.DEFAULT);
+}
+
+export async function fetchPokerTournamentsPaginated(
+  page: number,
+  limit: number = PAGE_SIZE,
+): Promise<PaginatedTournaments> {
+  const cacheKey = `poker-tournaments-p${page}-l${limit}`;
+  return withCache(cacheKey, () => _fetchPaginated(page, limit), TTL.DEFAULT);
+}
+
+async function _fetchPaginated(
+  page: number,
+  limit: number,
+): Promise<PaginatedTournaments> {
+  try {
+    const res = await fetch(
+      `${TOURNAMENTS_API_URL}?page=${page}&limit=${limit}&orderBy=startDate&orderDirection=asc`,
+    );
+
+    if (!res.ok) {
+      throw new Error(`Poker Tournaments API error: ${res.status}`);
+    }
+
+    const json: TournamentsResponse = await res.json();
+    const data = (json.data ?? []).filter((t) => t.isActive !== false);
+    return { data, total: json.count ?? 0 };
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[fetchPokerTournamentsPaginated]", err);
+    }
+    return { data: [], total: 0 };
+  }
 }
 
 async function _fetchPokerTournaments(): Promise<PokerTournament[]> {
