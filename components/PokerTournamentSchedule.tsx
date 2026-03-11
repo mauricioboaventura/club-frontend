@@ -128,7 +128,7 @@ export default function PokerTournamentSchedule({
             />
             <SelectFilter
               label="Semana"
-              options={weekOptions.map((w) => ({ value: w.value, label: `de ${w.label}` }))}
+              options={weekOptions.map((w) => ({ value: w.value, label: `${w.label}` }))}
               value={selectedWeek}
               onChange={handleWeekChange}
               placeholder="Semana"
