@@ -24,8 +24,6 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
   const [rankingsOpen, setRankingsOpen] = useState(false);
   const dropdownRef = useRef<HTMLLIElement>(null);
 
-  if (pathname === "/sigma-poker-tour") return null;
-
   const isExplorar = pathname === "/explorar";
   const isEventos = pathname === "/eventos";
   const isTransparent = isExplorar || isEventos;
@@ -47,6 +45,8 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  if (pathname === "/sigma-poker-tour") return null;
 
   const headerBg = isTransparent ? "gradient-header" : "bg-[#430904]";
 

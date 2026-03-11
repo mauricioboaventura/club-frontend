@@ -11,10 +11,25 @@ type HeroCarouselProps = {
 
 export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   const [slides, setSlides] = useState<HeroSlide[]>(initialSlides ?? []);
-  const [current, setCurrent] = useState(0);
+  // internalIndex operates on the extended array: [lastClone, ...slides, firstClone]
+  // so real slide 0 is at internalIndex 1
+  const [internalIndex, setInternalIndex] = useState(1);
+  const [animate, setAnimate] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+  const isTransitioning = useRef(false);
+
+  const len = slides.length;
+  // The "real" slide index (0-based) for content display and dots
+  const realIndex =
+    len === 0
+      ? 0
+      : internalIndex <= 0
+        ? len - 1
+        : internalIndex >= len + 1
+          ? 0
+          : internalIndex - 1;
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 1023px)");
@@ -31,19 +46,47 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   }, [initialSlides]);
 
   useEffect(() => {
-    setCurrent((c) => Math.min(c, Math.max(0, slides.length - 1)));
-  }, [slides.length]);
+    setInternalIndex(1);
+    setAnimate(true);
+  }, [len]);
 
   const next = useCallback(() => {
-    setCurrent((c) => (c + 1) % slides.length);
-  }, [slides.length]);
+    if (isTransitioning.current || len === 0) return;
+    isTransitioning.current = true;
+    setAnimate(true);
+    setInternalIndex((c) => c + 1);
+  }, [len]);
+
+  const prev = useCallback(() => {
+    if (isTransitioning.current || len === 0) return;
+    isTransitioning.current = true;
+    setAnimate(true);
+    setInternalIndex((c) => c - 1);
+  }, [len]);
 
   const goTo = useCallback(
     (index: number) => {
-      setCurrent(Math.max(0, Math.min(index, slides.length - 1)));
+      if (isTransitioning.current || len === 0) return;
+      isTransitioning.current = true;
+      setAnimate(true);
+      setInternalIndex(index + 1); // +1 because of prepended clone
     },
-    [slides.length],
+    [len],
   );
+
+  // After transition ends, snap to the real position if we're on a clone
+  const handleTransitionEnd = useCallback(() => {
+    isTransitioning.current = false;
+    if (internalIndex >= len + 1) {
+      // We're on the cloned first slide → jump to real first
+      setAnimate(false);
+      setInternalIndex(1);
+    } else if (internalIndex <= 0) {
+      // We're on the cloned last slide → jump to real last
+      setAnimate(false);
+      setInternalIndex(len);
+    }
+  }, [internalIndex, len]);
 
   useEffect(() => {
     const timer = setInterval(next, 5000);
@@ -59,13 +102,15 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
     const diff = touchStartX.current - touchEndX.current;
     if (Math.abs(diff) > 50) {
       if (diff > 0) next();
-      else setCurrent((c) => (c - 1 + slides.length) % slides.length);
+      else prev();
     }
   };
 
   if (slides.length === 0) return null;
 
-  const slide = slides[current] ?? slides[0];
+  // Extended slides: [clone of last, ...real slides, clone of first]
+  const extendedSlides = [slides[len - 1], ...slides, slides[0]];
+  const slide = slides[realIndex] ?? slides[0];
 
   return (
     <section
@@ -75,12 +120,15 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
     >
       <div className="overflow-hidden">
         <div
-          className="flex transition-transform duration-500 ease-out"
-          style={{ transform: `translate3d(-${current * 100}%, 0px, 0px)` }}
+          className={`flex${animate ? " transition-transform duration-500 ease-out" : ""}`}
+          style={{
+            transform: `translate3d(-${internalIndex * 100}%, 0px, 0px)`,
+          }}
+          onTransitionEnd={handleTransitionEnd}
         >
-          {slides.map((s) => (
+          {extendedSlides.map((s, i) => (
             <div
-              key={s.id}
+              key={`${s.id}-${i}`}
               className="relative flex-[0_0_100%] min-w-0 aspect-[4/5] lg:aspect-[21/9]"
             >
               <Image
@@ -89,7 +137,7 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
                 fill
                 className="object-cover"
                 sizes="100vw"
-                priority={slides[0]?.id === s.id}
+                priority={i === 1}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             </div>
@@ -121,7 +169,9 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
                 type="button"
                 onClick={() => goTo(i)}
                 className={`rounded-full transition-all duration-300 ${
-                  i === current ? "h-2 w-6 bg-white" : "w-2 h-2 bg-white/30"
+                  i === realIndex
+                    ? "h-2 w-6 bg-white"
+                    : "w-2 h-2 bg-white/30"
                 }`}
                 aria-label={`Slide ${i + 1}`}
               />
