@@ -182,7 +182,7 @@ export default function EventosPage() {
     <main className="min-h-screen bg-[#f9f8f0]">
       {/* Hero Carousel - autoplay */}
       {loading ? (
-        <div className="relative w-full h-[85vh] overflow-hidden bg-[#e5e0d5] animate-pulse">
+        <div className="relative w-full h-[50vh] min-h-[320px] overflow-hidden bg-[#e5e0d5] animate-pulse">
           <div className="absolute inset-x-0 bottom-0 pb-12 px-6">
             <div className="text-center space-y-4">
               <div className="h-8 w-64 bg-white/20 rounded mx-auto" />
@@ -192,7 +192,7 @@ export default function EventosPage() {
           </div>
         </div>
       ) : heroSlides.length === 0 ? (
-        <div className="relative w-full h-[85vh] overflow-hidden bg-gradient-to-b from-[#430904] to-[#2a0303]">
+        <div className="relative w-full h-[50vh] min-h-[320px] overflow-hidden bg-gradient-to-b from-[#430904] to-[#2a0303]">
           <div className="absolute inset-x-0 bottom-0 pb-12 px-6">
             <div className="text-center space-y-4">
               <h1 className="text-2xl font-bold tracking-wide text-white">
@@ -206,7 +206,7 @@ export default function EventosPage() {
         </div>
       ) : (
         <div
-          className="relative w-full h-[85vh] overflow-hidden"
+          className="relative w-full h-[50vh] min-h-[320px] overflow-hidden"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >

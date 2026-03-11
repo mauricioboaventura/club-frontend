@@ -16,9 +16,11 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   const [internalIndex, setInternalIndex] = useState(1);
   const [animate, setAnimate] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const isDragging = useRef(false);
   const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
   const isTransitioning = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const len = slides.length;
   // The "real" slide index (0-based) for content display and dots
@@ -94,16 +96,31 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   }, [next]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (isTransitioning.current) return;
     touchStartX.current = e.touches[0].clientX;
+    isDragging.current = true;
+    setDragOffset(0);
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    touchEndX.current = e.changedTouches[0].clientX;
-    const diff = touchStartX.current - touchEndX.current;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) next();
-      else prev();
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging.current) return;
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - touchStartX.current;
+    setDragOffset(diff);
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const containerWidth = containerRef.current?.offsetWidth ?? 1;
+    const threshold = containerWidth * 0.15;
+
+    if (dragOffset < -threshold) {
+      next();
+    } else if (dragOffset > threshold) {
+      prev();
     }
+    setDragOffset(0);
   };
 
   if (slides.length === 0) return null;
@@ -114,15 +131,17 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
 
   return (
     <section
+      ref={containerRef}
       className="relative w-full"
       onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       <div className="overflow-hidden">
         <div
-          className={`flex${animate ? " transition-transform duration-500 ease-out" : ""}`}
+          className={`flex${animate && !isDragging.current ? " transition-transform duration-500 ease-out" : ""}`}
           style={{
-            transform: `translate3d(-${internalIndex * 100}%, 0px, 0px)`,
+            transform: `translate3d(calc(-${internalIndex * 100}% + ${dragOffset}px), 0px, 0px)`,
           }}
           onTransitionEnd={handleTransitionEnd}
         >
