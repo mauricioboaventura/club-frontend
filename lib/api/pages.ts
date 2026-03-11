@@ -100,6 +100,7 @@ export type EventItem = {
   slug: string;
   description: string | null;
   shortDescription: string | null;
+  heroImageUrl?: string | null;
   coverImageUrl: string | null;
   mobileImageUrl?: string | null;
   startDate: string | null;

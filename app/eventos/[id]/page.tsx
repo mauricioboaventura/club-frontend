@@ -34,6 +34,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   }
 
   const imageUrl =
+    event.heroImageUrl ??
     event.coverImageUrl ??
     event.event_images?.[0]?.imageUrl ??
     "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&auto=format&fit=crop";
