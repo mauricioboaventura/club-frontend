@@ -20,18 +20,22 @@ import {
 const EVENT_INFO = {
   title: "Sigma Poker Tour",
   subtitle: "Onde os melhores talentos do poker se encontram para fazer história",
-  dates: "03 a 07 de Abril de 2026",
+  dates: "01 a 06 de Abril de 2026",
   location: "Monte Carlo Poker Club",
   address: "São Paulo, SP",
   description:
-    "Quatro dias de ação intensa no felt. O Sigma Poker Tour reúne jogadores de todo o Brasil para uma experiência inesquecível de torneios, cash games e muito entretenimento. Garanta já sua vaga!",
+    "Seis dias de ação intensa no felt. O Sigma Poker Tour reúne jogadores de todo o Brasil para uma experiência inesquecível de torneios, cash games e muito entretenimento. Garanta já sua vaga!",
 };
 
 type ScheduleEvent = {
   time: string;
   title: string;
   buyIn?: string;
+  blind?: string;
   guaranteed?: string;
+  stack?: string;
+  late?: string;
+  modality?: string;
 };
 
 type DaySchedule = {
@@ -44,97 +48,289 @@ type DaySchedule = {
 const SCHEDULE: DaySchedule[] = [
   {
     day: 1,
-    label: "Dia 1",
-    date: "17/04 — Sexta-feira",
+    label: "Quarta",
+    date: "01/04 — Quarta-feira",
     events: [
       {
-        time: "14:00",
-        title: "Opening Event — NLH",
-        buyIn: "R$ 500 + 50",
-        guaranteed: "R$ 100.000",
+        time: "15:00",
+        title: "Silver Chips",
+        buyIn: "R$ 70 Promo",
+        blind: "20'",
+        guaranteed: "R$ 15.000",
+        stack: "20K",
+        late: "8 LVL",
+        modality: "Unlimited Re-Entries",
       },
       {
-        time: "17:00",
-        title: "Satélite Main Event",
-        buyIn: "R$ 200 + 20",
+        time: "16:00",
+        title: "King's Tournament",
+        buyIn: "R$ 900 Promo",
+        blind: "30'/25'",
+        guaranteed: "R$ 120.000",
+        stack: "20K",
+        late: "10 LVL",
+        modality: "Unlimited Re-Entries",
       },
       {
-        time: "21:00",
-        title: "Night Turbo — NLH",
-        buyIn: "R$ 300 + 30",
-        guaranteed: "R$ 50.000",
+        time: "19:00",
+        title: "Satélite de Abertura para o Evento Principal do SPT",
+        buyIn: "R$ 300",
+        blind: "20'",
+        guaranteed: "3 vagas garantidas para o Evento Principal",
+        stack: "20K",
+        late: "10 LVL",
+        modality: "Unlimited Re-Entries",
+      },
+      {
+        time: "22:00",
+        title: "Poker Night Special Edition",
+        buyIn: "R$ 100 Promo",
+        blind: "20'/15'",
+        guaranteed: "R$ 20.000",
+        stack: "15K",
+        late: "8 LVL",
+        modality: "Unlimited Re-Entries",
       },
     ],
   },
   {
     day: 2,
-    label: "Dia 2",
-    date: "18/04 — Sábado",
+    label: "Quinta",
+    date: "02/04 — Quinta-feira",
     events: [
       {
-        time: "12:00",
-        title: "Main Event — Day 1A",
-        buyIn: "R$ 1.500 + 150",
-        guaranteed: "R$ 1.000.000",
-      },
-      {
         time: "15:00",
-        title: "High Roller — NLH",
-        buyIn: "R$ 3.000 + 300",
-        guaranteed: "R$ 200.000",
+        title: "Silver Chips",
+        buyIn: "R$ 70 Promo",
+        blind: "20'",
+        guaranteed: "R$ 15.000",
+        stack: "20K",
+        late: "8 LVL",
+        modality: "Unlimited Re-Entries",
       },
       {
-        time: "21:00",
-        title: "Bounty Hunter — NLH",
-        buyIn: "R$ 600 + 60",
-        guaranteed: "R$ 80.000",
+        time: "18:00",
+        title: "Evento Principal SPT — Promo Day",
+        buyIn: "R$ 2.000",
+        blind: "40'",
+        guaranteed: "R$ 1 MILHÃO Garantido!",
+        stack: "40K",
+        late: "10 LVL",
+        modality: "Unlimited Re-Entries",
+      },
+      {
+        time: "20:00",
+        title: "Satélite para o Evento Principal do SPT",
+        buyIn: "R$ 300",
+        blind: "20'",
+        guaranteed: "3 vagas garantidas para o Evento Principal",
+        stack: "20K",
+        late: "10 LVL",
+        modality: "Unlimited Re-Entries",
+      },
+      {
+        time: "22:30",
+        title: "Poker Night Special Edition",
+        buyIn: "R$ 70 Promo",
+        blind: "20'/15'",
+        stack: "15K",
+        late: "8 LVL",
+        modality: "Unlimited Re-Entries",
       },
     ],
   },
   {
     day: 3,
-    label: "Dia 3",
-    date: "19/04 — Domingo",
+    label: "Sexta",
+    date: "03/04 — Sexta-feira",
     events: [
       {
-        time: "12:00",
-        title: "Main Event — Day 1B",
-        buyIn: "R$ 1.500 + 150",
-        guaranteed: "R$ 1.000.000",
+        time: "14:00",
+        title: "SPT Main Event — Day 1A",
+        buyIn: "R$ 2.500",
+        blind: "40'",
+        guaranteed: "R$ 1 MILHÃO Garantido!",
+        stack: "40K",
+        late: "10 LVL",
+        modality: "Unlimited Re-Entries",
       },
       {
         time: "15:00",
-        title: "Omaha Pot Limit",
-        buyIn: "R$ 800 + 80",
-        guaranteed: "R$ 60.000",
+        title: "Satélite para o SPT Main Event",
+        buyIn: "R$ 300",
+        blind: "20'",
+        guaranteed: "5 vagas garantidas para o Evento Principal",
+        stack: "20K",
+        late: "10 LVL",
+        modality: "Unlimited Re-Entries",
+      },
+      {
+        time: "20:00",
+        title: "SPT Main Event — Day 1B Turbo",
+        buyIn: "R$ 2.500",
+        blind: "20'",
+        guaranteed: "R$ 1 MILHÃO Garantido!",
+        stack: "40K",
+        late: "10 LVL",
+        modality: "Unlimited Re-Entries",
       },
       {
         time: "21:00",
-        title: "Super Satélite Main Event",
-        buyIn: "R$ 300 + 30",
+        title: "SPT Welcome Drinks — Powered by ATFX",
+      },
+      {
+        time: "22:00",
+        title: "ATFX Cup (Somente Convidados) — Host: Romulo Dorea",
+        buyIn: "Freeroll ou R$ 5.300",
+        guaranteed: "Gold Coin, 1 pacote SPT Mania + R$ 25K",
+        stack: "40K",
+        late: "10 LVL",
+        modality: "Freezeout",
+      },
+      {
+        time: "22:30",
+        title: "Poker Night — SPT Edition",
+        buyIn: "R$ 100 Promo",
+        blind: "20'/15'",
+        guaranteed: "R$ 20.000",
+        stack: "15K",
+        modality: "Unlimited Re-Entries",
       },
     ],
   },
   {
     day: 4,
-    label: "Dia 4",
-    date: "20/04 — Segunda-feira",
+    label: "Sábado",
+    date: "04/04 — Sábado",
     events: [
       {
-        time: "12:00",
-        title: "Main Event — Day 2 (Final Day)",
-        buyIn: "—",
-        guaranteed: "R$ 1.000.000",
+        time: "11:00",
+        title: "SPT Main Event — Day 1C",
+        buyIn: "R$ 2.500",
+        blind: "40'",
+        guaranteed: "R$ 1 MILHÃO Garantido!",
+        stack: "40K",
+        late: "10 LVL",
+        modality: "Unlimited Re-Entries",
       },
       {
         time: "14:00",
-        title: "Last Chance Turbo",
-        buyIn: "R$ 400 + 40",
-        guaranteed: "R$ 40.000",
+        title: "Campeonato Sigma Cup",
+        buyIn: "R$ 1.445",
+        blind: "30'",
+        stack: "25K",
+        late: "10 LVL",
+        modality: "Freeze Out",
+      },
+      {
+        time: "16:00",
+        title: "Sigma Divas",
+        buyIn: "Freeroll",
+        blind: "20'",
+        guaranteed: "R$ 30.000 + 1 pacote Women's Championship PokerStars Malta",
+        stack: "25K",
+        late: "10 LVL",
+        modality: "Unlimited Re-Entries",
       },
       {
         time: "20:00",
-        title: "Encerramento & Premiação",
+        title: "SPT Main Event — Day 1D Turbo",
+        buyIn: "R$ 2.500",
+        blind: "20'",
+        guaranteed: "R$ 1 MILHÃO Garantido!",
+        stack: "40K",
+        late: "10 LVL",
+        modality: "Unlimited Re-Entries",
+      },
+      {
+        time: "22:30",
+        title: "Poker Night Special Edition",
+        buyIn: "R$ 100 Promo",
+        blind: "20'/15'",
+        guaranteed: "R$ 20.000",
+        stack: "15K",
+        late: "8 LVL",
+        modality: "Unlimited Re-Entries",
+      },
+    ],
+  },
+  {
+    day: 5,
+    label: "Domingo",
+    date: "05/04 — Domingo",
+    events: [
+      {
+        time: "14:00",
+        title: "SPT Main Event — Day 2 (15% ITM)",
+        buyIn: "Registro Encerrado",
+        blind: "50'",
+      },
+      {
+        time: "15:00",
+        title: "Mystery Bounty",
+        buyIn: "R$ 500 + R$ 500",
+        blind: "20'",
+        guaranteed: "R$ 25.000 GTD + Pacote SPT México",
+        stack: "20K",
+        modality: "Freeze Out",
+      },
+      {
+        time: "17:00",
+        title: "Torneio da Pizza",
+        buyIn: "R$ 150",
+        blind: "20'/15'",
+        guaranteed: "R$ 40.000",
+        stack: "15K",
+        late: "8 LVL",
+        modality: "Unlimited Re-Entries",
+      },
+      {
+        time: "21:00",
+        title: "SPT Influencer Meet and Greet — Powered by ATFX",
+      },
+      {
+        time: "22:00",
+        title: "Poker Night Special Edition",
+        buyIn: "R$ 70 Promo",
+        blind: "20'/15'",
+        guaranteed: "R$ 15.000",
+        stack: "20K",
+        late: "8 LVL",
+        modality: "Unlimited Re-Entries",
+      },
+    ],
+  },
+  {
+    day: 6,
+    label: "Segunda",
+    date: "06/04 — Segunda-feira",
+    events: [
+      {
+        time: "14:00",
+        title: "SPT Main — Dia 3 & Mesa Final",
+        buyIn: "Registro Encerrado",
+        blind: "50'",
+        guaranteed: "R$ 1 MILHÃO Garantido!",
+        modality: "9 Jogadores — Live Stream",
+      },
+      {
+        time: "19:00",
+        title: "Cubeia Platinum Freeroll (Somente Convidados)",
+        buyIn: "Freeroll",
+        blind: "20'",
+        stack: "30K",
+        late: "10 LVL",
+        modality: "Freeze Out",
+      },
+      {
+        time: "22:00",
+        title: "SPT Last Chance",
+        buyIn: "R$ 70 Promo",
+        blind: "20'/15'",
+        guaranteed: "R$ 10.000",
+        stack: "15K",
+        late: "8 LVL",
+        modality: "Unlimited Re-Entries",
       },
     ],
   },
@@ -272,18 +468,18 @@ export default function SigmaPokerTourPage() {
             {[
               {
                 icon: Calendar,
-                label: "4 dias",
+                label: "6 dias",
                 sub: "de torneios intensos",
               },
               {
                 icon: Trophy,
                 label: "R$ 1M",
-                sub: "garantidos no Main Event",
+                sub: "garantidos no Evento Principal",
               },
               {
                 icon: Star,
-                label: "3 Satélites",
-                sub: "para o Main Event",
+                label: "+30 torneios",
+                sub: "incluindo satélites e side events",
               },
             ].map((item) => (
               <div
@@ -331,7 +527,7 @@ export default function SigmaPokerTourPage() {
           </div>
 
           {/* Schedule content */}
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <p className="text-center text-sm font-medium text-[#8b1a1a] mb-6">
               {SCHEDULE[activeDay].date}
             </p>
@@ -351,13 +547,21 @@ export default function SigmaPokerTourPage() {
                     <h4 className="font-semibold text-[#1a1a1a]">
                       {evt.title}
                     </h4>
-                    <div className="flex flex-wrap gap-3 mt-2 text-sm text-[#5f5a54]">
+                    <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-2 text-sm text-[#5f5a54]">
                       {evt.buyIn && (
                         <span className="flex items-center gap-1">
                           <span className="font-medium text-[#1a1a1a]">
                             Buy-in:
                           </span>{" "}
                           {evt.buyIn}
+                        </span>
+                      )}
+                      {evt.blind && (
+                        <span className="flex items-center gap-1">
+                          <span className="font-medium text-[#1a1a1a]">
+                            Blind:
+                          </span>{" "}
+                          {evt.blind}
                         </span>
                       )}
                       {evt.guaranteed && (
@@ -368,7 +572,28 @@ export default function SigmaPokerTourPage() {
                           {evt.guaranteed}
                         </span>
                       )}
+                      {evt.stack && (
+                        <span className="flex items-center gap-1">
+                          <span className="font-medium text-[#1a1a1a]">
+                            Stack:
+                          </span>{" "}
+                          {evt.stack}
+                        </span>
+                      )}
+                      {evt.late && (
+                        <span className="flex items-center gap-1">
+                          <span className="font-medium text-[#1a1a1a]">
+                            Late:
+                          </span>{" "}
+                          {evt.late}
+                        </span>
+                      )}
                     </div>
+                    {evt.modality && (
+                      <span className="inline-block mt-2 text-xs font-semibold px-3 py-1 rounded-full bg-[#8b1a1a]/10 text-[#8b1a1a]">
+                        {evt.modality}
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
