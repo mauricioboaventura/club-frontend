@@ -24,6 +24,8 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
   const [rankingsOpen, setRankingsOpen] = useState(false);
   const dropdownRef = useRef<HTMLLIElement>(null);
 
+  if (pathname === "/sigma-poker-tour") return null;
+
   const isExplorar = pathname === "/explorar";
   const isEventos = pathname === "/eventos";
   const isTransparent = isExplorar || isEventos;
