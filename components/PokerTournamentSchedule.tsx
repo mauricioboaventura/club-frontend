@@ -121,29 +121,18 @@ export default function PokerTournamentSchedule({
           <div className="grid grid-cols-2 gap-3 mb-4">
             <SelectFilter
               label="Mês"
-              options={monthOptions.map((m) => m.value)}
+              options={monthOptions.map((m) => ({ value: m.value, label: m.label }))}
               value={selectedMonth}
               onChange={handleMonthChange}
               placeholder="Mês"
             />
             <SelectFilter
               label="Semana"
-              options={weekOptions.map((w) => w.value)}
+              options={weekOptions.map((w) => ({ value: w.value, label: `de ${w.label}` }))}
               value={selectedWeek}
               onChange={handleWeekChange}
               placeholder="Semana"
             />
-          </div>
-
-          {/* Labels legíveis dos filtros selecionados */}
-          <div className="flex gap-3 mb-4 text-xs text-[#6b6660]">
-            <span>
-              {monthOptions.find((m) => m.value === selectedMonth)?.label}
-            </span>
-            <span>•</span>
-            <span>
-              {weekOptions.find((w) => w.value === selectedWeek)?.label}
-            </span>
           </div>
 
           {/* Abas de dias da semana */}
