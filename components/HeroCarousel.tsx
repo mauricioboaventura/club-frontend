@@ -132,7 +132,7 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   return (
     <section
       ref={containerRef}
-      className="relative w-full"
+      className="relative w-full max-h-screen overflow-hidden touch-pan-y"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
