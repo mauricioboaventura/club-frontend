@@ -52,7 +52,7 @@ export function getWeeksOfMonth(year: number, month: number): WeekOption[] {
 
     if (!seen.has(key)) {
       seen.add(key);
-      const label = `${String(start.getDate()).padStart(2, "0")}/${String(start.getMonth() + 1).padStart(2, "0")} a ${String(end.getDate()).padStart(2, "0")}/${String(end.getMonth() + 1).padStart(2, "0")}`;
+      const label = `${String(start.getDate()).padStart(2, "0")}-${String(start.getMonth() + 1).padStart(2, "0")} a ${String(end.getDate()).padStart(2, "0")}-${String(end.getMonth() + 1).padStart(2, "0")}`;
       weeks.push({ value: key, label, start: startISO, end: endISO });
     }
   }
@@ -83,7 +83,7 @@ export function getMonthOptions(count = 4): MonthOption[] {
     const month = d.getMonth();
     options.push({
       value: `${year}-${String(month + 1).padStart(2, "0")}`,
-      label: `${MONTH_NAMES[month]} ${year}`,
+      label: MONTH_NAMES[month],
       year,
       month,
     });
