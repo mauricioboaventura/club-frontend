@@ -4,7 +4,7 @@ import { pokerSections } from "@/lib/data";
 export default function PokerSection() {
   return (
     <section className="py-6 max-w-[480px] mx-auto lg:max-w-7xl lg:px-6 bg-[#fcfaf6]">
-      <div className="hidden lg:flex items-center justify-between px-4 mb-4">
+      <div className="flex items-center justify-between px-4 mb-4">
         <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c]">
           Poker
         </h2>
@@ -15,32 +15,7 @@ export default function PokerSection() {
           Ver tudo
         </Link>
       </div>
-      {/* Mobile: card único com nome POKER centralizado */}
-      <div className="lg:hidden px-4">
-        <Link
-          href="/poker"
-          className="relative rounded-xl overflow-hidden flex items-center justify-center h-40 cursor-pointer hover:scale-[1.02] transition-transform group"
-        >
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: `url('${pokerSections[0].image}')`,
-              backgroundColor: "#1a1510",
-            }}
-            aria-hidden
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60"
-            aria-hidden
-          />
-          <span className="relative z-10 text-4xl font-black uppercase tracking-widest text-white drop-shadow-lg">
-            Poker
-          </span>
-        </Link>
-      </div>
-
-      {/* Desktop: grid original com 2 itens */}
-      <div className="hidden lg:grid grid-cols-2 gap-3 px-4">
+      <div className="grid grid-cols-2 gap-3 px-4">
         {pokerSections.map((item) => (
           <Link
             key={item.id}
