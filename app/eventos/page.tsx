@@ -68,6 +68,7 @@ export default function EventosPage() {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todas");
   const [dataSelecionada, setDataSelecionada] = useState("Todas as datas");
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const heroTrackRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -108,6 +109,14 @@ export default function EventosPage() {
   const goToSlide = (index: number) => {
     setHeroIndex(Math.max(0, Math.min(index, heroSlides.length - 1)));
   };
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -173,7 +182,7 @@ export default function EventosPage() {
     <main className="min-h-screen bg-[#f9f8f0]">
       {/* Hero Carousel - autoplay */}
       {loading ? (
-        <div className="relative w-full h-[85vh] overflow-hidden bg-[#e5e0d5] animate-pulse">
+        <div className="relative w-full h-[50vh] min-h-[320px] overflow-hidden bg-[#e5e0d5] animate-pulse">
           <div className="absolute inset-x-0 bottom-0 pb-12 px-6">
             <div className="text-center space-y-4">
               <div className="h-8 w-64 bg-white/20 rounded mx-auto" />
@@ -183,7 +192,7 @@ export default function EventosPage() {
           </div>
         </div>
       ) : heroSlides.length === 0 ? (
-        <div className="relative w-full h-[85vh] overflow-hidden bg-gradient-to-b from-[#430904] to-[#2a0303]">
+        <div className="relative w-full h-[50vh] min-h-[320px] overflow-hidden bg-gradient-to-b from-[#430904] to-[#2a0303]">
           <div className="absolute inset-x-0 bottom-0 pb-12 px-6">
             <div className="text-center space-y-4">
               <h1 className="text-2xl font-bold tracking-wide text-white">
@@ -197,7 +206,7 @@ export default function EventosPage() {
         </div>
       ) : (
         <div
-          className="relative w-full h-[85vh] overflow-hidden"
+          className="relative w-full h-[50vh] min-h-[320px] overflow-hidden"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
@@ -212,14 +221,14 @@ export default function EventosPage() {
                 className="flex-[0_0_100%] min-w-0 relative h-full"
               >
                 <Image
-                  src={slide.image}
+                  src={isMobile && slide.mobileImage ? slide.mobileImage : slide.image}
                   alt={slide.imageAlt ?? slide.title}
                   fill
                   className="object-cover"
                   sizes="100vw"
                   priority={index === 0}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               </div>
             ))}
           </div>
@@ -238,7 +247,7 @@ export default function EventosPage() {
                 Garantir Entrada
               </button>
               <div className="flex justify-center gap-2 pt-2 w-full max-w-2xl mx-auto px-4">
-                {heroSlides.map((slide, i) => (
+                {heroSlides.length > 1 && heroSlides.map((slide, i) => (
                   <button
                     key={slide.id}
                     type="button"
@@ -270,7 +279,7 @@ export default function EventosPage() {
         <h2 className="text-xl font-bold text-[#1a1a1a] px-4 pt-6 pb-4">
           Próximos Eventos
         </h2>
-        <div className="grid grid-cols-1 gap-3 px-4 pb-4 md:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 px-4 pb-4 md:grid-cols-3">
           <SelectFilter
             label="Categoria"
             options={categoriasDisponiveis}
@@ -283,7 +292,7 @@ export default function EventosPage() {
             value={dataSelecionada}
             onChange={setDataSelecionada}
           />
-             <div className="flex flex-col gap-1">
+          {/* <div className="flex flex-col gap-1">
             <span className="text-xs font-medium text-[#6b6660]">Filtros:</span>
             <button
               type="button"
@@ -296,9 +305,9 @@ export default function EventosPage() {
               <SlidersHorizontal className="h-4 w-4" strokeWidth={2} />
               Limpar filtros
             </button>
-          </div>
+          </div> */}
         </div>
-        
+
         {loading ? (
           <div className="px-4 space-y-4 pb-24 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0 lg:pb-16">
             {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -318,62 +327,55 @@ export default function EventosPage() {
         ) : (
           <div className="px-4 space-y-4 pb-24 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0 lg:pb-16">
             {eventosFiltrados.map((evento) => {
-            const categoriaEvento =
-              evento.event_categories?.name ??
-              (evento.categoryId ? categoriasMap.get(evento.categoryId) : undefined) ??
-              "Sem categoria";
+              const categoriaEvento =
+                evento.event_categories?.name ??
+                (evento.categoryId ? categoriasMap.get(evento.categoryId) : undefined) ??
+                "Sem categoria";
 
-            return (
-              <Link
-                key={evento.id}
-                href={`/eventos/${evento.id}`}
-                className="bg-white overflow-hidden rounded-2xl border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow block"
-              >
-                <div className="relative h-48">
-                  <Image
-                    src={
-                      evento.coverImageUrl ??
-                      evento.event_images?.[0]?.imageUrl ??
-                      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&auto=format&fit=crop"
-                    }
-                    alt={evento.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 33vw"
-                  />
-                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                    <span className="w-5 h-1 bg-white rounded-full" />
-                    <span className="w-1 h-1 bg-white/50 rounded-full" />
-                    <span className="w-1 h-1 bg-white/50 rounded-full" />
-                    <span className="w-1 h-1 bg-white/50 rounded-full" />
-                    <span className="w-1 h-1 bg-white/50 rounded-full" />
-                  </div>
-                </div>
-                <div
-                  className="relative p-4 text-center overflow-hidden"
-                  style={{
-                    backgroundImage: "url('/assets/mc-pattern-dark-CpniB2E9.jpeg')",
-                    backgroundColor: "#1a1a1a",
-                    backgroundSize: "cover",
-                  }}
+              return (
+                <Link
+                  key={evento.id}
+                  href={`/eventos/${evento.id}`}
+                  className="bg-white overflow-hidden rounded-2xl border-0 shadow-sm cursor-pointer hover:shadow-md transition-shadow block"
                 >
-                  <div className="relative z-10">
-                    <h3 className="font-serif text-xl font-bold text-white mb-1">
-                      {evento.title}
-                    </h3>
-                    <p className="text-white/70 text-sm">
-                      {formatEventDate(evento.startDate)}
-                    </p>
-                    <div className="flex justify-center gap-2 mt-3">
-                      <span className="inline-flex items-center rounded-full border border-white/30 px-2.5 py-0.5 text-xs font-semibold text-white/80 bg-transparent">
-                        {categoriaEvento}
-                      </span>
+                  <div className="relative h-48">
+                    <Image
+                      src={
+                        evento.coverImageUrl ??
+                        evento.event_images?.[0]?.imageUrl ??
+                        "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&auto=format&fit=crop"
+                      }
+                      alt={evento.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 33vw"
+                    />
+                  </div>
+                  <div
+                    className="relative p-4 text-center overflow-hidden"
+                    style={{
+                      backgroundImage: "url('/assets/mc-pattern-dark-CpniB2E9.jpeg')",
+                      backgroundColor: "#1a1a1a",
+                      backgroundSize: "cover",
+                    }}
+                  >
+                    <div className="relative z-10">
+                      <h3 className="font-serif text-xl font-bold text-white mb-1">
+                        {evento.title}
+                      </h3>
+                      <p className="text-white/70 text-sm">
+                        {formatEventDate(evento.startDate)}
+                      </p>
+                      <div className="flex justify-center gap-2 mt-3">
+                        <span className="inline-flex items-center rounded-full border border-white/30 px-2.5 py-0.5 text-xs font-semibold text-white/80 bg-transparent">
+                          {categoriaEvento}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            );
-          })}
+                </Link>
+              );
+            })}
             {eventosFiltrados.length === 0 && (
               <div className="col-span-full rounded-2xl bg-white p-8 text-center text-[#6b6660] shadow-md border border-[#e5e0d5]">
                 Nenhum evento encontrado para os filtros selecionados.

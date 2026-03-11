@@ -1,3 +1,5 @@
+import { withCache, TTL } from "./cache";
+
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ?? "https://api.rdc-dev.com.br/api";
 
@@ -29,7 +31,11 @@ export type DailyMenu = {
   restaurants?: Restaurant;
 };
 
-export async function fetchActiveRestaurants(): Promise<Restaurant[]> {
+export function fetchActiveRestaurants(): Promise<Restaurant[]> {
+  return withCache("restaurants:list", _fetchActiveRestaurants, TTL.DEFAULT);
+}
+
+async function _fetchActiveRestaurants(): Promise<Restaurant[]> {
   try {
     const res = await fetch(`${API_BASE}/restaurants/active`, {
       next: { revalidate: 60 },
@@ -49,7 +55,11 @@ export async function fetchActiveRestaurants(): Promise<Restaurant[]> {
   }
 }
 
-export async function fetchRestaurantById(
+export function fetchRestaurantById(id: string): Promise<Restaurant | null> {
+  return withCache(`restaurants:${id}`, () => _fetchRestaurantById(id), TTL.DEFAULT);
+}
+
+async function _fetchRestaurantById(
   id: string,
 ): Promise<Restaurant | null> {
   try {
@@ -72,7 +82,15 @@ export async function fetchRestaurantById(
   }
 }
 
-export async function fetchMenusByRestaurant(
+export function fetchMenusByRestaurant(restaurantId: string): Promise<DailyMenu[]> {
+  return withCache(
+    `menus:restaurant:${restaurantId}`,
+    () => _fetchMenusByRestaurant(restaurantId),
+    TTL.DEFAULT,
+  );
+}
+
+async function _fetchMenusByRestaurant(
   restaurantId: string,
 ): Promise<DailyMenu[]> {
   try {
@@ -97,7 +115,18 @@ export async function fetchMenusByRestaurant(
   }
 }
 
-export async function fetchWeeklyMenus(
+export function fetchWeeklyMenus(
+  startDate: string,
+  restaurantId?: string,
+): Promise<DailyMenu[]> {
+  return withCache(
+    `menus:weekly:${startDate}:${restaurantId ?? ""}`,
+    () => _fetchWeeklyMenus(startDate, restaurantId),
+    TTL.DEFAULT,
+  );
+}
+
+async function _fetchWeeklyMenus(
   startDate: string,
   restaurantId?: string,
 ): Promise<DailyMenu[]> {
@@ -122,7 +151,15 @@ export async function fetchWeeklyMenus(
   }
 }
 
-export async function fetchUpcomingMenus(limit = 7): Promise<DailyMenu[]> {
+export function fetchUpcomingMenus(limit = 7): Promise<DailyMenu[]> {
+  return withCache(
+    `menus:upcoming:${limit}`,
+    () => _fetchUpcomingMenus(limit),
+    TTL.DEFAULT,
+  );
+}
+
+async function _fetchUpcomingMenus(limit = 7): Promise<DailyMenu[]> {
   try {
     const res = await fetch(
       `${API_BASE}/daily-menus/upcoming?limit=${limit}`,

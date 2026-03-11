@@ -11,9 +11,35 @@ type HeroCarouselProps = {
 
 export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   const [slides, setSlides] = useState<HeroSlide[]>(initialSlides ?? []);
-  const [current, setCurrent] = useState(0);
+  // internalIndex operates on the extended array: [lastClone, ...slides, firstClone]
+  // so real slide 0 is at internalIndex 1
+  const [internalIndex, setInternalIndex] = useState(1);
+  const [animate, setAnimate] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const isDragging = useRef(false);
   const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
+  const isTransitioning = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const len = slides.length;
+  // The "real" slide index (0-based) for content display and dots
+  const realIndex =
+    len === 0
+      ? 0
+      : internalIndex <= 0
+        ? len - 1
+        : internalIndex >= len + 1
+          ? 0
+          : internalIndex - 1;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     if (initialSlides && initialSlides.length > 0) {
@@ -22,19 +48,47 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   }, [initialSlides]);
 
   useEffect(() => {
-    setCurrent((c) => Math.min(c, Math.max(0, slides.length - 1)));
-  }, [slides.length]);
+    setInternalIndex(1);
+    setAnimate(true);
+  }, [len]);
 
   const next = useCallback(() => {
-    setCurrent((c) => (c + 1) % slides.length);
-  }, [slides.length]);
+    if (isTransitioning.current || len === 0) return;
+    isTransitioning.current = true;
+    setAnimate(true);
+    setInternalIndex((c) => c + 1);
+  }, [len]);
+
+  const prev = useCallback(() => {
+    if (isTransitioning.current || len === 0) return;
+    isTransitioning.current = true;
+    setAnimate(true);
+    setInternalIndex((c) => c - 1);
+  }, [len]);
 
   const goTo = useCallback(
     (index: number) => {
-      setCurrent(Math.max(0, Math.min(index, slides.length - 1)));
+      if (isTransitioning.current || len === 0) return;
+      isTransitioning.current = true;
+      setAnimate(true);
+      setInternalIndex(index + 1); // +1 because of prepended clone
     },
-    [slides.length],
+    [len],
   );
+
+  // After transition ends, snap to the real position if we're on a clone
+  const handleTransitionEnd = useCallback(() => {
+    isTransitioning.current = false;
+    if (internalIndex >= len + 1) {
+      // We're on the cloned first slide → jump to real first
+      setAnimate(false);
+      setInternalIndex(1);
+    } else if (internalIndex <= 0) {
+      // We're on the cloned last slide → jump to real last
+      setAnimate(false);
+      setInternalIndex(len);
+    }
+  }, [internalIndex, len]);
 
   useEffect(() => {
     const timer = setInterval(next, 5000);
@@ -42,47 +96,69 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   }, [next]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (isTransitioning.current) return;
     touchStartX.current = e.touches[0].clientX;
+    isDragging.current = true;
+    setDragOffset(0);
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    touchEndX.current = e.changedTouches[0].clientX;
-    const diff = touchStartX.current - touchEndX.current;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) next();
-      else setCurrent((c) => (c - 1 + slides.length) % slides.length);
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging.current) return;
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - touchStartX.current;
+    setDragOffset(diff);
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const containerWidth = containerRef.current?.offsetWidth ?? 1;
+    const threshold = containerWidth * 0.15;
+
+    if (dragOffset < -threshold) {
+      next();
+    } else if (dragOffset > threshold) {
+      prev();
     }
+    setDragOffset(0);
   };
 
   if (slides.length === 0) return null;
 
-  const slide = slides[current] ?? slides[0];
+  // Extended slides: [clone of last, ...real slides, clone of first]
+  const extendedSlides = [slides[len - 1], ...slides, slides[0]];
+  const slide = slides[realIndex] ?? slides[0];
 
   return (
     <section
-      className="relative w-full"
+      ref={containerRef}
+      className="relative w-full max-h-screen overflow-hidden touch-pan-y"
       onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       <div className="overflow-hidden">
         <div
-          className="flex transition-transform duration-500 ease-out"
-          style={{ transform: `translate3d(-${current * 100}%, 0px, 0px)` }}
+          className={`flex${animate && !isDragging.current ? " transition-transform duration-500 ease-out" : ""}`}
+          style={{
+            transform: `translate3d(calc(-${internalIndex * 100}% + ${dragOffset}px), 0px, 0px)`,
+          }}
+          onTransitionEnd={handleTransitionEnd}
         >
-          {slides.map((s) => (
+          {extendedSlides.map((s, i) => (
             <div
-              key={s.id}
+              key={`${s.id}-${i}`}
               className="relative flex-[0_0_100%] min-w-0 aspect-[4/5] lg:aspect-[21/9]"
             >
               <Image
-                src={s.image}
+                src={isMobile && s.mobileImage ? s.mobileImage : s.image}
                 alt={s.imageAlt ?? s.title.replace(/\n/g, " ")}
                 fill
                 className="object-cover"
                 sizes="100vw"
-                priority={slides[0]?.id === s.id}
+                priority={i === 1}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             </div>
           ))}
         </div>
@@ -96,7 +172,7 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
               {slide.title}
             </h1>
           </div>
-          <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
+          <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto hidden sm:block">
             {slide?.subtitle}
           </p>
           <Link
@@ -112,7 +188,9 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
                 type="button"
                 onClick={() => goTo(i)}
                 className={`rounded-full transition-all duration-300 ${
-                  i === current ? "h-2 w-6 bg-white" : "w-2 h-2 bg-white/30"
+                  i === realIndex
+                    ? "h-2 w-6 bg-white"
+                    : "w-2 h-2 bg-white/30"
                 }`}
                 aria-label={`Slide ${i + 1}`}
               />

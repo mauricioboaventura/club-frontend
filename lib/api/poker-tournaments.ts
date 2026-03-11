@@ -1,3 +1,5 @@
+import { withCache, TTL } from "./cache";
+
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ?? "https://api.rdc-dev.com.br/api";
 const TOURNAMENTS_API_URL = `${API_BASE}/poker-tournaments`;
@@ -14,6 +16,24 @@ export type PokerTournament = {
   status: string;
   tournamentType: string;
   coverImageUrl: string | null;
+  // Novos campos da grade
+  lateRegister: string | null;
+  blindDuration: string | null;
+  buyPromoChips: number | null;
+  buyPromoCents: number | null;
+  startingStack: number | null;
+  rebuyChips: number | null;
+  rebuyCents: number | null;
+  rebuyPromoChips: number | null;
+  rebuyPromoCents: number | null;
+  addonChips: number | null;
+  addonCents: number | null;
+  staffTaxChips: number | null;
+  staffTaxCents: number | null;
+  bonusRankingChips: number | null;
+  timeChipChips: number | null;
+  hasRabbit: boolean | null;
+  chipLeaderBonusCents: number | null;
 };
 
 type TournamentsResponse = {
@@ -21,10 +41,54 @@ type TournamentsResponse = {
   count: number;
 };
 
-export async function fetchPokerTournaments(): Promise<PokerTournament[]> {
+export type PaginatedTournaments = {
+  data: PokerTournament[];
+  total: number;
+};
+
+const PAGE_SIZE = 10;
+
+export function fetchPokerTournaments(): Promise<PokerTournament[]> {
+  return withCache("poker-tournaments", _fetchPokerTournaments, TTL.DEFAULT);
+}
+
+export async function fetchPokerTournamentsPaginated(
+  page: number,
+  limit: number = PAGE_SIZE,
+): Promise<PaginatedTournaments> {
+  const cacheKey = `poker-tournaments-p${page}-l${limit}`;
+  return withCache(cacheKey, () => _fetchPaginated(page, limit), TTL.DEFAULT);
+}
+
+async function _fetchPaginated(
+  page: number,
+  limit: number,
+): Promise<PaginatedTournaments> {
   try {
     const res = await fetch(
-      `${TOURNAMENTS_API_URL}?page=1&limit=50&orderBy=startDate&orderDirection=asc`
+      `${TOURNAMENTS_API_URL}?page=${page}&limit=${limit}&orderBy=startDate&orderDirection=asc`,
+    );
+
+    if (!res.ok) {
+      throw new Error(`Poker Tournaments API error: ${res.status}`);
+    }
+
+    const json: TournamentsResponse = await res.json();
+    const data = (json.data ?? []).filter((t) => t.isActive !== false);
+    return { data, total: json.count ?? 0 };
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[fetchPokerTournamentsPaginated]", err);
+    }
+    return { data: [], total: 0 };
+  }
+}
+
+async function _fetchPokerTournaments(): Promise<PokerTournament[]> {
+  try {
+    const res = await fetch(
+      `${TOURNAMENTS_API_URL}?page=1&limit=50&orderBy=startDate&orderDirection=asc`,
+      { next: { revalidate: 300 } },
     );
 
     if (!res.ok) {

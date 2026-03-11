@@ -9,13 +9,13 @@ import Footer from "@/components/Footer";
 export default function SharedSections() {
   const pathname = usePathname();
 
-  if (pathname === "/auth" || pathname === "/explorar") return null;
+  if (pathname === "/auth" || pathname === "/explorar" || pathname === "/sigma-poker-tour") return null;
 
   return (
     <>
-      <CtaSection />
+      {/* <CtaSection /> */}
       <AccordionSection />
-      <AppDownload />
+      {/* <AppDownload /> */}
       <Footer />
     </>
   );

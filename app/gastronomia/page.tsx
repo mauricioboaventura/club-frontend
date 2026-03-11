@@ -44,7 +44,7 @@ export default function GastronomiaPage() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
           <h1 className="text-3xl font-bold tracking-wide text-white">
             Gastronomia

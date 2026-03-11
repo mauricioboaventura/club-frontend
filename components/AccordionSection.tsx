@@ -56,7 +56,7 @@ export default function AccordionSection() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
-    <section className="bg-[#2a0303] w-full xl:max-w-[480px] mx-auto lg:max-w-full border-t border-b border-white/10">
+    <section className="bg-[#2a0303] w-full mx-auto lg:max-w-full border-t border-b border-white/10">
       {/* Desktop: 4-column grid */}
       <div className="hidden lg:block border-b border-white/10 py-8">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-4 gap-8">
@@ -81,7 +81,7 @@ export default function AccordionSection() {
       </div>
 
       {/* Mobile: accordion */}
-      <div className="lg:hidden">
+      <div className="lg:hidden py-4">
         {accordionItems.map((item) => (
           <AccordionItem
             key={item.id}

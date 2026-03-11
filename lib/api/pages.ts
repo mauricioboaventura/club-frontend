@@ -1,3 +1,4 @@
+import { withCache, TTL } from "./cache";
 import type { HeroSlide } from "./banners";
 import type { Restaurant } from "./restaurants";
 
@@ -7,6 +8,7 @@ export type HeroBanner = {
   id: string;
   section: string;
   imageUrl: string;
+  mobileImageUrl?: string | null;
   imageAlt: string | null;
   highlight: string | null;
   title: string;
@@ -50,6 +52,7 @@ export type FeaturedEvent = {
   slug: string;
   description: string | null;
   coverImageUrl: string | null;
+  mobileImageUrl?: string | null;
   startDate: string | null;
   endDate: string | null;
   location: string | null;
@@ -97,7 +100,9 @@ export type EventItem = {
   slug: string;
   description: string | null;
   shortDescription: string | null;
+  heroImageUrl?: string | null;
   coverImageUrl: string | null;
+  mobileImageUrl?: string | null;
   startDate: string | null;
   endDate: string | null;
   location: string | null;
@@ -143,6 +148,7 @@ function mapHeroBannerToSlide(b: HeroBanner): HeroSlide {
   return {
     id: b.id,
     image: b.imageUrl,
+    mobileImage: b.mobileImageUrl ?? undefined,
     imageAlt: b.imageAlt ?? undefined,
     title: b.title,
     subtitle: b.subtitle ?? "",
@@ -152,7 +158,11 @@ function mapHeroBannerToSlide(b: HeroBanner): HeroSlide {
   };
 }
 
-export async function fetchHomePage(): Promise<HomePageData> {
+export function fetchHomePage(): Promise<HomePageData> {
+  return withCache("pages:home", _fetchHomePage, TTL.DEFAULT);
+}
+
+async function _fetchHomePage(): Promise<HomePageData> {
   try {
     const res = await fetch(`${API_BASE}/pages/home`, {
       next: { revalidate: 60 },
@@ -224,7 +234,11 @@ export async function fetchHomePage(): Promise<HomePageData> {
   }
 }
 
-export async function fetchEventosPage(): Promise<EventosPageData> {
+export function fetchEventosPage(): Promise<EventosPageData> {
+  return withCache("pages:eventos", _fetchEventosPage, TTL.DEFAULT);
+}
+
+async function _fetchEventosPage(): Promise<EventosPageData> {
   try {
     const res = await fetch(`${API_BASE}/pages/eventos`, {
       next: { revalidate: 60 },
@@ -288,7 +302,11 @@ export async function fetchEventosPage(): Promise<EventosPageData> {
   }
 }
 
-export async function fetchEventById(id: string): Promise<EventItem | null> {
+export function fetchEventById(id: string): Promise<EventItem | null> {
+  return withCache(`events:${id}`, () => _fetchEventById(id), TTL.DEFAULT);
+}
+
+async function _fetchEventById(id: string): Promise<EventItem | null> {
   try {
     const res = await fetch(`${API_BASE}/events/${id}`, {
       next: { revalidate: 60 },

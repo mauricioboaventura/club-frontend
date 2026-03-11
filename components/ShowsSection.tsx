@@ -75,9 +75,17 @@ export default function ShowsSection({ featuredEvents }: ShowsSectionProps) {
 
   return (
     <section className="py-6 pb-28 max-w-[480px] mx-auto lg:max-w-7xl lg:px-6 bg-[#fcfaf6]">
-      <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c] mb-4 px-4">
-        Shows & Eventos
-      </h2>
+      <div className="flex items-center justify-between px-4 mb-4">
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c]">
+          Shows & Eventos
+        </h2>
+        <Link
+          href="/eventos"
+          className="text-sm text-[#8c8c8c] underline underline-offset-2 hover:text-[#525252] transition-colors"
+        >
+          Ver tudo
+        </Link>
+      </div>
       <div className="flex gap-4 overflow-x-auto scroll-hidden px-4 pb-2 lg:grid lg:grid-cols-3 lg:gap-4">
         {items.map((card) => (
           <Link
@@ -85,7 +93,7 @@ export default function ShowsSection({ featuredEvents }: ShowsSectionProps) {
             href={card.link}
             className="relative flex-shrink-0 w-72 lg:w-auto rounded-xl overflow-hidden bg-white border border-[#8b1a1a]/10 hover:border-[#8b1a1a]/20 transition-colors"
           >
-            <div className="relative h-32">
+            <div className="relative h-40">
               <Image
                 src={card.image}
                 alt={card.title}

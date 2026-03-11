@@ -1,12 +1,12 @@
 import Link from "next/link";
 
 const ctaBlocks = [
-  {
-    id: 1,
-    title: "Monte Carlo Rewards",
-    buttonText: "Conheça o programa",
-    href: "/rewards",
-  },
+  // {
+  //   id: 1,
+  //   title: "Monte Carlo Rewards",
+  //   buttonText: "Conheça o programa",
+  //   href: "/rewards",
+  // },
   {
     id: 2,
     title: "Entre ou cadastre-se",

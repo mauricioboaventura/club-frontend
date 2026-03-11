@@ -15,7 +15,7 @@ export type RankingNav = {
 const NAV_LINKS = [
   { label: "Eventos", href: "/eventos" },
   { label: "Gastronomia", href: "/gastronomia" },
-  { label: "Vida Noturna", href: "/explorar" },
+  // { label: "Vida Noturna", href: "/explorar" },
 ];
 
 export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
@@ -45,6 +45,8 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  if (pathname === "/sigma-poker-tour") return null;
 
   const headerBg = isTransparent ? "gradient-header" : "bg-[#430904]";
 
@@ -76,7 +78,7 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
                   className="h-8 w-auto"
                 />
                 <Image
-                  src="/images/logo-montecarlo-text.png"
+                  src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/gallery-photos/logo-nome-MC.svg"
                   alt="Monte Carlo"
                   width={120}
                   height={36}
@@ -177,12 +179,12 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
                 >
                   <Search className="h-4 w-4" strokeWidth={1.5} />
                 </button> */}
-                <Link
+                {/* <Link
                   href="/auth"
                   className="inline-flex h-10 items-center justify-center rounded-md border border-white/60 bg-transparent px-5 py-2 text-sm font-medium text-white hover:bg-white hover:text-[#2A0303] transition-colors"
                 >
                   Entrar ou cadastrar-se
-                </Link>
+                </Link> */}
               </div>
             </div>
           </div>
@@ -191,7 +193,7 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
         {/* Mobile */}
         <div className="lg:hidden">
           <div className="relative z-10 flex items-center justify-between px-4 h-14 max-w-[480px] mx-auto">
-            <button
+            {/* <button
               type="button"
               className="h-8 w-8 flex items-center justify-center rounded-full border border-white/40 bg-transparent text-white hover:bg-white/10 relative flex-shrink-0 z-20"
               aria-label="Abrir menu"
@@ -202,7 +204,7 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
                 className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500"
                 aria-hidden="true"
               />
-            </button>
+            </button> */}
 
             <Link
               href="/"
@@ -224,13 +226,13 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
               />
             </Link>
 
-            <button
+            {/* <button
               type="button"
               className="h-8 w-8 flex items-center justify-center rounded-md text-white hover:bg-white/10"
               aria-label="Buscar"
             >
               <Search className="h-4 w-4" strokeWidth={1.5} />
-            </button>
+            </button> */}
           </div>
         </div>
       </header>
