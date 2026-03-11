@@ -76,12 +76,12 @@ function PokerContent() {
             src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-WEB-SPCity.png"
             alt="Torneios"
             fill
-            className="object-cover"
+            className="object-cover object-top"
             sizes="100vw"
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
-          <div className="absolute bottom-4 left-4 right-4 text-center">
+          <div className="absolute bottom-4 left-4 right-4 text-center hidden xl:block">
             <h1 className="text-2xl font-bold text-white">Poker Monte Carlo</h1>
             <p className="text-white/80 text-sm mt-1">
               Experimente o poker de alto nível no Monte Carlo Poker Club. Com mesas de cash game funcionando 24 horas e torneios diários, oferecemos a melhor experiência para jogadores de todos os níveis.

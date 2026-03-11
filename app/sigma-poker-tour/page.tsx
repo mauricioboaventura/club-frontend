@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Script from "next/script";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -74,7 +75,7 @@ const SCHEDULE: DaySchedule[] = [
         time: "12:00",
         title: "Main Event — Day 1A",
         buyIn: "R$ 1.500 + 150",
-        guaranteed: "R$ 500.000",
+        guaranteed: "R$ 1.000.000",
       },
       {
         time: "15:00",
@@ -99,7 +100,7 @@ const SCHEDULE: DaySchedule[] = [
         time: "12:00",
         title: "Main Event — Day 1B",
         buyIn: "R$ 1.500 + 150",
-        guaranteed: "R$ 500.000",
+        guaranteed: "R$ 1.000.000",
       },
       {
         time: "15:00",
@@ -123,7 +124,7 @@ const SCHEDULE: DaySchedule[] = [
         time: "12:00",
         title: "Main Event — Day 2 (Final Day)",
         buyIn: "—",
-        guaranteed: "R$ 500.000",
+        guaranteed: "R$ 1.000.000",
       },
       {
         time: "14:00",
@@ -143,6 +144,17 @@ const SCHEDULE: DaySchedule[] = [
 
 export default function SigmaPokerTourPage() {
   const [activeDay, setActiveDay] = useState(0);
+
+  useEffect(() => {
+    // Se o script já estiver carregado por outra página (navegação SPA),
+    // o onLoad do Script não dispara — então inicializamos aqui diretamente.
+    if (typeof (window as any).RDStationForms !== "undefined") {
+      new (window as any).RDStationForms(
+        "sigma-d22a495d576c4dcaefa5",
+        "null"
+      ).createForm();
+    }
+  }, []);
 
   function scrollToForm() {
     document
@@ -174,21 +186,35 @@ export default function SigmaPokerTourPage() {
       </nav>
 
       {/* ── Hero ── */}
-      <section className="relative min-h-[90vh] lg:min-h-[80vh] flex items-end">
+      <section className="relative min-h-[90vh] lg:min-h-[80vh] flex items-end mt-8">
         {/* Background — trocar pela imagem real quando disponível */}
         <div className="absolute inset-0 bg-[#1a0505]">
+          {/* Desktop */}
           <Image
             src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-WEB-SPCity.png"
             alt="Sigma Poker Tour"
             fill
-            className="object-cover"
+            className="object-cover hidden md:block"
             priority
             sizes="100vw"
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = "none";
             }}
           />
-
+          {/* Mobile */}
+          <Image
+            src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-MOBILE-SPCity.png"
+            alt="Sigma Poker Tour"
+            fill
+            className="object-cover block md:hidden"
+            priority
+            sizes="100vw"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+            }}
+          />
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-[#1a0505]/50" />
         </div>
 
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 pb-16 pt-24">
@@ -242,7 +268,7 @@ export default function SigmaPokerTourPage() {
             {EVENT_INFO.description}
           </p>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
             {[
               {
                 icon: Calendar,
@@ -251,18 +277,13 @@ export default function SigmaPokerTourPage() {
               },
               {
                 icon: Trophy,
-                label: "R$ 500K",
+                label: "R$ 1M",
                 sub: "garantidos no Main Event",
               },
               {
-                icon: Users,
-                label: "500+",
-                sub: "jogadores esperados",
-              },
-              {
                 icon: Star,
-                label: "10+",
-                sub: "torneios programados",
+                label: "3 Satélites",
+                sub: "para o Main Event",
               },
             ].map((item) => (
               <div
@@ -391,36 +412,18 @@ export default function SigmaPokerTourPage() {
             do evento.
           </p>
 
-          {/*
-            ╔══════════════════════════════════════════════════════╗
-            ║  FORMULÁRIO RD STATION — PLACEHOLDER                ║
-            ║                                                      ║
-            ║  Cole aqui o código embed gerado pelo RD Station.    ║
-            ║  Campos esperados: Nome, Email, Telefone, CPF.       ║
-            ║                                                      ║
-            ║  O script do RD Station já está carregado globalmente ║
-            ║  no layout.tsx. Basta colar o HTML do formulário.     ║
-            ╚══════════════════════════════════════════════════════╝
-          */}
-          <div
-            id="rd-station-form"
-            className="min-h-[400px] rounded-2xl border-2 border-dashed border-[#8b1a1a]/20 bg-[#f9f8f0] flex items-center justify-center p-8"
-          >
-            <div className="text-center text-[#5f5a54]">
-              <div className="w-16 h-16 rounded-full bg-[#8b1a1a]/10 flex items-center justify-center mx-auto mb-4">
-                <Users className="h-7 w-7 text-[#8b1a1a]" />
-              </div>
-              <p className="font-semibold text-[#1a1a1a] mb-1">
-                Formulário de inscrição
-              </p>
-              <p className="text-sm">
-                O formulário do RD Station será exibido aqui.
-              </p>
-              <p className="text-xs mt-2 text-[#5f5a54]/60">
-                Cole o código embed do RD Station dentro desta div.
-              </p>
-            </div>
-          </div>
+          <div role="main" id="sigma-d22a495d576c4dcaefa5" />
+          <Script
+            src="https://d335luupugsy2.cloudfront.net/js/rdstation-forms/stable/rdstation-forms.min.js"
+            strategy="afterInteractive"
+            onLoad={() => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              new (window as any).RDStationForms(
+                "sigma-d22a495d576c4dcaefa5",
+                "null"
+              ).createForm();
+            }}
+          />
         </div>
       </section>
 
@@ -452,7 +455,7 @@ export default function SigmaPokerTourPage() {
               <p className="text-sm text-[#5f5a54] leading-relaxed">
                 Mais de R$ 1 milhão em premiação
                 <br />
-                Main Event com R$ 500K garantidos
+                Main Event com R$ 1 milhão garantido
               </p>
             </div>
           </div>

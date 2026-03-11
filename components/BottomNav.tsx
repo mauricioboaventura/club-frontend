@@ -33,7 +33,7 @@ export default function BottomNav() {
   if (pathname === "/auth" || pathname === "/sigma-poker-tour") return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 max-w-[480px] mx-auto pb-[var(--safe-bottom)] lg:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 mx-auto pb-[var(--safe-bottom)] lg:hidden">
       <div className="flex items-center justify-around py-3 px-2 bg-white">
         {navItems.map((item) => {
           const isActive =

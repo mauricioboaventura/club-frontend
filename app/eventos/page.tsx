@@ -247,7 +247,7 @@ export default function EventosPage() {
                 Garantir Entrada
               </button>
               <div className="flex justify-center gap-2 pt-2 w-full max-w-2xl mx-auto px-4">
-                {heroSlides.map((slide, i) => (
+                {heroSlides.length > 1 && heroSlides.map((slide, i) => (
                   <button
                     key={slide.id}
                     type="button"
@@ -350,13 +350,6 @@ export default function EventosPage() {
                       className="object-cover"
                       sizes="(max-width: 1024px) 100vw, 33vw"
                     />
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                      <span className="w-5 h-1 bg-white rounded-full" />
-                      <span className="w-1 h-1 bg-white/50 rounded-full" />
-                      <span className="w-1 h-1 bg-white/50 rounded-full" />
-                      <span className="w-1 h-1 bg-white/50 rounded-full" />
-                      <span className="w-1 h-1 bg-white/50 rounded-full" />
-                    </div>
                   </div>
                   <div
                     className="relative p-4 text-center overflow-hidden"
