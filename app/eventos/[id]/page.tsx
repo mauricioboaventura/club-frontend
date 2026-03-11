@@ -1,6 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, Clock, MapPin, Ticket } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, MapPin, Ticket } from "lucide-react";
 import { fetchEventById } from "@/lib/api/pages";
 
 type EventDetailPageProps = {
@@ -58,7 +59,16 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           className={`object-cover ${mobileImageUrl ? "hidden lg:block" : ""}`}
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
+        {/* <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" /> */}
+        <div className="absolute top-0 left-0 right-0 px-6 pt-20 lg:pt-[4.5rem]">
+          <Link
+            href="/eventos"
+            className="inline-flex items-center gap-2 text-sm font-medium text-white hover:underline"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Voltar para Eventos
+          </Link>
+        </div>
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
           <h1 className="text-3xl font-bold">{event.title}</h1>
           {event.shortDescription && (

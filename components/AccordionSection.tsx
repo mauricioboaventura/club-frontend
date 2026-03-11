@@ -81,7 +81,7 @@ export default function AccordionSection() {
       </div>
 
       {/* Mobile: accordion */}
-      <div className="lg:hidden">
+      <div className="lg:hidden py-4">
         {accordionItems.map((item) => (
           <AccordionItem
             key={item.id}

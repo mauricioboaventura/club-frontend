@@ -18,10 +18,10 @@ import {
 
 const EVENT_INFO = {
   title: "Sigma Poker Tour",
-  subtitle: "O maior torneio de poker do Monte Carlo Poker Club",
-  dates: "17 a 20 de Abril de 2026",
+  subtitle: "Onde os melhores talentos do poker se encontram para fazer história",
+  dates: "03 a 07 de Abril de 2026",
   location: "Monte Carlo Poker Club",
-  address: "Brasília, DF",
+  address: "São Paulo, SP",
   description:
     "Quatro dias de ação intensa no felt. O Sigma Poker Tour reúne jogadores de todo o Brasil para uma experiência inesquecível de torneios, cash games e muito entretenimento. Garanta já sua vaga!",
 };
