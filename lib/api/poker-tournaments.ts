@@ -105,6 +105,30 @@ async function _fetchPokerTournaments(): Promise<PokerTournament[]> {
   }
 }
 
+export async function fetchWeekTournaments(
+  weekStart: string,
+  weekEnd: string
+): Promise<PokerTournament[]> {
+  try {
+    const res = await fetch(
+      `${TOURNAMENTS_API_URL}/week?weekStart=${encodeURIComponent(weekStart)}&weekEnd=${encodeURIComponent(weekEnd)}`,
+      { cache: "no-store" }
+    );
+
+    if (!res.ok) {
+      throw new Error(`Poker Tournaments week API error: ${res.status}`);
+    }
+
+    const json: TournamentsResponse = await res.json();
+    return json.data ?? [];
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[fetchWeekTournaments]", err);
+    }
+    return [];
+  }
+}
+
 export function formatCentsToReal(cents: number): string {
   return (cents / 100).toLocaleString("pt-BR", {
     style: "currency",
