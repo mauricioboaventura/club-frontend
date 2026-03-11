@@ -47,7 +47,7 @@ export default function GastronomySection({ restaurants }: GastronomySectionProp
                 {restaurant.description}
               </p>
               <span className="inline-flex items-center justify-center rounded-md px-3 w-full h-8 text-xs font-medium border border-[#8b1a1a]/30 text-[#8b1a1a] hover:bg-[#8b1a1a]/10 transition-colors">
-                Fazer reserva
+                Cardápio
               </span>
             </div>
           </Link>

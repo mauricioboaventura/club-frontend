@@ -390,7 +390,7 @@ export default function SigmaPokerTourPage() {
             src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-WEB-SPCity.png"
             alt="Sigma Poker Tour"
             fill
-            className="object-cover hidden md:block"
+            className="object-cover object-top hidden md:block"
             priority
             sizes="100vw"
             onError={(e) => {
@@ -402,7 +402,7 @@ export default function SigmaPokerTourPage() {
             src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-MOBILE-SPCity.png"
             alt="Sigma Poker Tour"
             fill
-            className="object-cover block md:hidden"
+            className="object-cover object-top block md:hidden"
             priority
             sizes="100vw"
             onError={(e) => {
