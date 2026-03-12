@@ -93,23 +93,23 @@ function buildTournamentDetailSections(
   tournament: PokerTournament,
 ): TournamentDetailSection[] {
   const generalItems = [
-    getDetail("Data e horário", formatTournamentDate(tournament.startDate)),
+    // getDetail("Data e horário", formatTournamentDate(tournament.startDate)),
     getDetail("Buy-in", formatCentsToReal(tournament.buyInCents)),
     getDetail(
       "Garantido",
       formatCentsToReal(tournament.guaranteedPrizeCents),
       "accent",
     ),
-    getDetail("Status", formatHumanizedText(tournament.status)),
-    getDetail("Tipo de torneio", formatHumanizedText(tournament.tournamentType)),
+    // getDetail("Status", formatHumanizedText(tournament.status)),
+    // getDetail("Tipo de torneio", formatHumanizedText(tournament.tournamentType)),
   ].filter((item): item is TournamentDetail => Boolean(item));
 
   const structureItems = [
-    getDetail("Registro tardio", getTextOrNull(tournament.lateRegister)),
+    getDetail("Late register", getTextOrNull(tournament.lateRegister)),
     getDetail("Duração dos blinds", getTextOrNull(tournament.blindDuration)),
     getDetail("Stack inicial", formatOptionalChips(tournament.startingStack)),
     getDetail(
-      "Buy promo",
+      "Buy-in promo",
       formatChipsAndCurrency(tournament.buyPromoChips, tournament.buyPromoCents),
     ),
     getDetail(
