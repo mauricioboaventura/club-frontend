@@ -328,19 +328,15 @@ function PokerContent() {
       {/* Tournament Detail Modal */}
       {selectedTournament && (
         <div
-          className="fixed inset-0 z-50"
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+          style={{ padding: 'max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left))' }}
           onClick={() => setSelectedTournament(null)}
         >
-          <div className="fixed inset-0 bg-black/50" />
           <div
-            className="fixed inset-0 overflow-y-auto"
-            style={{ WebkitOverflowScrolling: "touch" }}
+            className="bg-white rounded-2xl p-6 max-w-md w-full relative overflow-y-auto"
+            style={{ maxHeight: 'min(85dvh, calc(100dvh - 2 * max(1rem, env(safe-area-inset-top))))' }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex min-h-full items-start justify-center px-4 py-8">
-              <div
-                className="bg-white rounded-2xl p-6 max-w-md w-full relative my-auto"
-                onClick={(e) => e.stopPropagation()}
-              >
             <button
               type="button"
               onClick={() => setSelectedTournament(null)}
@@ -517,8 +513,6 @@ function PokerContent() {
             >
               Realizar inscrição!
             </Link> */}
-              </div>
-            </div>
           </div>
         </div>
       )}

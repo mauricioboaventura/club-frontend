@@ -218,12 +218,13 @@ export default function Header({ rankings = [] }: { rankings?: RankingNav[] }) {
                 className="h-7 w-auto"
               />
               <Image
-                src="/images/logo-montecarlo-text.png"
+                  src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/gallery-photos/logo-nome-MC.svg"
                 alt="Monte Carlo Poker Club"
                 width={96}
                 height={32}
-                className="h-8 w-auto self-end translate-y-1"
+                className="h-10 w-auto self-end translate-y-1"
               />
+              {/* h-9 w-auto self-end translate-y-1 */}
             </Link>
 
             {/* <button
