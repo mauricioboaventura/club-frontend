@@ -494,11 +494,13 @@ export default function PokerTournamentSchedule({
       {/* Tournament Detail Modal */}
       {selectedTournament && (
         <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+          style={{ padding: 'max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left))' }}
           onClick={() => setSelectedTournament(null)}
         >
           <div
-            className="bg-white rounded-2xl p-6 max-w-md w-[calc(100%-2rem)] relative max-h-[85vh] overflow-y-auto"
+            className="bg-white rounded-2xl p-6 max-w-md w-full relative overflow-y-auto"
+            style={{ maxHeight: 'min(85dvh, calc(100dvh - 2 * max(1rem, env(safe-area-inset-top))))' }}
             onClick={(e) => e.stopPropagation()}
           >
             <button

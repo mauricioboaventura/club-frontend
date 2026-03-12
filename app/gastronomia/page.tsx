@@ -36,14 +36,16 @@ export default function GastronomiaPage() {
   return (
     <main className="min-h-screen bg-[#f9f8f0]">
       {/* Hero */}
-      <section className="relative h-[50vh] min-h-[320px] w-full">
-        <Image
-          src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&auto=format&fit=crop"
-          alt="Gastronomia Monte Carlo"
-          fill
-          className="object-cover"
-          priority
+      <section className="relative h-[50vh] min-h-[320px] w-full overflow-hidden">
+        <video
+          src="/images/video/GASTRONOMIA.mov"
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/0 to-black/0" />
         <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
           <h1 className="text-3xl font-bold tracking-wide text-white">
             Gastronomia
