@@ -63,7 +63,6 @@ export default function RewardsPage() {
             sizes="100vw"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         </div>
         <div className="absolute bottom-0 left-0 right-0 p-6 lg:px-0">
           <div className="max-w-[480px] mx-auto lg:max-w-7xl lg:mx-auto lg:px-6">

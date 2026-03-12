@@ -228,7 +228,6 @@ export default function EventosPage() {
                   sizes="100vw"
                   priority={index === 0}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               </div>
             ))}
           </div>
