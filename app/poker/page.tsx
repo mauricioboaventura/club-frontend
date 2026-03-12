@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,6 +44,7 @@ function PokerContent() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   // Sync viewMode with URL tab param (handles client-side navigation)
   useEffect(() => {
@@ -59,15 +60,33 @@ function PokerContent() {
     });
   }, []);
 
-  const loadMore = async () => {
+  const loadMore = useCallback(async () => {
     const nextPage = page + 1;
     setLoadingMore(true);
     const { data, total } = await fetchPokerTournamentsPaginated(nextPage);
-    setTournaments((prev) => [...prev, ...data]);
+    setTournaments((prev) => {
+      const updated = [...prev, ...data];
+      setHasMore(updated.length < total);
+      return updated;
+    });
     setPage(nextPage);
-    setHasMore(tournaments.length + data.length < total);
     setLoadingMore(false);
-  };
+  }, [page]);
+
+  // Infinite scroll via IntersectionObserver
+  useEffect(() => {
+    if (!sentinelRef.current || !hasMore || loading) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loadingMore) {
+          loadMore();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, loading, loadingMore, loadMore]);
 
   const tournamentsByDay = tournaments.reduce((groups, t) => {
     const day = t.startDate.slice(0, 10);
@@ -234,17 +253,13 @@ function PokerContent() {
               </div>
             )}
 
-            {/* Carregar mais */}
-            {!loading && hasMore && tournaments.length > 0 && (
+            {/* Infinite scroll sentinel */}
+            {!loading && tournaments.length > 0 && (
+              <div ref={sentinelRef} className="h-1" />
+            )}
+            {loadingMore && (
               <div className="flex justify-center mt-6">
-                <button
-                  type="button"
-                  onClick={loadMore}
-                  disabled={loadingMore}
-                  className="px-6 py-2.5 rounded-lg text-sm font-medium border border-[#5C0F08] text-[#5C0F08] hover:bg-[#5C0F08] hover:text-white transition-colors disabled:opacity-50"
-                >
-                  {loadingMore ? "Carregando..." : "Carregar mais"}
-                </button>
+                <span className="text-sm text-[#6b6660]">Carregando...</span>
               </div>
             )}
           </>
