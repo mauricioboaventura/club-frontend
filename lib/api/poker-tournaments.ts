@@ -145,6 +145,17 @@ export function formatTournamentDate(dateStr: string): string {
   });
 }
 
+export function formatTournamentDateHours(dateStr: string): string {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("pt-BR", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export function formatTournamentTime(dateStr: string): string {
   const date = new Date(dateStr);
   return date.toLocaleTimeString("pt-BR", {
