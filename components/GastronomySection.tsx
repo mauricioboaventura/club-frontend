@@ -13,12 +13,12 @@ export default function GastronomySection({ restaurants }: GastronomySectionProp
   return (
     <section className="py-6 max-w-[480px] mx-auto lg:max-w-7xl lg:px-6 bg-[#fcfaf6]">
       <div className="flex items-center justify-between px-4 mb-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c]">
+        <h2 className="text-xs font-medium uppercase tracking-[0.3em] text-[#8b1a1a]">
           Gastronomia
         </h2>
         <Link
           href="/gastronomia"
-          className="text-sm text-[#8c8c8c] underline underline-offset-2 hover:text-[#525252] transition-colors"
+          className="text-sm text-[#8b1a1a] underline underline-offset-2 hover:text-[#6b1515] transition-colors"
         >
           Ver tudo
         </Link>
@@ -43,7 +43,7 @@ export default function GastronomySection({ restaurants }: GastronomySectionProp
               <h3 className="text-sm font-bold text-[#1a1a1a] mb-2">
                 {restaurant.name}
               </h3>
-              <p className="text-xs text-[#8c8c8c] mb-3 line-clamp-2">
+              <p className="text-xs text-[#6b6660] mb-3 line-clamp-2">
                 {restaurant.description}
               </p>
               <span className="inline-flex items-center justify-center rounded-md px-3 w-full h-8 text-xs font-medium border border-[#8b1a1a]/30 text-[#8b1a1a] hover:bg-[#8b1a1a]/10 transition-colors">

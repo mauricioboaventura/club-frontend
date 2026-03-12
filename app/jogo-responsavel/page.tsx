@@ -6,10 +6,10 @@ export default function JogoResponsavelPage() {
     <main className="min-h-screen bg-[#f9f8f0]">
       <section className="relative bg-[#430904] pt-24 pb-10 lg:pt-28 lg:pb-14">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+          <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white">
             Jogo Responsável
           </h1>
-          <p className="text-white/70 mt-2 text-sm sm:text-base">
+          <p className="text-white/80 mt-2 text-sm lg:text-base leading-relaxed">
             Se você joga, jogue com responsabilidade
           </p>
         </div>
@@ -25,13 +25,13 @@ export default function JogoResponsavelPage() {
 
         <div className="flex items-center gap-3 p-4 rounded-xl bg-[#8b1a1a]/10 border border-[#8b1a1a]/20">
           <Heart className="h-6 w-6 text-[#8b1a1a] flex-shrink-0" />
-          <p className="text-sm text-[#3a3a3a]">
+          <p className="text-sm text-[#525252]">
             O Monte Carlo Poker Club incentiva o jogo responsável e o bem-estar
             de todos os seus participantes.
           </p>
         </div>
 
-        <div className="prose prose-neutral max-w-none text-[#3a3a3a]">
+        <div className="prose prose-neutral max-w-none text-[#525252]">
           <h2>O que é Jogo Responsável?</h2>
           <p>
             O jogo responsável é a prática de jogar de forma consciente,

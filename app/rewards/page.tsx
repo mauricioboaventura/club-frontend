@@ -102,13 +102,13 @@ export default function RewardsPage() {
 
       {/* Recompensas que Levam Você */}
       <div className="px-4 py-8 lg:py-16 lg:max-w-7xl lg:mx-auto lg:px-6">
-        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#525252] mb-3">
+        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#1a1a1a] leading-tight mb-3">
           Recompensas que Levam Você a Todos os Lugares.
         </h2>
-        <h3 className="font-serif text-xl lg:text-2xl font-bold text-[#525252] mb-4">
+        <h3 className="font-serif text-xl lg:text-2xl font-bold text-[#1a1a1a] leading-tight mb-4">
           Ganhe Mais, Aproveite Mais
         </h3>
-        <p className="text-[#8C8C8C] text-sm lg:text-base leading-relaxed max-w-3xl mb-6">
+        <p className="text-[#525252] text-sm lg:text-base leading-relaxed max-w-3xl mb-6">
           Agora cada momento que você vive conosco conta para algo mais. De
           estadias luxuosas a experiências gastronômicas e jogos de mesa
           envolventes, sua aventura gera recompensas. Pronto para reviver a
@@ -132,7 +132,7 @@ export default function RewardsPage() {
 
       {/* Ganhe do Seu Jeito */}
       <div className="px-4 py-8 lg:py-16 lg:max-w-7xl lg:mx-auto lg:px-6">
-        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#525252] mb-6">
+        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#1a1a1a] leading-tight mb-6">
           Ganhe do Seu Jeito.
         </h2>
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
@@ -156,7 +156,7 @@ export default function RewardsPage() {
             </div>
           </div>
           <div className="w-full lg:w-1/2">
-            <p className="text-[#8C8C8C] text-sm lg:text-base leading-relaxed mb-6">
+            <p className="text-[#525252] text-sm lg:text-base leading-relaxed mb-6">
               Com mais formas de ganhar, avance no seu Status de Nível. À medida
               que sobe de nível, desbloqueie benefícios exclusivos criados para
               tornar sua jornada com o MC Rewards ainda melhor. Além disso, com
@@ -175,12 +175,12 @@ export default function RewardsPage() {
 
       {/* Mais Benefícios */}
       <div className="px-4 py-8 lg:py-16 lg:max-w-7xl lg:mx-auto lg:px-6">
-        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#525252] mb-6">
+        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#1a1a1a] leading-tight mb-6">
           Mais Benefícios. Mais Razões para Subir de Nível.
         </h2>
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
           <div className="w-full lg:w-1/2 order-2 lg:order-1">
-            <p className="text-[#8C8C8C] text-sm lg:text-base leading-relaxed mb-6">
+            <p className="text-[#525252] text-sm lg:text-base leading-relaxed mb-6">
               O MC Rewards tem mais formas de ganhar, acelerando seu caminho para
               benefícios novos e exclusivos.
             </p>
@@ -213,7 +213,7 @@ export default function RewardsPage() {
 
       {/* Promoções Atuais */}
       <div className="px-4 py-8 lg:py-16 lg:max-w-7xl lg:mx-auto lg:px-6">
-        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#525252] mb-6">
+        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#1a1a1a] leading-tight mb-6">
           Promoções Atuais
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -225,10 +225,10 @@ export default function RewardsPage() {
               height={225}
               className="w-full rounded-xl aspect-[16/9] object-cover mb-4"
             />
-            <h3 className="font-semibold text-[#525252] text-lg mb-2">
+            <h3 className="font-semibold text-[#1a1a1a] text-lg mb-2">
               Leve o Monte Carlo para casa
             </h3>
-            <p className="text-sm text-[#8C8C8C] leading-relaxed mb-4">
+            <p className="text-sm text-[#6b6660] leading-relaxed mb-4">
               Registre-se agora e comece a apostar nos seus esportes favoritos
               com o app BetMC.
             </p>
@@ -247,10 +247,10 @@ export default function RewardsPage() {
               height={225}
               className="w-full rounded-xl aspect-[16/9] object-cover mb-4"
             />
-            <h3 className="font-semibold text-[#525252] text-lg mb-2">
+            <h3 className="font-semibold text-[#1a1a1a] text-lg mb-2">
               Ofertas exclusivas
             </h3>
-            <p className="text-sm text-[#8C8C8C] leading-relaxed mb-4">
+            <p className="text-sm text-[#6b6660] leading-relaxed mb-4">
               Desbloqueie acesso exclusivo a tarifas especiais e ofertas
               reservadas para membros MC Rewards.
             </p>
@@ -266,7 +266,7 @@ export default function RewardsPage() {
 
       {/* Cartões MC Rewards */}
       <div className="px-4 py-8 lg:py-16 lg:max-w-7xl lg:mx-auto lg:px-6">
-        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#525252] mb-6">
+        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#1a1a1a] leading-tight mb-6">
           Cartões MC Rewards e Gift Cards
         </h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -278,10 +278,10 @@ export default function RewardsPage() {
               height={225}
               className="w-full rounded-xl aspect-[16/9] object-cover mb-4"
             />
-            <h3 className="font-semibold text-[#525252] text-lg mb-2">
+            <h3 className="font-semibold text-[#1a1a1a] text-lg mb-2">
               Acelerador de status de nível
             </h3>
-            <p className="text-sm text-[#8C8C8C] leading-relaxed mb-4">
+            <p className="text-sm text-[#6b6660] leading-relaxed mb-4">
               Agora até 31 de março de 2026, apenas nos destinos MC Rewards.
             </p>
             <Link
@@ -299,10 +299,10 @@ export default function RewardsPage() {
               height={225}
               className="w-full rounded-xl aspect-[16/9] object-cover mb-4"
             />
-            <h3 className="font-semibold text-[#525252] text-lg mb-2">
+            <h3 className="font-semibold text-[#1a1a1a] text-lg mb-2">
               Ganhe até 30.000 pontos bônus
             </h3>
-            <p className="text-sm text-[#8C8C8C] leading-relaxed mb-4">
+            <p className="text-sm text-[#6b6660] leading-relaxed mb-4">
               Com os cartões de crédito MC Rewards e desbloqueie vantagens e
               status exclusivos.
             </p>
@@ -318,7 +318,7 @@ export default function RewardsPage() {
 
       {/* Mais MC Rewards */}
       <div className="px-4 py-8 lg:py-16 lg:max-w-7xl lg:mx-auto lg:px-6">
-        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#525252] mb-6">
+        <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#1a1a1a] leading-tight mb-6">
           Mais MC Rewards
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -337,10 +337,10 @@ export default function RewardsPage() {
                 />
               </div>
               <div className="p-4 flex flex-col flex-1">
-                <h3 className="font-semibold text-[#525252] text-sm mb-2">
+                <h3 className="font-semibold text-[#1a1a1a] text-sm mb-2">
                   {card.title}
                 </h3>
-                <p className="text-xs text-[#8C8C8C] leading-relaxed mb-4 flex-1">
+                <p className="text-xs text-[#6b6660] leading-relaxed mb-4 flex-1">
                   {card.description}
                 </p>
                 <Link
@@ -353,7 +353,7 @@ export default function RewardsPage() {
             </article>
           ))}
         </div>
-        <p className="text-xs text-[#8C8C8C] mt-8">
+        <p className="text-xs text-[#6b6660] mt-8">
           *Sujeito às regras do Programa MC Rewards.
         </p>
       </div>

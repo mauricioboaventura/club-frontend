@@ -45,7 +45,7 @@ export default function MenuCard({ menu }: { menu: DailyMenu }) {
         )}
 
         {sections.length === 0 && !menu.description && (
-          <p className="text-sm text-[#8c8c8c] italic">
+          <p className="text-sm text-[#6b6660] italic">
             Cardápio ainda não detalhado.
           </p>
         )}

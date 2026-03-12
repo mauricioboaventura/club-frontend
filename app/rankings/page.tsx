@@ -9,10 +9,10 @@ export default async function RankingsPage() {
     <main className="min-h-screen bg-[#f9f8f0]">
       <section className="relative bg-[#430904] pt-24 pb-10 lg:pt-28 lg:pb-14">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+          <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white">
             Rankings
           </h1>
-          <p className="text-white/70 mt-2 text-sm sm:text-base">
+          <p className="text-white/80 mt-2 text-sm lg:text-base leading-relaxed">
             Acompanhe os rankings ativos do Monte Carlo Poker Club
           </p>
         </div>
@@ -22,7 +22,7 @@ export default async function RankingsPage() {
         {rankings.length === 0 ? (
           <div className="text-center py-16">
             <Trophy className="h-12 w-12 text-[#ccc] mx-auto mb-4" />
-            <p className="text-[#5f5a54] text-lg">
+            <p className="text-[#6b6660] text-lg">
               Nenhum ranking disponível no momento.
             </p>
           </div>

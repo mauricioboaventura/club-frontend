@@ -135,7 +135,7 @@ export default function RestaurantDetailPage({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-black/0 to-black/0" />
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-          <h1 className="text-3xl font-bold">{restaurant.name}</h1>
+          <h1 className="text-3xl lg:text-4xl font-bold tracking-wide">{restaurant.name}</h1>
           {restaurant.description && (
             <p className="mt-2 max-w-3xl text-sm text-white/90">
               {restaurant.description}
@@ -147,7 +147,7 @@ export default function RestaurantDetailPage({
       {/* Info */}
       <section className="mx-auto max-w-4xl px-4 py-6">
         {restaurant.address && (
-          <div className="flex items-center gap-2 rounded-2xl bg-white p-4 shadow-md border border-[#e5e0d5] text-sm text-[#5f5a54]">
+          <div className="flex items-center gap-2 rounded-2xl bg-white p-4 shadow-md border border-[#e5e0d5] text-sm text-[#6b6660]">
             <MapPin className="h-4 w-4 text-[#8b1a1a] shrink-0" />
             <span>{restaurant.address}</span>
           </div>
@@ -158,7 +158,7 @@ export default function RestaurantDetailPage({
       <section className="mx-auto max-w-4xl px-4 pb-24 lg:pb-16">
         <div className="flex items-center gap-2 mb-4">
           <Utensils className="h-5 w-5 text-[#8b1a1a]" />
-          <h2 className="text-lg font-semibold text-[#1a1a1a]">Cardápios</h2>
+          <h2 className="font-serif text-lg lg:text-xl font-bold text-[#1a1a1a] leading-tight">Cardápios</h2>
         </div>
 
         {/* Navegação por semana */}

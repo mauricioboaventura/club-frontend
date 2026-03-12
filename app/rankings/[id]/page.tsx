@@ -161,11 +161,11 @@ export default async function RankingDetailPage({
               <Trophy className="h-7 w-7 text-yellow-400" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white">
+              <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white">
                 {ranking.name}
               </h1>
               {ranking.description && (
-                <p className="text-white/70 mt-1 text-sm sm:text-base">
+                <p className="text-white/80 mt-1 text-sm lg:text-base leading-relaxed">
                   {ranking.description}
                 </p>
               )}

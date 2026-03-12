@@ -276,7 +276,7 @@ export default function EventosPage() {
 
       {/* Próximos Eventos */}
       <div className="bg-[#f9f8f0] max-w-[480px] mx-auto lg:max-w-7xl lg:px-6">
-        <h2 className="text-xl font-bold text-[#1a1a1a] px-4 pt-6 pb-4">
+        <h2 className="font-serif text-xl lg:text-2xl font-bold text-[#1a1a1a] px-4 pt-6 pb-4 leading-tight">
           Próximos Eventos
         </h2>
         <div className="grid grid-cols-2 gap-3 px-4 pb-4 md:grid-cols-3">

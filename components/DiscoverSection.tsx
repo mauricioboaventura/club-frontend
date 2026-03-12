@@ -23,7 +23,7 @@ export default function DiscoverSection() {
   return (
     <section className="py-6 max-w-[480px] mx-auto lg:max-w-7xl lg:px-6 bg-[#fcfaf6] hidden lg:block">
       <div className="flex items-center justify-between mb-4 px-4">
-        <h2 className="text-sm font-semibold uppercase tracking-widest text-[#8c8c8c]">
+        <h2 className="text-xs font-medium uppercase tracking-[0.3em] text-[#8b1a1a]">
           Descubra
         </h2>
         <Link

@@ -7,10 +7,10 @@ export default function SobrePage() {
       {/* Hero */}
       <section className="relative bg-[#430904] pt-24 pb-12 lg:pt-28 lg:pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+          <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white">
             Sobre o Monte Carlo
           </h1>
-          <p className="text-white/70 mt-2 text-sm sm:text-base max-w-xl">
+          <p className="text-white/80 mt-2 text-sm lg:text-base max-w-xl leading-relaxed">
             Conheça nossa história, nossa estrutura e tudo o que fazemos para
             oferecer a melhor experiência em poker e entretenimento.
           </p>
@@ -44,10 +44,10 @@ export default function SobrePage() {
 
         {/* Nossa História */}
         <section id="nossa-historia" className="scroll-mt-24">
-          <h2 className="text-xl font-bold text-[#1a1a1a] mb-4 pb-2 border-b border-black/10">
+          <h2 className="font-serif text-xl lg:text-2xl font-bold text-[#1a1a1a] mb-4 pb-2 border-b border-black/10 leading-tight">
             Nossa História
           </h2>
-          <div className="space-y-4 text-[#3a3a3a] leading-relaxed">
+          <div className="space-y-4 text-[#525252] text-sm lg:text-base leading-relaxed">
             <p>
               O Monte Carlo Poker Club nasceu da paixão genuína pelo poker e
               pela busca de um entretenimento sofisticado no Brasil. Desde sua
@@ -71,7 +71,7 @@ export default function SobrePage() {
 
         {/* Diferenciais */}
         <section>
-          <h2 className="text-xl font-bold text-[#1a1a1a] mb-6 pb-2 border-b border-black/10">
+          <h2 className="font-serif text-xl lg:text-2xl font-bold text-[#1a1a1a] mb-6 pb-2 border-b border-black/10 leading-tight">
             Nossa Missão & Diferenciais
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -89,7 +89,7 @@ export default function SobrePage() {
                   <Icon className="h-5 w-5 text-[#8b1a1a]" />
                 </div>
                 <span className="text-sm font-semibold text-[#1a1a1a]">{label}</span>
-                <span className="text-xs text-[#5f5a54] mt-1 leading-snug">{desc}</span>
+                <span className="text-xs text-[#6b6660] mt-1 leading-snug">{desc}</span>
               </div>
             ))}
           </div>
@@ -97,10 +97,10 @@ export default function SobrePage() {
 
         {/* Estrutura */}
         <section id="estrutura" className="scroll-mt-24">
-          <h2 className="text-xl font-bold text-[#1a1a1a] mb-4 pb-2 border-b border-black/10">
+          <h2 className="font-serif text-xl lg:text-2xl font-bold text-[#1a1a1a] mb-4 pb-2 border-b border-black/10 leading-tight">
             Estrutura do Clube
           </h2>
-          <div className="space-y-4 text-[#3a3a3a] leading-relaxed">
+          <div className="space-y-4 text-[#525252] text-sm lg:text-base leading-relaxed">
             <p>
               Nossa estrutura foi projetada para oferecer conforto, segurança e
               a melhor experiência possível a cada visita.
@@ -118,7 +118,7 @@ export default function SobrePage() {
                   <Star className="h-4 w-4 text-[#8b1a1a] mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-sm font-semibold text-[#1a1a1a]">{title}</p>
-                    <p className="text-sm text-[#5f5a54] mt-0.5 leading-snug">{desc}</p>
+                    <p className="text-sm text-[#6b6660] mt-0.5 leading-snug">{desc}</p>
                   </div>
                 </div>
               ))}
@@ -128,16 +128,16 @@ export default function SobrePage() {
 
         {/* Localização */}
         <section id="localizacao" className="scroll-mt-24">
-          <h2 className="text-xl font-bold text-[#1a1a1a] mb-4 pb-2 border-b border-black/10">
+          <h2 className="font-serif text-xl lg:text-2xl font-bold text-[#1a1a1a] mb-4 pb-2 border-b border-black/10 leading-tight">
             Localização
           </h2>
           <div className="flex flex-col sm:flex-row gap-6 items-start">
             <div className="flex gap-3 p-5 rounded-xl bg-white border border-black/5 shadow-sm flex-1">
               <MapPin className="h-5 w-5 text-[#8b1a1a] mt-0.5 flex-shrink-0" />
-              <div className="space-y-1 text-[#3a3a3a]">
+              <div className="space-y-1 text-[#525252]">
                 <p className="font-semibold text-[#1a1a1a]">Monte Carlo Poker Club</p>
                 <p className="text-sm">São Paulo — SP</p>
-                <p className="text-sm text-[#5f5a54]">
+                <p className="text-sm text-[#6b6660]">
                   Entre em contato para obter o endereço completo e informações de acesso.
                 </p>
                 <div className="flex gap-2 flex-wrap mt-3">
@@ -157,7 +157,7 @@ export default function SobrePage() {
 
         {/* Contato */}
         <section id="contato" className="scroll-mt-24">
-          <h2 className="text-xl font-bold text-[#1a1a1a] mb-4 pb-2 border-b border-black/10">
+          <h2 className="font-serif text-xl lg:text-2xl font-bold text-[#1a1a1a] mb-4 pb-2 border-b border-black/10 leading-tight">
             Fale Conosco
           </h2>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -169,7 +169,7 @@ export default function SobrePage() {
                 <Phone className="h-5 w-5 text-[#8b1a1a]" />
               </div>
               <div>
-                <p className="text-xs text-[#5f5a54] font-medium uppercase tracking-wide">Telefone</p>
+                <p className="text-xs text-[#6b6660] font-medium uppercase tracking-wide">Telefone</p>
                 <p className="text-sm font-semibold text-[#1a1a1a] mt-0.5">+55 (11) 9 4121-3898</p>
               </div>
             </a>
@@ -181,7 +181,7 @@ export default function SobrePage() {
                 <Mail className="h-5 w-5 text-[#8b1a1a]" />
               </div>
               <div>
-                <p className="text-xs text-[#5f5a54] font-medium uppercase tracking-wide">E-mail</p>
+                <p className="text-xs text-[#6b6660] font-medium uppercase tracking-wide">E-mail</p>
                 <p className="text-sm font-semibold text-[#1a1a1a] mt-0.5">contato@montecarloeventos.com</p>
               </div>
             </a>

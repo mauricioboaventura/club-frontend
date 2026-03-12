@@ -43,7 +43,7 @@ export default function SectionCard({
       <div className="px-4 pt-4 pb-4 flex flex-col flex-1 min-h-0">
         <div className="flex-1 min-h-0">
           <div className="flex items-baseline justify-between gap-2 mb-1">
-            <h3 className="text-[15px] font-bold text-[#4a4a4a] leading-tight flex-1 min-w-0">
+            <h3 className="text-sm font-bold text-[#1a1a1a] leading-tight flex-1 min-w-0">
               {title}
             </h3>
             {badge != null && badge !== "" && (
@@ -53,11 +53,11 @@ export default function SectionCard({
             )}
           </div>
           {typeof description === "string" ? (
-            <p className="text-[13px] text-[#8c8c8c] leading-snug">
+            <p className="text-xs text-[#6b6660] leading-snug">
               {description}
             </p>
           ) : (
-            <div className="text-[13px] text-[#8c8c8c] leading-snug">
+            <div className="text-xs text-[#6b6660] leading-snug">
               {description}
             </div>
           )}

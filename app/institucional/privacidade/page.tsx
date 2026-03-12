@@ -6,10 +6,10 @@ export default function PrivacidadePage() {
     <main className="min-h-screen bg-[#f9f8f0]">
       <section className="relative bg-[#430904] pt-24 pb-10 lg:pt-28 lg:pb-14">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+          <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white">
             Política de Privacidade
           </h1>
-          <p className="text-white/70 mt-2 text-sm sm:text-base">
+          <p className="text-white/80 mt-2 text-sm lg:text-base leading-relaxed">
             Última atualização: março de 2026
           </p>
         </div>
@@ -23,7 +23,7 @@ export default function PrivacidadePage() {
           <ArrowLeft className="h-4 w-4" /> Voltar ao início
         </Link>
 
-        <div className="prose prose-neutral max-w-none text-[#3a3a3a]">
+        <div className="prose prose-neutral max-w-none text-[#525252]">
           <h2>1. Informações que Coletamos</h2>
           <p>
             Coletamos informações pessoais que você nos fornece diretamente,

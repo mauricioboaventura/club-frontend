@@ -158,7 +158,7 @@ export default function AuthPage() {
               <ArrowLeft size={20} color="#525252" strokeWidth={2} />
             </Link>
           )}
-          <h1 className="text-[18px] font-semibold text-[#525252]">
+          <h1 className="text-lg font-semibold text-[#1a1a1a]">
             Entrar ou Registrar
           </h1>
         </header>
@@ -168,7 +168,7 @@ export default function AuthPage() {
           /* ── Tela de confirmação ── */
           <div className="px-4 flex flex-col items-center text-center gap-4 mt-4">
             <CheckCircle2 size={48} className="text-[#3a1313]" strokeWidth={1.5} />
-            <h2 className="text-[20px] font-bold text-[#1a1a1a]">
+            <h2 className="font-serif text-xl font-bold text-[#1a1a1a]">
               {getSuccessMessage(result).title}
             </h2>
             <p className="text-[15px] text-[#525252] leading-relaxed">
@@ -277,7 +277,7 @@ export default function AuthPage() {
 
           {/* MC Rewards section */}
           <section>
-            <h2 className="text-[20px] font-bold text-[#525252] mb-4 px-4">
+            <h2 className="font-serif text-xl font-bold text-[#1a1a1a] mb-4 px-4">
               Faça mais com MC Rewards
             </h2>
             <ul className="space-y-4 px-4">

@@ -71,7 +71,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           </Link>
         </div>
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-          <h1 className="text-3xl font-bold">{event.title}</h1>
+          <h1 className="text-3xl lg:text-4xl font-bold tracking-wide">{event.title}</h1>
           {event.shortDescription && (
             <p className="mt-2 max-w-3xl text-sm text-white/90">{event.shortDescription}</p>
           )}
@@ -80,11 +80,11 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
       <section className="mx-auto max-w-4xl px-4 py-8">
         <div className="grid gap-3 rounded-2xl bg-white p-5 shadow-sm md:grid-cols-2">
-          <div className="flex items-center gap-2 text-sm text-[#5f5a54]">
+          <div className="flex items-center gap-2 text-sm text-[#6b6660]">
             <Calendar className="h-4 w-4 text-[#8b1a1a]" />
             <span>{formatDate(event.startDate)}</span>
           </div>
-          <div className="flex items-center gap-2 text-sm text-[#5f5a54]">
+          <div className="flex items-center gap-2 text-sm text-[#6b6660]">
             <Clock className="h-4 w-4 text-[#8b1a1a]" />
             <span>
               {formatTime(event.startDate)}
@@ -92,13 +92,13 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
             </span>
           </div>
           {event.location && (
-            <div className="flex items-center gap-2 text-sm text-[#5f5a54]">
+            <div className="flex items-center gap-2 text-sm text-[#6b6660]">
               <MapPin className="h-4 w-4 text-[#8b1a1a]" />
               <span>{event.location}</span>
             </div>
           )}
           {event.priceInfo && (
-            <div className="flex items-center gap-2 text-sm text-[#5f5a54]">
+            <div className="flex items-center gap-2 text-sm text-[#6b6660]">
               <Ticket className="h-4 w-4 text-[#8b1a1a]" />
               <span>{event.priceInfo}</span>
             </div>
@@ -106,8 +106,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
         </div>
 
         <article className="mt-6 rounded-2xl bg-white p-6 shadow-sm">
-          <h2 className="mb-3 text-lg font-semibold text-[#1a1a1a]">Detalhes do evento</h2>
-          <p className="text-sm leading-relaxed text-[#4f4a44]">
+          <h2 className="mb-3 font-serif text-lg lg:text-xl font-bold text-[#1a1a1a] leading-tight">Detalhes do evento</h2>
+          <p className="text-sm leading-relaxed text-[#525252]">
             {event.description || "Sem descrição disponível para este evento."}
           </p>
           {event.tags && event.tags.length > 0 && (
