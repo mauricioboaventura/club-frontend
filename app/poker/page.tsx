@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { fetchWeekTournaments } from "@/lib/api/poker-tournaments";
+import { fetchBanners } from "@/lib/api/banners";
 import {
   formatDateISO,
   getWeekRange,
@@ -85,7 +86,11 @@ export default async function PokerPage({
   // --- Fetch server-side ---
   const weekStart = `${weekOpt.start}T00:00:00`;
   const weekEnd = `${weekOpt.end}T23:59:59`;
-  const weekTournaments = await fetchWeekTournaments(weekStart, weekEnd);
+  const [weekTournaments, heroBanners] = await Promise.all([
+    fetchWeekTournaments(weekStart, weekEnd),
+    fetchBanners("poker"),
+  ]);
+  const heroBanner = heroBanners[0] ?? null;
 
   // Filtragem por dia no servidor
   const dayTournaments = weekTournaments.filter((t) => {
@@ -98,12 +103,12 @@ export default async function PokerPage({
 
   return (
     <main className="min-h-screen mt-[56px]">
-      {/* Static Header */}
+      {/* Hero Banner */}
       <div className="relative">
         <div className="relative w-full h-56">
           <Image
-            src="https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=800&auto=format&fit=crop"
-            alt="Torneios"
+            src={heroBanner?.image ?? "https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=800&auto=format&fit=crop"}
+            alt={heroBanner?.imageAlt ?? "Poker Monte Carlo"}
             fill
             className="object-cover"
             sizes="100vw"
@@ -112,13 +117,19 @@ export default async function PokerPage({
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
           <div className="absolute bottom-4 left-4 right-4 text-center">
             <h1 className="text-2xl font-bold text-white">
-              Poker Monte Carlo
+              {heroBanner?.title ?? "Poker Monte Carlo"}
             </h1>
-            <p className="text-white/80 text-sm mt-1">
-              Experimente o poker de alto nível no Monte Carlo Poker Club. Com
-              mesas de cash game funcionando 24 horas e torneios diários,
-              oferecemos a melhor experiência para jogadores de todos os níveis.
-            </p>
+            {(heroBanner?.subtitle) ? (
+              <p className="text-white/80 text-sm mt-1 hidden md:block">
+                {heroBanner.subtitle}
+              </p>
+            ) : (
+              <p className="text-white/80 text-sm mt-1 hidden md:block">
+                Experimente o poker de alto nível no Monte Carlo Poker Club. Com
+                mesas de cash game funcionando 24 horas e torneios diários,
+                oferecemos a melhor experiência para jogadores de todos os níveis.
+              </p>
+            )}
           </div>
         </div>
       </div>

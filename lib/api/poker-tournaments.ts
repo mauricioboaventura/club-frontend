@@ -146,3 +146,11 @@ export function formatTournamentDate(dateStr: string): string {
     minute: "2-digit",
   });
 }
+
+export function formatTournamentTime(dateStr: string): string {
+  const date = new Date(dateStr);
+  return date.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
