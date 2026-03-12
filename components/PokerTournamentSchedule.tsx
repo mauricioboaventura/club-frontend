@@ -343,7 +343,7 @@ export default function PokerTournamentSchedule({
           </div>
 
           {/* Abas de dias da semana */}
-          <div className="flex gap-1.5 justify-center overflow-x-auto pb-3 mb-4 scrollbar-hide">
+          <div className="grid grid-cols-7 gap-1 mb-4">
             {days.map((d) => {
               const isSelected = d.date === selectedDay;
               return (
@@ -352,7 +352,7 @@ export default function PokerTournamentSchedule({
                   type="button"
                   onClick={() => handleDayChange(d.date)}
                   className={`
-                    flex flex-col items-center justify-center min-w-[52px] px-2 py-2 rounded-xl text-xs font-medium transition-colors shrink-0 relative
+                    flex flex-col items-center justify-center py-2 rounded-xl text-xs font-medium transition-colors relative
                     ${
                       isSelected
                         ? "bg-[#430904] text-white shadow-md"
@@ -553,14 +553,6 @@ export default function PokerTournamentSchedule({
                 </div>
               ))}
             </div>
-
-            <button
-              type="button"
-              onClick={() => setSelectedTournament(null)}
-              className="w-full mt-6 h-12 rounded-full bg-[#2A0303] hover:bg-[#420804] text-white font-semibold text-base transition-colors"
-            >
-              Realizar inscrição!
-            </button>
           </div>
         </div>
       )}
