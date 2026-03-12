@@ -11,6 +11,7 @@ import {
   type PokerTournament,
 } from "@/lib/api/poker-tournaments";
 import type { MonthOption, WeekOption, DayOption } from "@/lib/date-utils";
+import { getWeeksOfMonth } from "@/lib/date-utils";
 
 type Props = {
   viewMode: "torneios" | "cashgame";
@@ -215,13 +216,18 @@ export default function PokerTournamentSchedule({
     if (hasPrevWeek) {
       handleWeekChange(weekOptions[currentWeekIndex - 1].value);
     } else if (hasPrevMonth) {
-      // Vai para o mês anterior, server resolve última semana
-      const prevMonth = monthOptions[currentMonthIndex - 1].value;
-      const sp = new URLSearchParams();
-      sp.set("month", prevMonth);
-      sp.set("weekDir", "last");
-      sp.set("view", viewMode);
-      router.replace(`/poker?${sp.toString()}`, { scroll: false });
+      const prevMonthOpt = monthOptions[currentMonthIndex - 1];
+      const [yearStr, monthStr] = prevMonthOpt.value.split("-");
+      const prevWeeks = getWeeksOfMonth(Number(yearStr), Number(monthStr) - 1);
+      // Encontra a última semana do mês anterior que não seja a semana atual
+      const targetWeek = [...prevWeeks].reverse().find((w) => w.value !== selectedWeek);
+      if (targetWeek) {
+        const sp = new URLSearchParams();
+        sp.set("month", prevMonthOpt.value);
+        sp.set("week", targetWeek.value);
+        sp.set("view", viewMode);
+        router.replace(`/poker?${sp.toString()}`, { scroll: false });
+      }
     }
   }
 
@@ -229,9 +235,18 @@ export default function PokerTournamentSchedule({
     if (hasNextWeek) {
       handleWeekChange(weekOptions[currentWeekIndex + 1].value);
     } else if (hasNextMonth) {
-      // Vai para o próximo mês, server resolve primeira semana
-      const nextMonth = monthOptions[currentMonthIndex + 1].value;
-      handleMonthChange(nextMonth);
+      const nextMonthOpt = monthOptions[currentMonthIndex + 1];
+      const [yearStr, monthStr] = nextMonthOpt.value.split("-");
+      const nextWeeks = getWeeksOfMonth(Number(yearStr), Number(monthStr) - 1);
+      // Encontra a primeira semana do próximo mês que não seja a semana atual
+      const targetWeek = nextWeeks.find((w) => w.value !== selectedWeek);
+      if (targetWeek) {
+        const sp = new URLSearchParams();
+        sp.set("month", nextMonthOpt.value);
+        sp.set("week", targetWeek.value);
+        sp.set("view", viewMode);
+        router.replace(`/poker?${sp.toString()}`, { scroll: false });
+      }
     }
   }
 
@@ -253,7 +268,7 @@ export default function PokerTournamentSchedule({
           onClick={() => handleViewChange("torneios")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-colors ${
             viewMode === "torneios"
-              ? "bg-[#2A0303] text-white"
+              ? "bg-[#430904] text-white"
               : "border border-[#c5c0b8] text-[#6b6660]"
           }`}
         >
@@ -266,7 +281,7 @@ export default function PokerTournamentSchedule({
           onClick={() => handleViewChange("cashgame")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-colors ${
             viewMode === "cashgame"
-              ? "bg-[#2A0303] text-white"
+              ? "bg-[#430904] text-white"
               : "border border-[#c5c0b8] text-[#6b6660]"
           }`}
         >
@@ -330,7 +345,7 @@ export default function PokerTournamentSchedule({
           </div>
 
           {/* Abas de dias da semana */}
-          <div className="flex gap-1.5 justify-center pb-3 mb-4">
+          <div className="flex gap-1.5 justify-center overflow-x-auto pb-3 mb-4 scrollbar-hide">
             {days.map((d) => {
               const isSelected = d.date === selectedDay;
               return (
