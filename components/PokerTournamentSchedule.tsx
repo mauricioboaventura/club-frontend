@@ -323,8 +323,7 @@ export default function PokerTournamentSchedule({
                   : "text-[#c5c0b8] cursor-not-allowed"
               }`}
             >
-              <ChevronLeft className="h-4 w-4" />
-              Anterior
+              <ChevronLeft className="h-5 w-5" />
             </button>
             <span className="text-sm font-medium text-[#1a1a1a]">
               {weekOptions[currentWeekIndex]?.label}
@@ -339,8 +338,7 @@ export default function PokerTournamentSchedule({
                   : "text-[#c5c0b8] cursor-not-allowed"
               }`}
             >
-              Próxima
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-5 w-5" />
             </button>
           </div>
 
