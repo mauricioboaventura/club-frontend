@@ -17,6 +17,8 @@ import {
   fetchActiveRestaurants,
   type Restaurant,
 } from "@/lib/api/restaurants";
+import { fetchExecutiveMenus, type ExecutiveMenu } from "@/lib/api/dish-images";
+import DishCarousel from "@/components/DishCarousel";
 
 const FALLBACK_IMAGE =
   "https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/gallery-photos/photo-1559339352-11d035aa65de.jpeg";
@@ -24,14 +26,19 @@ const FALLBACK_IMAGE =
 export default function GastronomiaPage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState(true);
+  const [executiveMenus, setExecutiveMenus] = useState<ExecutiveMenu[]>([]);
 
   useEffect(() => {
     let mounted = true;
 
     const load = async () => {
-      const data = await fetchActiveRestaurants();
+      const [restaurantData, menuData] = await Promise.all([
+        fetchActiveRestaurants(),
+        fetchExecutiveMenus(),
+      ]);
       if (mounted) {
-        setRestaurants(data);
+        setRestaurants(restaurantData);
+        setExecutiveMenus(menuData);
         setLoading(false);
       }
     };
@@ -117,60 +124,37 @@ export default function GastronomiaPage() {
               pensados para receber você com o requinte que merece.
             </p>
           </div>
-        </div>
-      </section>
-      {/* ═══════════ MENUS EXECUTIVOS ═══════════ */}
-      <section id="restaurantes" className="scroll-mt-24 py-12 lg:py-20 bg-[#fcfaf6] border-y border-black/5">
-        <div className="max-w-[480px] mx-auto lg:max-w-7xl lg:px-6">
-          <div className="px-4 mb-8">
-            <p className="text-xs uppercase tracking-[0.3em] text-[#8b1a1a] font-medium mb-3">
-              Atualizados Diariamente
-            </p>
-            <h2 className="font-serif text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-2 leading-tight">
-              Menus Executivos
-            </h2>
-            <p className="text-[#525252] text-sm lg:text-base leading-relaxed max-w-2xl">
-              Refeições completas e equilibradas preparadas diariamente pelos nossos
-              chefs. Confira as opções da semana em cada restaurante e escolha a sua.
-            </p>
-          </div>
 
+          {/* ── Restaurantes ── */}
           {loading ? (
-            <div className="px-4 pb-8 space-y-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0">
+            <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="animate-pulse rounded-2xl bg-[#f9f8f0] overflow-hidden shadow-md border border-[#e5e0d5]"
+                  className="animate-pulse rounded-2xl bg-[#e5e0d5]/40 overflow-hidden shadow-sm border border-[#e5e0d5]"
                 >
-                  <div className="h-48 bg-[#e5e0d5]" />
-                  <div className="p-5 space-y-3">
-                    <div className="h-5 w-2/3 rounded bg-[#e5e0d5]" />
-                    <div className="h-4 w-full rounded bg-[#e5e0d5]" />
-                    <div className="h-4 w-1/2 rounded bg-[#e5e0d5]" />
+                  <div className="h-40 bg-[#e5e0d5]" />
+                  <div className="p-4 space-y-2">
+                    <div className="h-4 w-2/3 rounded bg-[#e5e0d5]" />
+                    <div className="h-3 w-full rounded bg-[#e5e0d5]" />
                   </div>
                 </div>
               ))}
             </div>
-          ) : restaurants.length === 0 ? (
-            <div className="px-4 pb-8">
-              <div className="rounded-2xl bg-[#f9f8f0] p-8 text-center text-[#6b6660] shadow-md border border-[#e5e0d5]">
-                Nenhum menu executivo disponível no momento.
-              </div>
-            </div>
-          ) : (
-            <div className="px-4 space-y-4 pb-8 lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0">
+          ) : restaurants.length > 0 && (
+            <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4">
               {restaurants.map((restaurant) => (
                 <Link
                   key={restaurant.id}
                   href={`/gastronomia/${restaurant.id}`}
-                  className="bg-[#f9f8f0] overflow-hidden rounded-2xl shadow-md border border-[#e5e0d5] hover:shadow-lg transition-shadow block"
+                  className="bg-white overflow-hidden rounded-2xl shadow-sm border border-[#e5e0d5] hover:shadow-md transition-shadow block group"
                 >
-                  <div className="relative h-48">
+                  <div className="relative h-40">
                     <Image
                       src={restaurant.imageUrl || FALLBACK_IMAGE}
                       alt={restaurant.name}
                       fill
-                      className="object-cover"
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
                       sizes="(max-width: 1024px) 100vw, 33vw"
                     />
                     <div className="absolute top-3 left-3">
@@ -180,30 +164,52 @@ export default function GastronomiaPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-[#1a1a1a] mb-1">
+                  <div className="p-4">
+                    <h3 className="text-base font-bold text-[#1a1a1a] mb-0.5">
                       {restaurant.name}
                     </h3>
                     {restaurant.description && (
-                      <p className="text-sm text-[#6b6660] line-clamp-2 mb-3">
+                      <p className="text-xs text-[#6b6660] line-clamp-2 mb-2">
                         {restaurant.description}
                       </p>
                     )}
-                    {restaurant.address && (
-                      <div className="flex items-center gap-1.5 text-xs text-[#8c8c8c]">
-                        <MapPin className="h-3.5 w-3.5" />
-                        <span>{restaurant.address}</span>
+                    <div className="flex items-center justify-between">
+                      {restaurant.address && (
+                        <div className="flex items-center gap-1 text-xs text-[#8c8c8c]">
+                          <MapPin className="h-3 w-3" />
+                          <span className="line-clamp-1">{restaurant.address}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-0.5 text-xs font-medium text-[#8b1a1a] ml-auto">
+                        Ver menu
+                        <ChevronRight className="h-3.5 w-3.5" />
                       </div>
-                    )}
-                    <div className="flex items-center justify-end gap-1 mt-4 text-sm font-medium text-[#8b1a1a]">
-                      Ver menu da semana
-                      <ChevronRight className="h-4 w-4" />
                     </div>
                   </div>
                 </Link>
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ═══════════ GALERIA DE PRATOS ═══════════ */}
+      <section id="restaurantes" className="scroll-mt-24 py-12 lg:py-20 bg-[#fcfaf6] border-y border-black/5">
+        <div className="max-w-[480px] mx-auto lg:max-w-4xl lg:px-6">
+          <div className="px-4 mb-8">
+            <p className="text-xs uppercase tracking-[0.3em] text-[#8b1a1a] font-medium mb-3">
+              Alta Gastronomia
+            </p>
+            <h2 className="font-serif text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-2 leading-tight">
+              Nossos Pratos
+            </h2>
+            <p className="text-[#525252] text-sm lg:text-base leading-relaxed max-w-2xl">
+              Cada prato é uma obra de arte — criações autorais dos nossos chefs
+              que celebram sabor, técnica e apresentação impecável.
+            </p>
+          </div>
+
+          <DishCarousel items={executiveMenus} />
         </div>
       </section>
 
