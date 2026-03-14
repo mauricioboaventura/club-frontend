@@ -43,13 +43,13 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
   return (
     <main className="min-h-screen bg-[#f9f8f0]">
-      <section className="relative h-[50vh] min-h-[320px] w-full">
+      <section className="relative h-[50vh] min-h-[320px] w-full bg-[#120404]">
         {mobileImageUrl && (
           <Image
             src={mobileImageUrl}
             alt={event.title}
             fill
-            className="object-cover lg:hidden"
+            className="object-cover object-top lg:hidden"
             priority
           />
         )}
@@ -57,7 +57,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           src={imageUrl}
           alt={event.title}
           fill
-          className={`object-cover ${mobileImageUrl ? "hidden lg:block" : ""}`}
+          className={`object-cover object-left ${mobileImageUrl ? "hidden lg:block" : ""}`}
+          // className={`object-cover ${mobileImageUrl ? "hidden lg:block" : ""}`}
           priority
         />
         {/* <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" /> */}

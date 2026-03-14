@@ -91,22 +91,22 @@ export default function ShowsSection({ featuredEvents }: ShowsSectionProps) {
           <Link
             key={card.id}
             href={card.link}
-            className="relative flex-shrink-0 w-72 lg:w-auto rounded-xl overflow-hidden bg-white border border-[#8b1a1a]/10 hover:border-[#8b1a1a]/20 transition-colors"
+            className="relative flex-shrink-0 w-72 lg:w-auto rounded-xl overflow-hidden bg-white border border-[#8b1a1a]/10 hover:border-[#8b1a1a]/20 transition-colors flex flex-col"
           >
-            <div className="relative h-40">
+            <div className="relative h-40 bg-[#120404]">
               <Image
                 src={card.image}
                 alt={card.title}
                 fill
-                className="object-cover"
+                className="object-contain"
                 sizes="(max-width: 1024px) 288px, 33vw"
               />
             </div>
-            <div className="p-4">
+            <div className="p-4 flex flex-col flex-1">
               <h3 className="text-sm font-bold text-[#1a1a1a] mb-2">
                 {card.title}
               </h3>
-              <div className="space-y-1 mb-3">
+              <div className="space-y-1 mb-3 flex-1">
                 {card.date && (
                   <div className="flex items-center gap-2 text-xs text-[#8c8c8c]">
                     <Calendar className="h-3 w-3 text-[#8b1a1a] shrink-0" />
@@ -120,7 +120,7 @@ export default function ShowsSection({ featuredEvents }: ShowsSectionProps) {
                   </div>
                 )}
               </div>
-              <span className="inline-flex items-center justify-center rounded-md px-3 w-full h-8 text-xs font-medium border border-[#8b1a1a]/30 text-[#8b1a1a] hover:bg-[#8b1a1a]/10 transition-colors">
+              <span className="inline-flex items-center justify-center rounded-md px-3 w-full h-8 text-xs font-medium border border-[#8b1a1a]/30 text-[#8b1a1a] hover:bg-[#8b1a1a]/10 transition-colors mt-auto">
                 Ver evento →
               </span>
             </div>
