@@ -27,7 +27,7 @@ export default function GastronomySection({ restaurants }: GastronomySectionProp
         {restaurants.map((restaurant) => (
           <Link
             key={restaurant.id}
-            href={`/gastronomia/${restaurant.id}`}
+            href={`/gastronomia`}
             className="relative flex-shrink-0 w-72 lg:w-auto rounded-xl overflow-hidden bg-white border border-[#8b1a1a]/10 hover:border-[#8b1a1a]/20 transition-colors"
           >
             <div className="relative h-40">
