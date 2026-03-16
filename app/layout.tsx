@@ -43,6 +43,16 @@ export default async function RootLayout({
         <SharedSections />
         <BottomNav />
         <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-N4QG5T87KL"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-N4QG5T87KL');
+        `}</Script>
+        <Script
           src="https://d335luupugsy2.cloudfront.net/js/loader-scripts/e46f5ce2-3634-45e4-ade3-4151ca43fc3a-loader.js"
           strategy="afterInteractive"
         />
