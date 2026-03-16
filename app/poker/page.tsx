@@ -204,7 +204,7 @@ function PokerContent() {
               <div className="space-y-8">
                 {sortedDays.map((day) => (
                   <div key={day}>
-                    <h2 className="text-base font-bold uppercase tracking-widest text-[#5C0F08] mb-3 px-1">
+                    <h2 className="text-base font-semibold uppercase tracking-widest text-[#5C0F08] mb-3 px-1 text-center">
                       {formatTournamentDate(tournamentsByDay[day][0].startDate)}
                     </h2>
                     <div className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
@@ -217,7 +217,7 @@ function PokerContent() {
                           <div className="flex justify-between items-start mb-3">
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <h3 className="text-lg font-bold text-[#5C0F08]">
+                                <h3 className="text-lg font-semibold text-[#5C0F08]">
                                   {t.name}
                                 </h3>
                                 {t.isFeatured && (
@@ -227,7 +227,7 @@ function PokerContent() {
                                 )}
                               </div>
                             </div>
-                            <span className="text-xl font-bold text-[#430904] ml-3 shrink-0">
+                            <span className="text-xl font-medium text-[#430904] ml-3 shrink-0">
                               {formatTournamentTime(t.startDate)}
                             </span>
                           </div>

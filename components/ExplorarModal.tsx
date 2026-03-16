@@ -171,12 +171,12 @@ export default function ExplorarModal({ onClose }: ExplorarModalProps) {
                   Diversas mesas com blinds variados, do iniciante ao high
                   stakes. Venha jogar a qualquer hora.
                 </p>
-                <button
+                {/* <button
                   type="button"
                   className="w-full h-10 px-4 py-2 rounded-md text-sm font-medium bg-mc-gold text-[#1a1a1a] hover:bg-mc-gold-light transition-colors"
                 >
                   Ver mesas disponíveis
-                </button>
+                </button> */}
               </div>
             </div>
           </section>

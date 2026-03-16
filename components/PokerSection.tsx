@@ -20,7 +20,7 @@ export default function PokerSection() {
           <Link
             key={item.id}
             href={item.link}
-            className="relative rounded-xl overflow-hidden p-4 flex flex-col h-32 cursor-pointer hover:scale-[1.02] transition-transform group"
+            className="relative rounded-xl overflow-hidden p-4 flex flex-col h-26 cursor-pointer hover:scale-[1.02] transition-transform group"
           >
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -41,9 +41,9 @@ export default function PokerSection() {
               <p className="text-xs text-white/70 mb-auto leading-relaxed">
                 {item.description}
               </p>
-              <span className="inline-flex items-center justify-center rounded-md px-3 w-full h-8 text-xs font-medium text-white group-hover:bg-white/10 mt-2 transition-colors">
+              {/* <span className="inline-flex items-center justify-center rounded-md px-3 w-full h-8 text-xs font-medium text-white group-hover:bg-white/10 mt-2 transition-colors">
                 {item.linkLabel}
-              </span>
+              </span> */}
             </div>
           </Link>
         ))}

@@ -19,7 +19,10 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   const [dragOffset, setDragOffset] = useState(0);
   const isDragging = useRef(false);
   const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+  const dragAxis = useRef<"x" | "y" | null>(null);
   const isTransitioning = useRef(false);
+  const paused = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const len = slides.length;
@@ -91,13 +94,18 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   }, [internalIndex, len]);
 
   useEffect(() => {
-    const timer = setInterval(next, 5000);
+    const timer = setInterval(() => {
+      if (!paused.current) next();
+    }, 5000);
     return () => clearInterval(timer);
   }, [next]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isTransitioning.current) return;
+    paused.current = true;
     touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    dragAxis.current = null;
     isDragging.current = true;
     setDragOffset(0);
   };
@@ -105,13 +113,33 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging.current) return;
     const currentX = e.touches[0].clientX;
-    const diff = currentX - touchStartX.current;
-    setDragOffset(diff);
+    const currentY = e.touches[0].clientY;
+    const diffX = currentX - touchStartX.current;
+    const diffY = currentY - touchStartY.current;
+
+    if (!dragAxis.current) {
+      // Wait for a small movement before locking the gesture axis.
+      if (Math.abs(diffX) < 6 && Math.abs(diffY) < 6) return;
+      dragAxis.current = Math.abs(diffX) > Math.abs(diffY) ? "x" : "y";
+    }
+
+    if (dragAxis.current !== "x") return;
+
+    // During horizontal swipe, prevent page vertical scroll jitter.
+    e.preventDefault();
+    setDragOffset(diffX);
   };
 
   const handleTouchEnd = () => {
     if (!isDragging.current) return;
     isDragging.current = false;
+
+    if (dragAxis.current !== "x") {
+      dragAxis.current = null;
+      setDragOffset(0);
+      return;
+    }
+
     const containerWidth = containerRef.current?.offsetWidth ?? 1;
     const threshold = containerWidth * 0.15;
 
@@ -120,6 +148,8 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
     } else if (dragOffset > threshold) {
       prev();
     }
+    dragAxis.current = null;
+    paused.current = false;
     setDragOffset(0);
   };
 
@@ -136,6 +166,7 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
     >
       <div className="overflow-hidden">
         <div

@@ -69,10 +69,10 @@ export default function GastronomiaPage() {
           <h1 className="text-4xl lg:text-5xl font-bold tracking-wide text-white">
             Gastronomia
           </h1>
-          <p className="mt-3 text-white/80 text-sm lg:text-base max-w-lg mx-auto leading-relaxed">
+          {/* <p className="mt-3 text-white/80 text-sm lg:text-base max-w-lg mx-auto leading-relaxed">
             Onde a alta culinária encontra a sofisticação do entretenimento.
             Uma jornada sensorial que celebra o prazer à mesa.
-          </p>
+          </p> */}
           {/* Âncoras */}
           <div className="flex flex-wrap justify-center gap-3 mt-6">
             {[

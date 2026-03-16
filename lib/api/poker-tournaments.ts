@@ -139,9 +139,9 @@ export function formatCentsToReal(cents: number): string {
 export function formatTournamentDate(dateStr: string): string {
   const date = new Date(dateStr);
   return date.toLocaleDateString("pt-BR", {
-    weekday: "short",
+    weekday: "long",
     day: "numeric",
-    month: "short",
+    month: "long",
   });
 }
 

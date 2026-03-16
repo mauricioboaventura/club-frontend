@@ -96,9 +96,9 @@ export default function ExperiencesSection({ featureCards }: ExperiencesSectionP
               <p className="text-sm text-white/80 text-center mb-4">
                 {exp.subtitle}
               </p>
-              <span className="inline-flex items-center justify-center w-full h-11 rounded-lg border border-white/60 bg-transparent text-white text-sm font-medium group-hover:bg-white/10 group-hover:text-white transition-colors">
+              {/* <span className="inline-flex items-center justify-center w-full h-11 rounded-lg border border-white/60 bg-transparent text-white text-sm font-medium group-hover:bg-white/10 group-hover:text-white transition-colors">
                 {exp.cta}
-              </span>
+              </span> */}
             </div>
           </Link>
         ))}
