@@ -194,8 +194,13 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
         </div>
       </div>
 
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+        aria-hidden="true"
+      />
+
       {/* Bottom content - overlays the slider */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 lg:pb-16">
+      <div className="absolute bottom-0 left-0 right-0 p-6">
         <div className="text-center space-y-4 lg:max-w-2xl lg:mx-auto">
           <div className="space-y-1">
             <h1 className="text-3xl lg:text-5xl font-bold tracking-wide text-white whitespace-pre-line">

@@ -40,6 +40,139 @@ const CASH_TABLES = {
 
 const BG_BEIGE = "#f9f8f0";
 
+type TournamentDetailTone = "default" | "strong" | "gold";
+
+type TournamentDetail = {
+  label: string;
+  value: string;
+  tone?: TournamentDetailTone;
+  multiline?: boolean;
+};
+
+function hasTextValue(value: string | null | undefined): value is string {
+  return typeof value === "string" && value.trim().length > 0;
+}
+
+function hasNumberValue(value: number | null | undefined): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function formatChips(value: number): string {
+  return `${value.toLocaleString("pt-BR")} fichas`;
+}
+
+function getTournamentDetails(tournament: PokerTournament): TournamentDetail[] {
+  const details: TournamentDetail[] = [
+    { label: "ID", value: tournament.id },
+    { label: "Slug", value: tournament.slug },
+    { label: "Data e Horário", value: formatTournamentDateHours(tournament.startDate) },
+    { label: "Ativo", value: tournament.isActive ? "Sim" : "Não" },
+    { label: "Destaque", value: tournament.isFeatured ? "Sim" : "Não" },
+    { label: "Buy-in", value: formatCentsToReal(tournament.buyInCents), tone: "strong" },
+    {
+      label: "Garantido",
+      value: formatCentsToReal(tournament.guaranteedPrizeCents),
+      tone: "gold",
+    },
+  ];
+
+  if (hasTextValue(tournament.status)) {
+    details.push({ label: "Status", value: tournament.status });
+  }
+
+  if (hasTextValue(tournament.tournamentType)) {
+    details.push({ label: "Tipo de Torneio", value: tournament.tournamentType });
+  }
+
+  if (hasTextValue(tournament.coverImageUrl)) {
+    details.push({
+      label: "Imagem de Capa",
+      value: tournament.coverImageUrl,
+      multiline: true,
+    });
+  }
+
+  if (hasTextValue(tournament.lateRegister)) {
+    details.push({ label: "Late Register", value: tournament.lateRegister });
+  }
+
+  if (hasTextValue(tournament.blindDuration)) {
+    details.push({ label: "Duração dos Blinds", value: tournament.blindDuration });
+  }
+
+  if (hasNumberValue(tournament.startingStack)) {
+    details.push({ label: "Stack Inicial", value: formatChips(tournament.startingStack) });
+  }
+
+  if (hasNumberValue(tournament.buyPromoChips)) {
+    details.push({ label: "Buy Promo (Fichas)", value: formatChips(tournament.buyPromoChips) });
+  }
+
+  if (hasNumberValue(tournament.buyPromoCents)) {
+    details.push({ label: "Buy Promo", value: formatCentsToReal(tournament.buyPromoCents) });
+  }
+
+  if (hasNumberValue(tournament.rebuyChips)) {
+    details.push({ label: "Rebuy (Fichas)", value: formatChips(tournament.rebuyChips) });
+  }
+
+  if (hasNumberValue(tournament.rebuyCents)) {
+    details.push({ label: "Rebuy", value: formatCentsToReal(tournament.rebuyCents) });
+  }
+
+  if (hasNumberValue(tournament.rebuyPromoChips)) {
+    details.push({
+      label: "Rebuy Promo (Fichas)",
+      value: formatChips(tournament.rebuyPromoChips),
+    });
+  }
+
+  if (hasNumberValue(tournament.rebuyPromoCents)) {
+    details.push({ label: "Rebuy Promo", value: formatCentsToReal(tournament.rebuyPromoCents) });
+  }
+
+  if (hasNumberValue(tournament.addonChips)) {
+    details.push({ label: "Addon (Fichas)", value: formatChips(tournament.addonChips) });
+  }
+
+  if (hasNumberValue(tournament.addonCents)) {
+    details.push({ label: "Addon", value: formatCentsToReal(tournament.addonCents) });
+  }
+
+  if (hasNumberValue(tournament.staffTaxChips)) {
+    details.push({ label: "Taxa Staff (Fichas)", value: formatChips(tournament.staffTaxChips) });
+  }
+
+  if (hasNumberValue(tournament.staffTaxCents)) {
+    details.push({ label: "Taxa Staff", value: formatCentsToReal(tournament.staffTaxCents) });
+  }
+
+  if (hasNumberValue(tournament.bonusRankingChips)) {
+    details.push({
+      label: "Bônus Ranking (Fichas)",
+      value: formatChips(tournament.bonusRankingChips),
+    });
+  }
+
+  if (hasNumberValue(tournament.timeChipChips)) {
+    details.push({ label: "Time Chip (Fichas)", value: formatChips(tournament.timeChipChips) });
+  }
+
+  if (tournament.hasRabbit !== null) {
+    details.push({ label: "Rabbit", value: tournament.hasRabbit ? "Sim" : "Não" });
+  }
+
+  if (hasNumberValue(tournament.chipLeaderBonusCents)) {
+    details.push({
+      label: "Bônus Chip Leader",
+      value: formatCentsToReal(tournament.chipLeaderBonusCents),
+      tone: "gold",
+    });
+  }
+
+  return details;
+}
+
 function PokerContent() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
@@ -130,6 +263,10 @@ function PokerContent() {
     return () => { document.body.style.overflow = 'unset'; };
   }, [selectedTournament]);
 
+  const selectedTournamentDetails = selectedTournament
+    ? getTournamentDetails(selectedTournament)
+    : [];
+
   return (
     <main className="min-h-screen mt-[56px] flex flex-col" style={{ background: BG_BEIGE }}>
       {/* Banner */}
@@ -138,11 +275,11 @@ function PokerContent() {
           src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-WEB-SPCity.png"
           alt="Banner Torneios Poker Monte Carlo"
           fill
-          className="object-cover object-top opacity-90"
+          className="object-cover object-top"
           sizes="100vw"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+        {/* <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         <div className="absolute bottom-6 left-4 right-4 text-center hidden md:block max-w-4xl mx-auto">
           <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white drop-shadow-lg">
             Poker Monte Carlo
@@ -150,7 +287,7 @@ function PokerContent() {
           <p className="text-white/90 text-sm mt-2 font-medium drop-shadow-md">
             Mesas de cash game 24 horas e torneios diários para todos os níveis.
           </p>
-        </div>
+        </div> */}
       </div>
 
       <div className="w-full flex-1">
@@ -264,11 +401,16 @@ function PokerContent() {
                             </div>
 
                             {/* Buy-in */}
-                            <div className="shrink-0 text-right pl-2 sm:pr-2 border-l border-[#f0eee9] sm:border-none pl-3 sm:pl-0">
+                            <div className="shrink-0 text-right sm:pr-2 border-l border-[#f0eee9] sm:border-none pl-3 sm:pl-0">
                               <span className="block text-[10px] font-bold text-[#8c8c8c] uppercase tracking-wider mb-0.5">Buy-in</span>
                               <span className="block text-base sm:text-lg font-black text-[#2A0303] leading-none">
                                 {formatCentsToReal(t.buyInCents)}
                               </span>
+                              {t.buyPromoCents != null && t.buyPromoCents > 0 && (
+                                <span className="block text-[11px] font-bold text-emerald-600 mt-0.5">
+                                  Promo {formatCentsToReal(t.buyPromoCents)}
+                                </span>
+                              )}
                             </div>
 
                             <ChevronRight className="hidden sm:block h-5 w-5 text-[#c5c0b8] group-hover:text-[#5C0F08] shrink-0 transition-colors" />
@@ -371,87 +513,30 @@ function PokerContent() {
             </div>
 
             <div className="overflow-y-auto px-6 py-5 space-y-1">
-              {/* Restante dos detalhes do modal se manteve inalterado */}
-              <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
-                <span className="text-sm text-[#6b6660]">Data e Horário</span>
-                <span className="text-sm font-bold text-[#1a1a1a]">
-                  {formatTournamentDateHours(selectedTournament.startDate)}
-                </span>
-              </div>
+              {selectedTournamentDetails.map((detail, index) => {
+                const valueTone =
+                  detail.tone === "gold"
+                    ? "text-sm font-black text-amber-600"
+                    : detail.tone === "strong"
+                      ? "text-sm font-black text-[#2A0303]"
+                      : "text-sm font-bold text-[#1a1a1a]";
 
-              <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
-                <span className="text-sm text-[#6b6660]">Buy-in</span>
-                <span className="text-sm font-black text-[#2A0303]">
-                  {formatCentsToReal(selectedTournament.buyInCents)}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
-                <span className="text-sm text-[#6b6660]">Garantido</span>
-                <span className="text-sm font-black text-amber-600">
-                  {formatCentsToReal(selectedTournament.guaranteedPrizeCents)}
-                </span>
-              </div>
-
-              {selectedTournament.startingStack && (
-                <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
-                  <span className="text-sm text-[#6b6660]">Stack Inicial</span>
-                  <span className="text-sm font-bold text-[#1a1a1a]">
-                    {(selectedTournament.startingStack / 1000).toFixed(0)}K
-                  </span>
-                </div>
-              )}
-
-              {selectedTournament.blindDuration && (
-                <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
-                  <span className="text-sm text-[#6b6660]">Duração dos Blinds</span>
-                  <span className="text-sm font-bold text-[#1a1a1a]">
-                    {selectedTournament.blindDuration}
-                  </span>
-                </div>
-              )}
-
-              {selectedTournament.lateRegister && (
-                <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
-                  <span className="text-sm text-[#6b6660]">Late Register</span>
-                  <span className="text-sm font-bold text-[#1a1a1a]">
-                    {selectedTournament.lateRegister}
-                  </span>
-                </div>
-              )}
-
-              {/* Promoções e Adicionais */}
-              {(selectedTournament.buyPromoCents || selectedTournament.rebuyCents || selectedTournament.addonCents) && (
-                <div className="pt-4 pb-2">
-                  <h3 className="text-[11px] font-black tracking-wider text-[#8c8c8c] uppercase mb-2">Entradas e Adicionais</h3>
-                  <div className="bg-[#f9f8f0] rounded-xl p-3 space-y-2">
-                    {selectedTournament.buyPromoCents && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-[#524e49]">Buy Promo</span>
-                        <div className="text-right">
-                          <span className="text-sm font-bold text-[#1a1a1a]">{formatCentsToReal(selectedTournament.buyPromoCents)}</span>
-                        </div>
-                      </div>
-                    )}
-                    {selectedTournament.rebuyCents && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-[#524e49]">Rebuy</span>
-                        <div className="text-right">
-                          <span className="text-sm font-bold text-[#1a1a1a]">{formatCentsToReal(selectedTournament.rebuyCents)}</span>
-                        </div>
-                      </div>
-                    )}
-                    {selectedTournament.addonCents && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-[#524e49]">Addon</span>
-                        <div className="text-right">
-                          <span className="text-sm font-bold text-[#1a1a1a]">{formatCentsToReal(selectedTournament.addonCents)}</span>
-                        </div>
-                      </div>
-                    )}
+                return (
+                  <div
+                    key={`${detail.label}-${index}`}
+                    className="flex justify-between items-start gap-4 py-2.5 border-b border-[#f0eee9]"
+                  >
+                    <span className="text-sm text-[#6b6660]">{detail.label}</span>
+                    <span
+                      className={`${valueTone} text-right ${
+                        detail.multiline ? "break-all" : ""
+                      }`}
+                    >
+                      {detail.value}
+                    </span>
                   </div>
-                </div>
-              )}
+                );
+              })}
             </div>
             <div className="p-4 pt-0 sm:pb-6" />
           </div>
