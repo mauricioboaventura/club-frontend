@@ -42,7 +42,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   const mobileImageUrl = event.mobileImageUrl ?? null;
 
   return (
-    <main className="min-h-screen bg-[#f9f8f0]">
+    <main className="min-h-screen bg-[#f9f8f0] pt-14 lg:pt-16">
       <section className="relative h-[50vh] min-h-[320px] w-full bg-[#120404]">
         {mobileImageUrl && (
           <Image
@@ -62,7 +62,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           priority
         />
         {/* <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" /> */}
-        <div className="absolute top-0 left-0 right-0 px-6 pt-20 lg:pt-[4.5rem]">
+        <div className="absolute top-0 left-0 right-0 px-6 pt-4 lg:pt-[4.5rem]">
           <Link
             href="/eventos"
             className="inline-flex items-center gap-2 text-sm font-medium text-white hover:underline"

@@ -195,7 +195,7 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
       </div>
 
       {/* Bottom content - overlays the slider */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 pb-8 lg:pb-16">
+      <div className="absolute bottom-0 left-0 right-0 p-6 lg:pb-16">
         <div className="text-center space-y-4 lg:max-w-2xl lg:mx-auto">
           <div className="space-y-1">
             <h1 className="text-3xl lg:text-5xl font-bold tracking-wide text-white whitespace-pre-line">

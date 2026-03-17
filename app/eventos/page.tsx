@@ -237,16 +237,16 @@ export default function EventosPage() {
               <h1 className="text-2xl font-bold tracking-wide text-white">
                 {heroSlides[heroIndex]?.title}
               </h1>
-              <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
+              {/* <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
                 {heroSlides[heroIndex]?.subtitle}
-              </p>
-              <button
+              </p> */}
+              {/* <button
                 type="button"
                 className="inline-flex items-center justify-center gap-2 border px-4 py-2 w-full max-w-sm mx-auto h-12 text-base font-medium tracking-wide border-white/60 bg-transparent text-white hover:bg-white/10 rounded-lg transition-colors"
               >
                 Garantir Entrada
-              </button>
-              <div className="flex justify-center gap-2 pt-2 w-full max-w-2xl mx-auto px-4">
+              </button> */}
+              {/* <div className="flex justify-center gap-2 pt-2 w-full max-w-2xl mx-auto px-4">
                 {heroSlides.length > 1 && heroSlides.map((slide, i) => (
                   <button
                     key={slide.id}
@@ -268,7 +268,7 @@ export default function EventosPage() {
                     />
                   </button>
                 ))}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
