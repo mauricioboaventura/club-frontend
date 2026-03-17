@@ -96,7 +96,7 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
   useEffect(() => {
     const timer = setInterval(() => {
       if (!paused.current) next();
-    }, 5000);
+    }, 7000);
     return () => clearInterval(timer);
   }, [next]);
 
