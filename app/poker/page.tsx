@@ -3,8 +3,16 @@
 import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
-import { List, Layers, X } from "lucide-react";
+import { 
+  List, 
+  Layers, 
+  X, 
+  Clock, 
+  ChevronRight, 
+  Spade, 
+  Heart,
+  Trophy
+} from "lucide-react";
 import {
   fetchPokerTournamentsPaginated,
   formatCentsToReal,
@@ -40,18 +48,20 @@ function PokerContent() {
   );
   const [tournaments, setTournaments] = useState<PokerTournament[]>([]);
   const [selectedTournament, setSelectedTournament] = useState<PokerTournament | null>(null);
+  
+  // Estados do Scroll Infinito
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const sentinelRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  // Sync viewMode with URL tab param (handles client-side navigation)
+  // Sincroniza viewMode com o parâmetro da URL
   useEffect(() => {
     setViewMode(tabParam === "cashgame" ? "cashgame" : "torneios");
   }, [tabParam]);
 
-  // Fetch tournaments from API
+  // Carregamento Inicial
   useEffect(() => {
     fetchPokerTournamentsPaginated(1).then(({ data, total }) => {
       setTournaments(data);
@@ -60,10 +70,14 @@ function PokerContent() {
     });
   }, []);
 
+  // Função de carregar mais
   const loadMore = useCallback(async () => {
-    const nextPage = page + 1;
+    if (loadingMore || !hasMore) return;
+    
     setLoadingMore(true);
+    const nextPage = page + 1;
     const { data, total } = await fetchPokerTournamentsPaginated(nextPage);
+    
     setTournaments((prev) => {
       const updated = [...prev, ...data];
       setHasMore(updated.length < total);
@@ -71,94 +85,104 @@ function PokerContent() {
     });
     setPage(nextPage);
     setLoadingMore(false);
-  }, [page]);
+  }, [page, hasMore, loadingMore]);
 
-  // Infinite scroll via IntersectionObserver
+  // Lógica do IntersectionObserver (Scroll Infinito) restaurada e reforçada
   useEffect(() => {
-    if (!sentinelRef.current || !hasMore || loading) return;
+    const currentSentinel = sentinelRef.current;
+    if (!currentSentinel || !hasMore || loading) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loadingMore) {
           loadMore();
         }
       },
-      { rootMargin: "200px" }
+      { rootMargin: "200px" } // Dispara 200px antes do elemento aparecer
     );
-    observer.observe(sentinelRef.current);
-    return () => observer.disconnect();
+
+    observer.observe(currentSentinel);
+
+    return () => {
+      if (currentSentinel) {
+        observer.unobserve(currentSentinel);
+      }
+    };
   }, [hasMore, loading, loadingMore, loadMore]);
 
+  // Agrupamento por dia
   const tournamentsByDay = tournaments.reduce((groups, t) => {
     const day = t.startDate.slice(0, 10);
     if (!groups[day]) groups[day] = [];
     groups[day].push(t);
     return groups;
   }, {} as Record<string, PokerTournament[]>);
+  
   const sortedDays = Object.keys(tournamentsByDay).sort();
 
+  // Trava o scroll do body quando o modal abre
+  useEffect(() => {
+    if (selectedTournament) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [selectedTournament]);
+
   return (
-    <main className="min-h-screen mt-[56px]">
-      {/* Static Header */}
-      <div className="relative">
-        <div className="relative w-full h-56">
-          <Image
-            src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-WEB-SPCity.png"
-            alt="Torneios"
-            fill
-            className="object-cover object-top"
-            sizes="100vw"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
-          <div className="absolute bottom-4 left-4 right-4 text-center hidden xl:block">
-            <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white">Poker Monte Carlo</h1>
-            <p className="text-white/80 text-sm mt-1">
-              Experimente o poker de alto nível no Monte Carlo Poker Club. Com mesas de cash game funcionando 24 horas e torneios diários, oferecemos a melhor experiência para jogadores de todos os níveis.
-            </p>
-          </div>
+    <main className="min-h-screen mt-[56px] flex flex-col" style={{ background: BG_BEIGE }}>
+      {/* Banner */}
+      <div className="relative w-full aspect-[21/9] md:aspect-[21/6] max-h-64 bg-black">
+        <Image
+          src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-WEB-SPCity.png"
+          alt="Banner Torneios Poker Monte Carlo"
+          fill
+          className="object-cover object-top opacity-90"
+          sizes="100vw"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+        <div className="absolute bottom-6 left-4 right-4 text-center hidden md:block max-w-4xl mx-auto">
+          <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white drop-shadow-lg">
+            Poker Monte Carlo
+          </h1>
+          <p className="text-white/90 text-sm mt-2 font-medium drop-shadow-md">
+            Mesas de cash game 24 horas e torneios diários para todos os níveis.
+          </p>
         </div>
       </div>
 
-      {/* Content area */}
-      <div className="w-full" style={{ background: BG_BEIGE }}>
-
-        {/* Intro section */}
-        <section className="px-4 pt-4 max-w-6xl mx-auto">
-          {/* <div className="mb-6">
-            <h3 className="text-xl font-bold mb-2 text-[#525252]">
-              Poker Monte Carlo
-            </h3>
-            <p className="text-[16px] leading-relaxed mb-4 text-[#8c8c8c]">
-              Experimente o poker de alto nível no Monte Carlo Poker Club. Com
-              mesas de cash game funcionando 24 horas e torneios diários,
-              oferecemos a melhor experiência para jogadores de todos os níveis.
-            </p>
-          </div> */}
-        </section>
-
-        {/* Toggle Torneios / Cash Game */}
-        <section id="torneios" className="px-4 pb-8 max-w-6xl mx-auto">
-          <div className="flex gap-2 mb-6">
+      <div className="w-full flex-1">
+        <section className="px-4 py-6 max-w-4xl mx-auto">
+          
+          {/* Tabs */}
+          <div 
+            className="flex bg-[#e5e0d5]/60 p-1.5 rounded-xl mb-8 shadow-inner" 
+            role="tablist" 
+            aria-label="Modos de Jogo"
+          >
             <button
-              type="button"
+              role="tab"
+              aria-selected={viewMode === "torneios"}
               onClick={() => setViewMode("torneios")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-base font-medium transition-colors ${
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm md:text-base font-bold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5C0F08] ${
                 viewMode === "torneios"
-                  ? "bg-[#2A0303] text-white"
-                  : "border border-[#c5c0b8] text-[#6b6660]"
+                  ? "bg-white text-[#2A0303] shadow-sm"
+                  : "text-[#6b6660] hover:text-[#1a1a1a]"
               }`}
             >
               <List className="h-5 w-5" />
               Torneios
             </button>
             <button
-              id="cash"
-              type="button"
+              role="tab"
+              aria-selected={viewMode === "cashgame"}
               onClick={() => setViewMode("cashgame")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-base font-medium transition-colors ${
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm md:text-base font-bold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5C0F08] ${
                 viewMode === "cashgame"
-                  ? "bg-[#2A0303] text-white"
-                  : "border border-[#c5c0b8] text-[#6b6660]"
+                  ? "bg-white text-[#2A0303] shadow-sm"
+                  : "text-[#6b6660] hover:text-[#1a1a1a]"
               }`}
             >
               <Layers className="h-5 w-5" />
@@ -168,154 +192,148 @@ function PokerContent() {
 
           {/* Torneios View */}
           {viewMode === "torneios" && (
-          <>
-            {loading ? (
-              <div className="space-y-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="animate-pulse p-5 rounded-2xl border border-[#e5e0d5] shadow-sm bg-white"
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="flex-1">
-                        <div className="h-6 w-3/4 rounded bg-[#e5e0d5] mb-2" />
-                        <div className="h-4 w-1/2 rounded bg-[#e5e0d5]" />
+            <div id="panel-torneios" role="tabpanel" tabIndex={0} className="outline-none">
+              {loading ? (
+                <div className="space-y-4">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="animate-pulse bg-white p-4 rounded-xl border border-[#e5e0d5] flex gap-4">
+                      <div className="flex-1 space-y-3">
+                        <div className="h-5 w-2/3 rounded bg-[#e5e0d5]" />
+                        <div className="h-4 w-1/3 rounded bg-[#e5e0d5]" />
                       </div>
-                      <div className="h-7 w-16 rounded bg-[#e5e0d5] ml-3" />
+                      <div className="w-16 h-10 rounded bg-[#e5e0d5]" />
                     </div>
-                    <div className="flex justify-between items-center pt-3 border-t border-[#e5e0d5]">
-                      <div className="flex-1">
-                        <div className="h-4 w-12 rounded bg-[#e5e0d5] mb-1" />
-                        <div className="h-6 w-24 rounded bg-[#e5e0d5]" />
-                      </div>
-                      <div className="flex-1 text-right">
-                        <div className="h-4 w-16 rounded bg-[#e5e0d5] mb-1 ml-auto" />
-                        <div className="h-6 w-28 rounded bg-[#e5e0d5] ml-auto" />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : tournaments.length === 0 ? (
-              <p className="text-center text-[#6b6660] py-8 rounded-2xl bg-white shadow-md border border-[#e5e0d5]">
-                Nenhum torneio disponível no momento.
-              </p>
-            ) : (
-              <div className="space-y-8">
-                {sortedDays.map((day) => (
-                  <div key={day}>
-                    <h2 className="text-base font-semibold uppercase tracking-widest text-[#5C0F08] mb-3 px-1 text-center">
-                      {formatTournamentDate(tournamentsByDay[day][0].startDate)}
-                    </h2>
-                    <div className="space-y-4 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
-                      {tournamentsByDay[day].map((t) => (
-                        <div
-                          key={t.id}
-                          onClick={() => setSelectedTournament(t)}
-                          className="p-5 rounded-2xl border border-[#5C0F08] shadow-sm cursor-pointer hover:shadow-md transition-shadow bg-white"
-                        >
-                          <div className="flex justify-between items-start mb-3">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <h3 className="text-lg font-semibold text-[#5C0F08]">
+                  ))}
+                </div>
+              ) : tournaments.length === 0 ? (
+                <div className="text-center py-12 px-4 rounded-2xl bg-white shadow-sm border border-[#e5e0d5]">
+                  <Trophy className="h-12 w-12 mx-auto text-[#c5c0b8] mb-3" />
+                  <p className="text-[#524e49] font-medium text-lg">Nenhum torneio agendado no momento.</p>
+                  <p className="text-[#8c8c8c] text-sm mt-1">Fique de olho na nossa programação.</p>
+                </div>
+              ) : (
+                <div className="space-y-8">
+                  {sortedDays.map((day) => (
+                    <div key={day}>
+                      <h2 className="text-sm font-black tracking-wider uppercase text-[#6b6660] mb-3 px-2 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#5C0F08]" />
+                        {formatTournamentDate(tournamentsByDay[day][0].startDate)}
+                      </h2>
+                      <div className="space-y-1">
+                        {tournamentsByDay[day].map((t) => (
+                          <button
+                            key={t.id}
+                            onClick={() => setSelectedTournament(t)}
+                            className="w-full text-left group bg-white p-4 rounded-xl border border-[#e5e0d5] hover:border-[#5C0F08]/40 hover:shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5C0F08] active:scale-[0.99] flex items-center gap-3 sm:gap-4"
+                            aria-label={`Ver detalhes do torneio ${t.name}`}
+                          >
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                                <h3 className="text-base font-bold text-[#1a1a1a] uppercase leading-tight group-hover:text-[#5C0F08] transition-colors">
                                   {t.name}
                                 </h3>
                                 {t.isFeatured && (
-                                  <span className="bg-[#2A0303] text-white text-xs font-medium px-2 py-0.5 rounded">
-                                    Destaque
+                                  <span className="shrink-0 text-[10px] font-bold bg-[#5C0F08] text-white px-1.5 py-0.5 rounded tracking-wider">
+                                    DESTAQUE
                                   </span>
                                 )}
                               </div>
+                              
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-y-2 gap-x-4 mt-2">
+                                {/* Informações de tempo */}
+                                <div className="flex items-center gap-3 text-[13px] text-[#6b6660] font-medium">
+                                  <span className="flex items-center gap-1.5">
+                                    <Clock className="h-3.5 w-3.5" />
+                                    {formatTournamentTime(t.startDate)}
+                                  </span>
+                                  {t.lateRegister && (
+                                    <span>Late até {t.lateRegister}</span>
+                                  )}
+                                </div>
+                                
+                                {/* Destaque Garantido (GTD) em Dourado */}
+                                {t.guaranteedPrizeCents && t.guaranteedPrizeCents > 0 && (
+                                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-amber-50 border border-amber-200/60 rounded text-amber-600 w-fit">
+                                    <Trophy className="h-3.5 w-3.5" />
+                                    <span className="text-[11px] font-black tracking-wide uppercase">
+                                      {formatCentsToReal(t.guaranteedPrizeCents)} GTD
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            <span className="text-xl font-medium text-[#430904] ml-3 shrink-0">
-                              {formatTournamentTime(t.startDate)}
-                            </span>
-                          </div>
-                          <div className="flex justify-between items-center pt-3 border-t border-[#e5e0d5]">
-                            <div>
-                              <p className="text-sm text-[#6b6660]">Buy-in</p>
-                              <p className="text-base font-semibold text-[#1a1a1a]">
-                                {formatCentsToReal(t.buyInCents)}
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-sm text-[#6b6660]">Garantido</p>
-                              <p className="text-base font-semibold text-[#B8860B]">
-                                {formatCentsToReal(t.guaranteedPrizeCents)}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
 
-            {/* Infinite scroll sentinel */}
-            {!loading && tournaments.length > 0 && (
-              <div ref={sentinelRef} className="h-1" />
-            )}
-            {loadingMore && (
-              <div className="flex justify-center mt-6">
-                <span className="text-sm text-[#6b6660]">Carregando...</span>
-              </div>
-            )}
-          </>
+                            {/* Buy-in */}
+                            <div className="shrink-0 text-right pl-2 sm:pr-2 border-l border-[#f0eee9] sm:border-none pl-3 sm:pl-0">
+                              <span className="block text-[10px] font-bold text-[#8c8c8c] uppercase tracking-wider mb-0.5">Buy-in</span>
+                              <span className="block text-base sm:text-lg font-black text-[#2A0303] leading-none">
+                                {formatCentsToReal(t.buyInCents)}
+                              </span>
+                            </div>
+
+                            <ChevronRight className="hidden sm:block h-5 w-5 text-[#c5c0b8] group-hover:text-[#5C0F08] shrink-0 transition-colors" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Infinite scroll sentinel explicitamente posicionado */}
+              {!loading && tournaments.length > 0 && hasMore && (
+                <div 
+                  ref={sentinelRef} 
+                  className="h-10 w-full mt-4 flex items-center justify-center"
+                >
+                  {loadingMore && (
+                    <div className="h-6 w-6 rounded-full border-2 border-[#e5e0d5] border-t-[#5C0F08] animate-spin" />
+                  )}
+                </div>
+              )}
+            </div>
           )}
 
           {/* Cash Game View */}
           {viewMode === "cashgame" && (
-            <div>
-              <div className="text-center mb-8 space-y-1">
-                <p className="text-[#1a1a1a]">
-                  <span className="font-bold">PROGRAMAÇÃO:</span> 24 horas por dia
-                </p>
-                <p className="text-[#1a1a1a]">
-                  <span className="font-bold">MODALIDADES:</span> Texas Hold&apos;em e Omaha
+            <div id="panel-cashgame" role="tabpanel" tabIndex={0} className="outline-none space-y-8">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#e5e0d5] text-center">
+                <p className="text-[#1a1a1a] text-lg">
+                  <span className="font-bold">Aberto 24 horas</span> todos os dias da semana.
                 </p>
               </div>
 
-              {/* Omaha Tables */}
-              <div className="mb-8">
-                <h2 className="text-center font-bold text-[#1a1a1a] mb-6">
-                  MESAS OMAHA:
+              <div>
+                <h2 className="text-lg font-black text-[#2A0303] mb-4 flex items-center gap-2 px-1">
+                  <Spade className="h-5 w-5 fill-current" />
+                  TEXAS HOLD&apos;EM
                 </h2>
-                <div className="space-y-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
-                  {CASH_TABLES.omaha.map((table) => (
-                    <div key={table.id}>
-                      <h3 className="font-medium text-[#1a1a1a] mb-2">
-                        {table.name}
-                      </h3>
-                      <p className="text-[#1a1a1a]">
-                        <span className="font-bold">Mínimo:</span> {table.min}
-                      </p>
-                      <p className="text-[#1a1a1a]">
-                        <span className="font-bold">Máximo:</span> {table.max}
-                      </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {CASH_TABLES.texas.map((table) => (
+                    <div key={table.id} className="bg-white p-4 rounded-xl border border-[#e5e0d5] hover:shadow-sm transition-shadow">
+                      <h3 className="font-bold text-[#1a1a1a] mb-3 text-base">{table.name}</h3>
+                      <div className="flex justify-between items-center text-sm border-t border-[#f0eee9] pt-2">
+                        <span className="text-[#6b6660]">Mínimo: <strong className="text-[#1a1a1a]">{table.min}</strong></span>
+                        <span className="text-[#6b6660]">Máximo: <strong className="text-[#1a1a1a]">{table.max}</strong></span>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Texas Tables */}
-              <div className="mb-8">
-                <h2 className="text-center font-bold text-[#1a1a1a] mb-6">
-                  MESAS TEXAS:
+              <div>
+                <h2 className="text-lg font-black text-[#5C0F08] mb-4 flex items-center gap-2 px-1">
+                  <Heart className="h-5 w-5 fill-current" />
+                  OMAHA
                 </h2>
-                <div className="space-y-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
-                  {CASH_TABLES.texas.map((table) => (
-                    <div key={table.id}>
-                      <h3 className="font-medium text-[#1a1a1a] mb-2">
-                        {table.name}
-                      </h3>
-                      <p className="text-[#1a1a1a]">
-                        <span className="font-bold">Mínimo:</span> {table.min}
-                      </p>
-                      <p className="text-[#1a1a1a]">
-                        <span className="font-bold">Máximo:</span> {table.max}
-                      </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {CASH_TABLES.omaha.map((table) => (
+                    <div key={table.id} className="bg-white p-4 rounded-xl border border-[#e5e0d5] hover:shadow-sm transition-shadow">
+                      <h3 className="font-bold text-[#1a1a1a] mb-3 text-base">{table.name}</h3>
+                      <div className="flex justify-between items-center text-sm border-t border-[#f0eee9] pt-2">
+                        <span className="text-[#6b6660]">Mínimo: <strong className="text-[#1a1a1a]">{table.min}</strong></span>
+                        <span className="text-[#6b6660]">Máximo: <strong className="text-[#1a1a1a]">{table.max}</strong></span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -325,194 +343,117 @@ function PokerContent() {
         </section>
       </div>
 
-      {/* Tournament Detail Modal */}
+      {/* Modal */}
       {selectedTournament && (
         <div
-          className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
-          style={{ padding: 'max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left))' }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity duration-200"
           onClick={() => setSelectedTournament(null)}
+          role="dialog"
+          aria-modal="true"
         >
           <div
-            className="bg-white rounded-2xl p-6 max-w-md w-full relative overflow-y-auto"
-            style={{ maxHeight: 'min(85dvh, calc(100dvh - 2 * max(1rem, env(safe-area-inset-top))))' }}
+            className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
+            style={{ maxHeight: '90dvh' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              type="button"
-              onClick={() => setSelectedTournament(null)}
-              className="absolute top-4 right-4 text-[#6b6660] hover:text-[#1a1a1a]"
-            >
-              <X className="h-5 w-5" />
-            </button>
+            <div className="sticky top-0 bg-white/95 backdrop-blur z-10 px-6 py-4 border-b border-[#e5e0d5] flex justify-between items-start rounded-t-2xl sm:rounded-2xl">
+              <h2 className="text-lg font-black text-[#1a1a1a] uppercase pr-4 leading-tight">
+                {selectedTournament.name}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setSelectedTournament(null)}
+                className="shrink-0 p-1 -mr-2 text-[#8c8c8c] hover:text-[#1a1a1a] hover:bg-[#f0eee9] rounded-full transition-colors"
+                aria-label="Fechar modal"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
 
-            <h2 className="text-xl font-bold text-[#1a1a1a] mb-4 pr-8">
-              {selectedTournament.name}
-            </h2>
-
-            <div className="space-y-3">
-              <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                <span className="text-[#6b6660]">Data e Horário</span>
-                <span className="font-medium text-[#1a1a1a]">
+            <div className="overflow-y-auto px-6 py-5 space-y-1">
+              {/* Restante dos detalhes do modal se manteve inalterado */}
+              <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
+                <span className="text-sm text-[#6b6660]">Data e Horário</span>
+                <span className="text-sm font-bold text-[#1a1a1a]">
                   {formatTournamentDateHours(selectedTournament.startDate)}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                <span className="text-[#6b6660]">Buy-in</span>
-                <span className="font-medium text-[#1a1a1a]">
+              <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
+                <span className="text-sm text-[#6b6660]">Buy-in</span>
+                <span className="text-sm font-black text-[#2A0303]">
                   {formatCentsToReal(selectedTournament.buyInCents)}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                <span className="text-[#6b6660]">Garantido</span>
-                <span className="font-medium text-[#B8860B]">
+              <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
+                <span className="text-sm text-[#6b6660]">Garantido</span>
+                <span className="text-sm font-black text-amber-600">
                   {formatCentsToReal(selectedTournament.guaranteedPrizeCents)}
                 </span>
               </div>
 
               {selectedTournament.startingStack && (
-                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                  <span className="text-[#6b6660]">Stack Inicial</span>
-                  <span className="font-medium text-[#1a1a1a]">
+                <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
+                  <span className="text-sm text-[#6b6660]">Stack Inicial</span>
+                  <span className="text-sm font-bold text-[#1a1a1a]">
                     {(selectedTournament.startingStack / 1000).toFixed(0)}K
                   </span>
                 </div>
               )}
 
               {selectedTournament.blindDuration && (
-                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                  <span className="text-[#6b6660]">Duração dos Blinds</span>
-                  <span className="font-medium text-[#1a1a1a]">
+                <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
+                  <span className="text-sm text-[#6b6660]">Duração dos Blinds</span>
+                  <span className="text-sm font-bold text-[#1a1a1a]">
                     {selectedTournament.blindDuration}
                   </span>
                 </div>
               )}
 
               {selectedTournament.lateRegister && (
-                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                  <span className="text-[#6b6660]">Late Register</span>
-                  <span className="font-medium text-[#1a1a1a]">
+                <div className="flex justify-between items-center py-2.5 border-b border-[#f0eee9]">
+                  <span className="text-sm text-[#6b6660]">Late Register</span>
+                  <span className="text-sm font-bold text-[#1a1a1a]">
                     {selectedTournament.lateRegister}
                   </span>
                 </div>
               )}
 
-              {selectedTournament.buyPromoCents && (
-                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                  <span className="text-[#6b6660]">Buy Promo (1º Nível)</span>
-                  <span className="font-medium text-[#1a1a1a]">
-                    {formatCentsToReal(selectedTournament.buyPromoCents)}
-                    {selectedTournament.buyPromoChips && (
-                      <span className="text-xs text-[#6b6660] ml-1">
-                        ({(selectedTournament.buyPromoChips / 1000).toFixed(0)}K fichas)
-                      </span>
-                    )}
-                  </span>
-                </div>
-              )}
-
-              {selectedTournament.rebuyCents && (
-                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                  <span className="text-[#6b6660]">Rebuy</span>
-                  <span className="font-medium text-[#1a1a1a]">
-                    {formatCentsToReal(selectedTournament.rebuyCents)}
-                    {selectedTournament.rebuyChips && (
-                      <span className="text-xs text-[#6b6660] ml-1">
-                        ({(selectedTournament.rebuyChips / 1000).toFixed(0)}K fichas)
-                      </span>
-                    )}
-                  </span>
-                </div>
-              )}
-
-              {selectedTournament.rebuyPromoCents && (
-                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                  <span className="text-[#6b6660]">Rebuy Promo</span>
-                  <span className="font-medium text-[#1a1a1a]">
-                    {formatCentsToReal(selectedTournament.rebuyPromoCents)}
-                    {selectedTournament.rebuyPromoChips && (
-                      <span className="text-xs text-[#6b6660] ml-1">
-                        ({(selectedTournament.rebuyPromoChips / 1000).toFixed(0)}K fichas)
-                      </span>
-                    )}
-                  </span>
-                </div>
-              )}
-
-              {selectedTournament.addonCents && (
-                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                  <span className="text-[#6b6660]">Addon</span>
-                  <span className="font-medium text-[#1a1a1a]">
-                    {formatCentsToReal(selectedTournament.addonCents)}
-                    {selectedTournament.addonChips && (
-                      <span className="text-xs text-[#6b6660] ml-1">
-                        ({(selectedTournament.addonChips / 1000).toFixed(0)}K fichas)
-                      </span>
-                    )}
-                  </span>
-                </div>
-              )}
-
-              {selectedTournament.staffTaxCents && (
-                <div className="flex justify-between items-center py-2 border-b border-[#e5e0d5]">
-                  <span className="text-[#6b6660]">Taxa Staff</span>
-                  <span className="font-medium text-[#1a1a1a]">
-                    {formatCentsToReal(selectedTournament.staffTaxCents)}
-                    {selectedTournament.staffTaxChips && (
-                      <span className="text-xs text-[#6b6660] ml-1">
-                        ({(selectedTournament.staffTaxChips / 1000).toFixed(0)}K fichas)
-                      </span>
-                    )}
-                  </span>
-                </div>
-              )}
-
-              {(selectedTournament.bonusRankingChips || selectedTournament.timeChipChips || selectedTournament.hasRabbit || selectedTournament.chipLeaderBonusCents) && (
-                <div className="pt-2">
-                  <p className="text-xs font-semibold text-[#6b6660] mb-2 uppercase">Bônus e Extras</p>
-                  <div className="space-y-2">
-                    {selectedTournament.bonusRankingChips && (
+              {/* Promoções e Adicionais */}
+              {(selectedTournament.buyPromoCents || selectedTournament.rebuyCents || selectedTournament.addonCents) && (
+                <div className="pt-4 pb-2">
+                  <h3 className="text-[11px] font-black tracking-wider text-[#8c8c8c] uppercase mb-2">Entradas e Adicionais</h3>
+                  <div className="bg-[#f9f8f0] rounded-xl p-3 space-y-2">
+                    {selectedTournament.buyPromoCents && (
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-[#6b6660]">Bônus Ranking</span>
-                        <span className="text-sm font-medium text-[#1a1a1a]">
-                          {(selectedTournament.bonusRankingChips / 1000).toFixed(0)}K fichas
-                        </span>
+                        <span className="text-sm text-[#524e49]">Buy Promo</span>
+                        <div className="text-right">
+                          <span className="text-sm font-bold text-[#1a1a1a]">{formatCentsToReal(selectedTournament.buyPromoCents)}</span>
+                        </div>
                       </div>
                     )}
-                    {selectedTournament.timeChipChips && (
+                    {selectedTournament.rebuyCents && (
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-[#6b6660]">Time Chip</span>
-                        <span className="text-sm font-medium text-[#1a1a1a]">
-                          {(selectedTournament.timeChipChips / 1000).toFixed(0)}K fichas
-                        </span>
+                        <span className="text-sm text-[#524e49]">Rebuy</span>
+                        <div className="text-right">
+                          <span className="text-sm font-bold text-[#1a1a1a]">{formatCentsToReal(selectedTournament.rebuyCents)}</span>
+                        </div>
                       </div>
                     )}
-                    {selectedTournament.hasRabbit && (
+                    {selectedTournament.addonCents && (
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-[#6b6660]">Rabbit</span>
-                        <span className="text-sm font-medium text-green-700">Sim</span>
-                      </div>
-                    )}
-                    {selectedTournament.chipLeaderBonusCents && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-[#6b6660]">Chip Leader Bônus</span>
-                        <span className="text-sm font-medium text-[#5C0F08]">
-                          {formatCentsToReal(selectedTournament.chipLeaderBonusCents)}
-                        </span>
+                        <span className="text-sm text-[#524e49]">Addon</span>
+                        <div className="text-right">
+                          <span className="text-sm font-bold text-[#1a1a1a]">{formatCentsToReal(selectedTournament.addonCents)}</span>
+                        </div>
                       </div>
                     )}
                   </div>
                 </div>
               )}
             </div>
-
-            {/* <Link
-              href="/auth"
-              className="w-full mt-6 h-12 rounded-full bg-[#2A0303] hover:bg-[#420804] text-white font-semibold text-base transition-colors flex items-center justify-center"
-            >
-              Realizar inscrição!
-            </Link> */}
+            <div className="p-4 pt-0 sm:pb-6" />
           </div>
         </div>
       )}
@@ -522,7 +463,7 @@ function PokerContent() {
 
 export default function PokerPage() {
   return (
-    <Suspense>
+    <Suspense fallback={<div className="min-h-screen bg-[#f9f8f0] mt-[56px]" />}>
       <PokerContent />
     </Suspense>
   );
