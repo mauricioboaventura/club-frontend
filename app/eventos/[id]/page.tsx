@@ -57,12 +57,12 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           src={imageUrl}
           alt={event.title}
           fill
-          className={`object-cover object-left ${mobileImageUrl ? "hidden lg:block" : ""}`}
+          className={`object-cover object-top ${mobileImageUrl ? "hidden lg:block" : ""}`}
           // className={`object-cover ${mobileImageUrl ? "hidden lg:block" : ""}`}
           priority
         />
         {/* <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" /> */}
-        <div className="absolute top-0 left-0 right-0 px-6 pt-4 lg:pt-[4.5rem]">
+        <div className="absolute top-0 left-0 right-0 px-6 pt-4">
           <Link
             href="/eventos"
             className="inline-flex items-center gap-2 text-sm font-medium text-white hover:underline"

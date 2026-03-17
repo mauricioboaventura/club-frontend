@@ -174,12 +174,12 @@ export default function GastronomiaPage() {
                       </p>
                     )}
                     <div className="flex items-center justify-between">
-                      {restaurant.address && (
+                      {/* {restaurant.address && (
                         <div className="flex items-center gap-1 text-xs text-[#8c8c8c]">
                           <MapPin className="h-3 w-3" />
                           <span className="line-clamp-1">{restaurant.address}</span>
                         </div>
-                      )}
+                      )} */}
                       <div className="flex items-center gap-0.5 text-xs font-medium text-[#8b1a1a] ml-auto">
                         Ver menu
                         <ChevronRight className="h-3.5 w-3.5" />
