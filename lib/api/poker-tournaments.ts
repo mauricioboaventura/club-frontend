@@ -150,7 +150,7 @@ export function formatTournamentDateHours(dateStr: string): string {
   return date.toLocaleDateString("pt-BR", {
     weekday: "short",
     day: "numeric",
-    month: "short",
+    month: "long",
     hour: "2-digit",
     minute: "2-digit",
   });

@@ -196,7 +196,7 @@ export default function GastronomiaPage() {
 
       {/* ═══════════ GALERIA DE PRATOS ═══════════ */}
       <section id="nossos-pratos" className="scroll-mt-24 py-12 lg:py-20 bg-[#fcfaf6] border-y border-black/5">
-        <div className="max-w-[480px] mx-auto lg:max-w-4xl lg:px-6">
+        <div className="max-w-[480px] mx-auto lg:max-w-5xl lg:px-6">
           <div className="px-4 mb-8">
             <p className="text-xs uppercase tracking-[0.3em] text-[#8b1a1a] font-medium mb-3">
               Alta Gastronomia
