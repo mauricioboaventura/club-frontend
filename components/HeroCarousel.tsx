@@ -98,7 +98,7 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
       if (!paused.current) next();
     }, 7000);
     return () => clearInterval(timer);
-  }, [next]);
+  }, [next, internalIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isTransitioning.current) return;
