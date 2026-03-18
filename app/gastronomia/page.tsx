@@ -66,7 +66,7 @@ export default function GastronomiaPage() {
           <p className="text-xs uppercase tracking-[0.3em] text-[#e5b62a] font-medium mb-3">
             Monte Carlo Poker Club
           </p>
-          <h1 className="text-4xl lg:text-5xl font-bold tracking-wide text-white">
+          <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white">
             Gastronomia
           </h1>
           {/* <p className="mt-3 text-white/80 text-sm lg:text-base max-w-lg mx-auto leading-relaxed">
@@ -100,10 +100,10 @@ export default function GastronomiaPage() {
           <p className="text-xs uppercase tracking-[0.3em] text-[#8b1a1a] font-medium mb-4">
             A Arte de Receber
           </p>
-          <h2 className="font-serif text-2xl lg:text-4xl font-bold text-[#1a1a1a] mb-6 leading-tight">
+          <h2 className="font-serif text-lg lg:text-xl font-bold text-[#1a1a1a] mb-6 leading-tight">
             Muito além do jogo, uma experiência gastronômica de excelência.
           </h2>
-          <div className="space-y-4 text-[#525252] text-sm lg:text-base leading-relaxed">
+          <div className="space-y-4 text-[#525252] text-sm leading-relaxed">
             <p>
               No Monte Carlo Poker Club, acreditamos que uma noite memorável vai
               muito além das cartas na mesa. A gastronomia é parte essencial da
@@ -201,10 +201,10 @@ export default function GastronomiaPage() {
             <p className="text-xs uppercase tracking-[0.3em] text-[#8b1a1a] font-medium mb-3">
               Alta Gastronomia
             </p>
-            <h2 className="font-serif text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-2 leading-tight">
+            <h2 className="font-serif text-lg lg:text-xl font-bold text-[#1a1a1a] mb-2 leading-tight">
               Nossos Pratos
             </h2>
-            <p className="text-[#525252] text-sm lg:text-base leading-relaxed max-w-2xl">
+            <p className="text-[#525252] text-sm leading-relaxed max-w-2xl">
               Cada prato é uma obra de arte — criações autorais dos nossos chefs
               que celebram sabor, técnica e apresentação impecável.
             </p>
@@ -220,7 +220,7 @@ export default function GastronomiaPage() {
           <p className="text-xs uppercase tracking-[0.3em] text-[#e5b62a] font-medium mb-3 text-center">
             Diferenciais
           </p>
-          <h2 className="text-xl lg:text-2xl font-bold text-white text-center mb-10">
+          <h2 className="text-lg lg:text-xl font-bold text-white text-center mb-10">
             O Que Torna Nossa Gastronomia Única
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -290,10 +290,10 @@ export default function GastronomiaPage() {
               <p className="text-xs uppercase tracking-[0.3em] text-[#8b1a1a] font-medium mb-3">
                 Nossa Filosofia
               </p>
-              <h2 className="font-serif text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-4 leading-tight">
+              <h2 className="font-serif text-lg lg:text-xl font-bold text-[#1a1a1a] mb-4 leading-tight">
                 Tradição e Inovação em Cada Prato
               </h2>
-              <div className="space-y-4 text-[#525252] text-sm lg:text-base leading-relaxed">
+              <div className="space-y-4 text-[#525252] text-sm leading-relaxed">
                 <p>
                   Nossa filosofia culinária nasce da convicção de que a
                   gastronomia é uma forma de arte — e, como toda arte, deve
@@ -330,10 +330,10 @@ export default function GastronomiaPage() {
           <p className="text-xs uppercase tracking-[0.3em] text-[#8b1a1a] font-medium mb-3">
             A Experiência
           </p>
-          <h2 className="font-serif text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-6 leading-tight">
+          <h2 className="font-serif text-lg lg:text-xl font-bold text-[#1a1a1a] mb-6 leading-tight">
             Ambientes Pensados para o Prazer à Mesa
           </h2>
-          <div className="space-y-4 text-[#525252] text-sm lg:text-base leading-relaxed mb-8">
+          <div className="space-y-4 text-[#525252] text-sm leading-relaxed mb-8">
             <p>
               Cada espaço gastronômico do Monte Carlo foi projetado para
               proporcionar uma experiência sensorial completa. A iluminação
@@ -398,10 +398,10 @@ export default function GastronomiaPage() {
               <p className="text-xs uppercase tracking-[0.3em] text-[#8b1a1a] font-medium mb-3">
                 Sempre Renovado
               </p>
-              <h2 className="font-serif text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-4 leading-tight">
+              <h2 className="font-serif text-lg lg:text-xl font-bold text-[#1a1a1a] mb-4 leading-tight">
                 Cardápios que Respeitam as Estações
               </h2>
-              <div className="space-y-4 text-[#525252] text-sm lg:text-base leading-relaxed">
+              <div className="space-y-4 text-[#525252] text-sm leading-relaxed">
                 <p>
                   Nossos cardápios são renovados diariamente, acompanhando a
                   sazonalidade dos ingredientes e a criatividade da nossa
@@ -460,10 +460,10 @@ export default function GastronomiaPage() {
               <p className="text-xs uppercase tracking-[0.3em] text-[#e5b62a] font-medium mb-3">
                 Bar & Carta de Vinhos
               </p>
-              <h2 className="font-serif text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight">
+              <h2 className="font-serif text-lg lg:text-xl font-bold text-white mb-4 leading-tight">
                 Drinks de Autor e Rótulos Selecionados
               </h2>
-              <div className="space-y-4 text-white/70 text-sm lg:text-base leading-relaxed">
+              <div className="space-y-4 text-white/70 text-sm leading-relaxed">
                 <p>
                   Nosso bar é comandado por mixologistas que dominam a arte de
                   criar coquetéis que contam histórias. De releituras de
@@ -496,12 +496,12 @@ export default function GastronomiaPage() {
           <p className="text-xs uppercase tracking-[0.3em] text-[#8b1a1a] font-medium mb-3">
             Nos Bastidores
           </p>
-          <h2 className="font-serif text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-6 leading-tight">
+          <h2 className="font-serif text-lg lg:text-xl font-bold text-[#1a1a1a] mb-6 leading-tight">
             Uma Equipe Apaixonada pela Alta Gastronomia
           </h2>
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
             <div className="w-full lg:w-2/3">
-              <div className="space-y-4 text-[#525252] text-sm lg:text-base leading-relaxed">
+              <div className="space-y-4 text-[#525252] text-sm leading-relaxed">
                 <p>
                   Por trás de cada prato, cada sobremesa e cada coquetel há uma
                   equipe dedicada de profissionais que compartilham a mesma
@@ -572,10 +572,10 @@ export default function GastronomiaPage() {
           <p className="text-xs uppercase tracking-[0.3em] text-[#e5b62a] font-medium mb-3">
             Nosso Compromisso
           </p>
-          <h2 className="font-serif text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-6 leading-tight max-w-2xl mx-auto">
+          <h2 className="font-serif text-lg lg:text-xl font-bold text-[#1a1a1a] mb-6 leading-tight max-w-2xl mx-auto">
             Excelência em Cada Detalhe, do Primeiro ao Último Prato
           </h2>
-          <div className="max-w-2xl mx-auto space-y-4 text-[#525252] text-sm lg:text-base leading-relaxed text-left">
+          <div className="max-w-2xl mx-auto space-y-4 text-[#525252] text-sm leading-relaxed text-left">
             <p>
               No Monte Carlo, a gastronomia não é um complemento — é um dos
               pilares fundamentais da experiência que oferecemos. Trabalhamos
@@ -607,10 +607,10 @@ export default function GastronomiaPage() {
           <p className="text-xs uppercase tracking-[0.3em] text-[#e5b62a] font-medium mb-3">
             Venha nos Visitar
           </p>
-          <h2 className="font-serif text-2xl lg:text-3xl font-bold text-white mb-4 leading-tight">
+          <h2 className="font-serif text-lg lg:text-xl font-bold text-white mb-4 leading-tight">
             Sua Mesa Está Reservada
           </h2>
-          <p className="text-white/70 text-sm lg:text-base leading-relaxed max-w-xl mx-auto mb-6">
+          <p className="text-white/70 text-sm leading-relaxed max-w-xl mx-auto mb-6">
             Descubra pessoalmente por que a gastronomia do Monte Carlo é
             considerada uma das mais sofisticadas do cenário de entretenimento
             brasileiro. Estamos prontos para recebê-lo.

@@ -195,7 +195,7 @@ export default function EventosPage() {
         <div className="relative w-full h-[50vh] min-h-[320px] overflow-hidden bg-gradient-to-b from-[#430904] to-[#2a0303]">
           <div className="absolute inset-x-0 bottom-0 pb-12 px-6">
             <div className="text-center space-y-4">
-              <h1 className="text-2xl font-bold tracking-wide text-white">
+              <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white">
                 Eventos Monte Carlo
               </h1>
               <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
@@ -234,7 +234,7 @@ export default function EventosPage() {
           </div>
           <div className="absolute inset-x-0 bottom-0 pb-12 px-6">
             <div className="text-center space-y-4">
-              <h1 className="text-2xl font-bold tracking-wide text-white">
+              <h1 className="text-3xl lg:text-4xl font-bold tracking-wide text-white">
                 {heroSlides[heroIndex]?.title}
               </h1>
               {/* <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto">
@@ -276,7 +276,7 @@ export default function EventosPage() {
 
       {/* Próximos Eventos */}
       <div className="bg-[#f9f8f0] max-w-[480px] mx-auto lg:max-w-7xl lg:px-6">
-        <h2 className="font-serif text-xl lg:text-2xl font-bold text-[#1a1a1a] px-4 pt-6 pb-4 leading-tight">
+        <h2 className="font-serif text-lg lg:text-xl font-bold text-[#1a1a1a] px-4 pt-6 pb-4 leading-tight">
           Próximos Eventos
         </h2>
         <div className="grid grid-cols-2 gap-3 px-4 pb-4 md:grid-cols-3">
@@ -360,7 +360,7 @@ export default function EventosPage() {
                     }}
                   >
                     <div className="relative z-10">
-                      <h3 className="font-serif text-xl font-bold text-white mb-1">
+                      <h3 className="font-serif text-lg lg:text-xl font-bold text-white mb-1">
                         {evento.title}
                       </h3>
                       <p className="text-white/70 text-sm">
