@@ -11,10 +11,15 @@ import {
   ChevronRight, 
   Spade, 
   Heart,
-  Trophy
+  Trophy,
+  Radio,
+  LayoutGrid,
+  CalendarClock,
+  Check
 } from "lucide-react";
 import {
   fetchPokerTournamentsPaginated,
+  formatCentsToCompact,
   formatCentsToReal,
   formatTournamentDate,
   formatTournamentDateHours,
@@ -40,6 +45,22 @@ const CASH_TABLES = {
 
 const BG_BEIGE = "#f9f8f0";
 
+const LIVE_TABLES = [
+  { id: 1, modality: "Texas Hold'em", blind: "5/10", players: 8, maxPlayers: 9, openMinutesAgo: 180 },
+  { id: 2, modality: "Texas Hold'em", blind: "10/20", players: 7, maxPlayers: 9, openMinutesAgo: 300 },
+  { id: 3, modality: "Omaha", blind: "5/10", players: 6, maxPlayers: 9, openMinutesAgo: 90 },
+  { id: 4, modality: "Texas Hold'em", blind: "25/50", players: 9, maxPlayers: 9, openMinutesAgo: 480 },
+  { id: 5, modality: "Omaha", blind: "10/20", players: 5, maxPlayers: 9, openMinutesAgo: 120 },
+  { id: 6, modality: "Texas Hold'em", blind: "50/100", players: 4, maxPlayers: 9, openMinutesAgo: 30 },
+];
+
+function formatOpenTime(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h > 0) return `${h}h${m > 0 ? `${m.toString().padStart(2, "0")}min` : ""}`;
+  return `${m}min`;
+}
+
 type TournamentDetailTone = "default" | "strong" | "gold";
 
 type TournamentDetail = {
@@ -63,22 +84,22 @@ function formatChips(value: number): string {
 
 function getTournamentDetails(tournament: PokerTournament): TournamentDetail[] {
   const details: TournamentDetail[] = [
-    { label: "ID", value: tournament.id },
-    { label: "Slug", value: tournament.slug },
-    { label: "Data e Horário", value: formatTournamentDateHours(tournament.startDate) },
-    { label: "Ativo", value: tournament.isActive ? "Sim" : "Não" },
-    { label: "Destaque", value: tournament.isFeatured ? "Sim" : "Não" },
+    // { label: "ID", value: tournament.id },
+    // { label: "Slug", value: tournament.slug },
+    { label: "Data e Horário", value: formatTournamentDate(tournament.startDate) },
+    // { label: "Ativo", value: tournament.isActive ? "Sim" : "Não" },
+    // { label: "Destaque", value: tournament.isFeatured ? "Sim" : "Não" },
     { label: "Buy-in", value: formatCentsToReal(tournament.buyInCents), tone: "strong" },
     {
       label: "Garantido",
-      value: formatCentsToReal(tournament.guaranteedPrizeCents),
+      value: formatCentsToCompact(tournament.guaranteedPrizeCents),
       tone: "gold",
     },
   ];
 
-  if (hasTextValue(tournament.status)) {
-    details.push({ label: "Status", value: tournament.status });
-  }
+  // if (hasTextValue(tournament.status)) {
+  //   details.push({ label: "Status", value: tournament.status });
+  // }
 
   if (hasTextValue(tournament.tournamentType)) {
     details.push({ label: "Tipo de Torneio", value: tournament.tournamentType });
@@ -181,6 +202,34 @@ function PokerContent() {
   );
   const [tournaments, setTournaments] = useState<PokerTournament[]>([]);
   const [selectedTournament, setSelectedTournament] = useState<PokerTournament | null>(null);
+
+  // Cash game sub-tabs
+  const [cashSubTab, setCashSubTab] = useState<"modalidades" | "aovivo">("modalidades");
+  const [reserveTableId, setReserveTableId] = useState<number | null>(null);
+  const [reserveName, setReserveName] = useState("");
+  const [reserveCpf, setReserveCpf] = useState("");
+  const [reserveSubmitted, setReserveSubmitted] = useState(false);
+
+  function formatCpfInput(value: string) {
+    const digits = value.replace(/\D/g, "").slice(0, 11);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+    if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
+  }
+
+  function handleReserveSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (reserveName.trim().length < 2 || reserveCpf.replace(/\D/g, "").length !== 11) return;
+    setReserveSubmitted(true);
+  }
+
+  function closeReserveModal() {
+    setReserveTableId(null);
+    setReserveName("");
+    setReserveCpf("");
+    setReserveSubmitted(false);
+  }
   
   // Estados do Scroll Infinito
   const [loading, setLoading] = useState(true);
@@ -253,15 +302,15 @@ function PokerContent() {
   
   const sortedDays = Object.keys(tournamentsByDay).sort();
 
-  // Trava o scroll do body quando o modal abre
+  // Trava o scroll do body quando qualquer modal abre
   useEffect(() => {
-    if (selectedTournament) {
+    if (selectedTournament || reserveTableId !== null) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
     return () => { document.body.style.overflow = 'unset'; };
-  }, [selectedTournament]);
+  }, [selectedTournament, reserveTableId]);
 
   const selectedTournamentDetails = selectedTournament
     ? getTournamentDetails(selectedTournament)
@@ -438,48 +487,140 @@ function PokerContent() {
 
           {/* Cash Game View */}
           {viewMode === "cashgame" && (
-            <div id="panel-cashgame" role="tabpanel" tabIndex={0} className="outline-none space-y-8">
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#e5e0d5] text-center">
-                <p className="text-[#1a1a1a] text-lg">
-                  <span className="font-bold">Aberto 24 horas</span> todos os dias da semana.
-                </p>
+            <div id="panel-cashgame" role="tabpanel" tabIndex={0} className="outline-none space-y-6">
+              {/* Sub-tabs: Modalidades / Ao Vivo */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCashSubTab("modalidades")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all border ${
+                    cashSubTab === "modalidades"
+                      ? "bg-[#2A0303] text-white border-[#2A0303] shadow-md"
+                      : "bg-white text-[#6b6660] border-[#e5e0d5] hover:text-[#2A0303] hover:border-[#c5c0b8]"
+                  }`}
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                  Modalidades
+                </button>
+                <button
+                  onClick={() => setCashSubTab("aovivo")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all border ${
+                    cashSubTab === "aovivo"
+                      ? "bg-[#2A0303] text-white border-[#2A0303] shadow-md"
+                      : "bg-white text-[#6b6660] border-[#e5e0d5] hover:text-[#2A0303] hover:border-[#c5c0b8]"
+                  }`}
+                >
+                  <Radio className="h-4 w-4" />
+                  Ao Vivo
+                </button>
               </div>
 
-              <div>
-                <h2 className="text-lg font-black text-[#2A0303] mb-4 flex items-center gap-2 px-1">
-                  <Spade className="h-5 w-5 fill-current" />
-                  TEXAS HOLD&apos;EM
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {CASH_TABLES.texas.map((table) => (
-                    <div key={table.id} className="bg-white p-4 rounded-xl border border-[#e5e0d5] hover:shadow-sm transition-shadow">
-                      <h3 className="font-bold text-[#1a1a1a] mb-3 text-base">{table.name}</h3>
-                      <div className="flex justify-between items-center text-sm border-t border-[#f0eee9] pt-2">
-                        <span className="text-[#6b6660]">Mínimo: <strong className="text-[#1a1a1a]">{table.min}</strong></span>
-                        <span className="text-[#6b6660]">Máximo: <strong className="text-[#1a1a1a]">{table.max}</strong></span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              {/* ── Modalidades ── */}
+              {cashSubTab === "modalidades" && (
+                <div className="space-y-8">
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#e5e0d5] text-center">
+                    <p className="text-[#1a1a1a] text-lg">
+                      <span className="font-bold">Aberto 24 horas</span> todos os dias da semana.
+                    </p>
+                  </div>
 
-              <div>
-                <h2 className="text-lg font-black text-[#5C0F08] mb-4 flex items-center gap-2 px-1">
-                  <Heart className="h-5 w-5 fill-current" />
-                  OMAHA
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {CASH_TABLES.omaha.map((table) => (
-                    <div key={table.id} className="bg-white p-4 rounded-xl border border-[#e5e0d5] hover:shadow-sm transition-shadow">
-                      <h3 className="font-bold text-[#1a1a1a] mb-3 text-base">{table.name}</h3>
-                      <div className="flex justify-between items-center text-sm border-t border-[#f0eee9] pt-2">
-                        <span className="text-[#6b6660]">Mínimo: <strong className="text-[#1a1a1a]">{table.min}</strong></span>
-                        <span className="text-[#6b6660]">Máximo: <strong className="text-[#1a1a1a]">{table.max}</strong></span>
-                      </div>
+                  <div>
+                    <h2 className="text-lg font-black text-[#2A0303] mb-4 flex items-center gap-2 px-1">
+                      <Spade className="h-5 w-5 fill-current" />
+                      TEXAS HOLD&apos;EM
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {CASH_TABLES.texas.map((table) => (
+                        <div key={table.id} className="bg-white p-4 rounded-xl border border-[#e5e0d5] hover:shadow-sm transition-shadow">
+                          <h3 className="font-bold text-[#1a1a1a] mb-3 text-base">{table.name}</h3>
+                          <div className="flex justify-between items-center text-sm border-t border-[#f0eee9] pt-2">
+                            <span className="text-[#6b6660]">Mínimo: <strong className="text-[#1a1a1a]">{table.min}</strong></span>
+                            <span className="text-[#6b6660]">Máximo: <strong className="text-[#1a1a1a]">{table.max}</strong></span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+
+                  <div>
+                    <h2 className="text-lg font-black text-[#5C0F08] mb-4 flex items-center gap-2 px-1">
+                      <Heart className="h-5 w-5 fill-current" />
+                      OMAHA
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {CASH_TABLES.omaha.map((table) => (
+                        <div key={table.id} className="bg-white p-4 rounded-xl border border-[#e5e0d5] hover:shadow-sm transition-shadow">
+                          <h3 className="font-bold text-[#1a1a1a] mb-3 text-base">{table.name}</h3>
+                          <div className="flex justify-between items-center text-sm border-t border-[#f0eee9] pt-2">
+                            <span className="text-[#6b6660]">Mínimo: <strong className="text-[#1a1a1a]">{table.min}</strong></span>
+                            <span className="text-[#6b6660]">Máximo: <strong className="text-[#1a1a1a]">{table.max}</strong></span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* ── Ao Vivo ── */}
+              {cashSubTab === "aovivo" && (
+                <div className="relative">
+                  {/* Overlay "Em desenvolvimento" */}
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center rounded-2xl bg-white/60 backdrop-blur-[2px]">
+                    <Radio className="h-10 w-10 text-[#5C0F08] mb-3" />
+                    <span className="text-lg font-black text-[#2A0303] uppercase tracking-wide">Em desenvolvimento</span>
+                    <span className="text-sm text-[#6b6660] mt-1">Esta funcionalidade estará disponível em breve.</span>
+                  </div>
+
+                  <div className="space-y-3 select-none pointer-events-none blur-[3px]">
+                    <div className="flex items-center gap-2 px-1">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                      </span>
+                      <span className="text-sm font-bold text-[#1a1a1a]">{LIVE_TABLES.length} mesas abertas agora</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      {LIVE_TABLES.map((table) => {
+                        const isOmaha = table.modality === "Omaha";
+                        return (
+                          <div
+                            key={table.id}
+                            className="bg-white rounded-xl border border-[#e5e0d5] p-4 flex items-center gap-4"
+                          >
+                            <div className="shrink-0 h-10 w-10 rounded-full bg-[#f0eee9] flex items-center justify-center">
+                              {isOmaha ? (
+                                <Heart className="h-5 w-5 text-[#5C0F08] fill-current" />
+                              ) : (
+                                <Spade className="h-5 w-5 text-[#2A0303] fill-current" />
+                              )}
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="font-bold text-[#1a1a1a] text-sm">{table.modality}</span>
+                                <span className="text-xs font-black text-[#5C0F08] bg-[#5C0F08]/10 px-2 py-0.5 rounded">
+                                  {table.blind}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-3 mt-1 text-xs text-[#6b6660]">
+                                <span className="flex items-center gap-1">
+                                  <CalendarClock className="h-3 w-3" />
+                                  Aberta há {formatOpenTime(table.openMinutesAgo)}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="shrink-0 px-4 py-2 rounded-lg text-xs font-bold bg-[#e5e0d5] text-[#8c8c8c]">
+                              Reservar
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </section>
@@ -494,14 +635,36 @@ function PokerContent() {
           aria-modal="true"
         >
           <div
-            className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
+            className="bg-white w-full sm:max-w-md lg:max-w-3xl rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
             style={{ maxHeight: '90dvh' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-white/95 backdrop-blur z-10 px-6 py-4 border-b border-[#e5e0d5] flex justify-between items-start rounded-t-2xl sm:rounded-2xl">
-              <h2 className="text-lg font-black text-[#1a1a1a] uppercase pr-4 leading-tight">
-                {selectedTournament.name}
-              </h2>
+            {/* Cover image banner */}
+            {selectedTournament.coverImageUrl && (
+              <div className="relative w-full aspect-[21/9] lg:aspect-[21/7] rounded-t-2xl overflow-hidden bg-black">
+                <Image
+                  src={selectedTournament.coverImageUrl}
+                  alt={selectedTournament.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 672px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+              </div>
+            )}
+
+            {/* Header */}
+            <div className={`sticky top-0 bg-white/95 backdrop-blur z-10 px-6 py-4 border-b border-[#e5e0d5] flex justify-between items-start ${!selectedTournament.coverImageUrl ? 'rounded-t-2xl sm:rounded-t-2xl' : ''}`}>
+              <div className="flex items-center gap-2 flex-wrap pr-4">
+                <h2 className="text-lg font-black text-[#1a1a1a] uppercase leading-tight">
+                  {selectedTournament.name}
+                </h2>
+                {selectedTournament.isFeatured && (
+                  <span className="shrink-0 text-[10px] font-bold bg-[#5C0F08] text-white px-1.5 py-0.5 rounded tracking-wider">
+                    DESTAQUE
+                  </span>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => setSelectedTournament(null)}
@@ -512,36 +675,170 @@ function PokerContent() {
               </button>
             </div>
 
-            <div className="overflow-y-auto px-6 py-5 space-y-1">
-              {selectedTournamentDetails.map((detail, index) => {
-                const valueTone =
-                  detail.tone === "gold"
-                    ? "text-sm font-black text-amber-600"
-                    : detail.tone === "strong"
-                      ? "text-sm font-black text-[#2A0303]"
-                      : "text-sm font-bold text-[#1a1a1a]";
+            <div className="overflow-y-auto px-6 py-5 space-y-5">
+              {/* Highlighted stats */}
+              <div className="grid grid-cols-3 gap-3 lg:gap-4">
+                <div className="bg-[#fcfaf6] rounded-xl p-3 lg:p-4 text-center border border-[#e5e0d5]">
+                  <span className="block text-[10px] lg:text-xs font-bold text-[#8c8c8c] uppercase tracking-wider mb-1">Buy-in</span>
+                  <span className="block text-base lg:text-xl font-black text-[#2A0303] leading-tight">
+                    {formatCentsToReal(selectedTournament.buyInCents)}
+                  </span>
+                </div>
+                <div className="bg-amber-50 rounded-xl p-3 lg:p-4 text-center border border-amber-200/60">
+                  <span className="block text-[10px] lg:text-xs font-bold text-amber-500 uppercase tracking-wider mb-1">Garantido</span>
+                  <span className="block text-base lg:text-xl font-black text-amber-600 leading-tight">
+                    {formatCentsToCompact(selectedTournament.guaranteedPrizeCents)}
+                  </span>
+                </div>
+                <div className="bg-[#fcfaf6] rounded-xl p-3 lg:p-4 text-center border border-[#e5e0d5]">
+                  <span className="block text-[10px] lg:text-xs font-bold text-[#8c8c8c] uppercase tracking-wider mb-1">Horário</span>
+                  <span className="block text-base lg:text-xl font-black text-[#1a1a1a] leading-tight">
+                    {formatTournamentTime(selectedTournament.startDate)}
+                  </span>
+                </div>
+              </div>
 
-                return (
-                  <div
-                    key={`${detail.label}-${index}`}
-                    className="flex justify-between items-start gap-4 py-2.5 border-b border-[#f0eee9]"
-                  >
-                    <span className="text-sm text-[#6b6660]">{detail.label}</span>
-                    <span
-                      className={`${valueTone} text-right ${
-                        detail.multiline ? "break-all" : ""
-                      }`}
-                    >
-                      {detail.value}
-                    </span>
-                  </div>
-                );
-              })}
+              {/* Detail rows — 2-column grid on desktop */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8">
+                {selectedTournamentDetails
+                  .filter((d) => d.label !== "Buy-in" && d.label !== "Garantido")
+                  .map((detail, index) => {
+                    const valueTone =
+                      detail.tone === "gold"
+                        ? "text-sm font-black text-amber-600"
+                        : detail.tone === "strong"
+                          ? "text-sm font-black text-[#2A0303]"
+                          : "text-sm font-bold text-[#1a1a1a]";
+
+                    return (
+                      <div
+                        key={`${detail.label}-${index}`}
+                        className="flex justify-between items-start gap-4 py-2.5 border-b border-[#f0eee9]"
+                      >
+                        <span className="text-sm text-[#6b6660]">{detail.label}</span>
+                        <span
+                          className={`${valueTone} text-right ${
+                            detail.multiline ? "break-all" : ""
+                          }`}
+                        >
+                          {detail.value}
+                        </span>
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
             <div className="p-4 pt-0 sm:pb-6" />
           </div>
         </div>
       )}
+
+      {/* Reserve Modal */}
+      {reserveTableId !== null && (() => {
+        const table = LIVE_TABLES.find((t) => t.id === reserveTableId);
+        if (!table) return null;
+        return (
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+            onClick={closeReserveModal}
+          >
+            <div
+              className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="px-6 py-4 border-b border-[#e5e0d5] flex justify-between items-center rounded-t-2xl">
+                <h2 className="text-base font-black text-[#1a1a1a] uppercase">
+                  Reservar Mesa
+                </h2>
+                <button
+                  type="button"
+                  onClick={closeReserveModal}
+                  className="p-1 -mr-2 text-[#8c8c8c] hover:text-[#1a1a1a] hover:bg-[#f0eee9] rounded-full transition-colors"
+                  aria-label="Fechar"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="px-6 py-5">
+                {reserveSubmitted ? (
+                  <div className="text-center py-6 space-y-3">
+                    <div className="mx-auto h-14 w-14 rounded-full bg-emerald-100 flex items-center justify-center">
+                      <Check className="h-7 w-7 text-emerald-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-[#1a1a1a]">Reserva confirmada!</h3>
+                    <p className="text-sm text-[#6b6660]">
+                      Mesa <strong>{table.modality} {table.blind}</strong> reservada para <strong>{reserveName}</strong>.
+                    </p>
+                    <button
+                      onClick={closeReserveModal}
+                      className="mt-4 px-6 py-2.5 bg-[#5C0F08] text-white rounded-xl font-bold text-sm hover:bg-[#7a1810] transition-colors"
+                    >
+                      Fechar
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="bg-[#fcfaf6] rounded-xl p-4 border border-[#e5e0d5] mb-5 flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-white border border-[#e5e0d5] flex items-center justify-center shrink-0">
+                        {table.modality === "Omaha" ? (
+                          <Heart className="h-5 w-5 text-[#5C0F08] fill-current" />
+                        ) : (
+                          <Spade className="h-5 w-5 text-[#2A0303] fill-current" />
+                        )}
+                      </div>
+                      <div>
+                        <span className="block text-sm font-bold text-[#1a1a1a]">{table.modality} {table.blind}</span>
+                        <span className="block text-xs text-[#6b6660]">Aberta há {formatOpenTime(table.openMinutesAgo)}</span>
+                      </div>
+                    </div>
+
+                    <form onSubmit={handleReserveSubmit} className="space-y-4">
+                      <div>
+                        <label htmlFor="reserve-name" className="block text-xs font-bold text-[#6b6660] uppercase tracking-wider mb-1.5">
+                          Nome completo
+                        </label>
+                        <input
+                          id="reserve-name"
+                          type="text"
+                          required
+                          minLength={2}
+                          value={reserveName}
+                          onChange={(e) => setReserveName(e.target.value)}
+                          placeholder="Seu nome"
+                          className="w-full px-4 py-3 rounded-xl border border-[#e5e0d5] bg-white text-sm text-[#1a1a1a] placeholder:text-[#c5c0b8] focus:outline-none focus:ring-2 focus:ring-[#5C0F08] focus:border-transparent transition-shadow"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="reserve-cpf" className="block text-xs font-bold text-[#6b6660] uppercase tracking-wider mb-1.5">
+                          CPF
+                        </label>
+                        <input
+                          id="reserve-cpf"
+                          type="text"
+                          required
+                          inputMode="numeric"
+                          value={reserveCpf}
+                          onChange={(e) => setReserveCpf(formatCpfInput(e.target.value))}
+                          placeholder="000.000.000-00"
+                          className="w-full px-4 py-3 rounded-xl border border-[#e5e0d5] bg-white text-sm text-[#1a1a1a] placeholder:text-[#c5c0b8] focus:outline-none focus:ring-2 focus:ring-[#5C0F08] focus:border-transparent transition-shadow"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={reserveName.trim().length < 2 || reserveCpf.replace(/\D/g, "").length !== 11}
+                        className="w-full py-3 rounded-xl font-bold text-sm transition-all disabled:bg-[#e5e0d5] disabled:text-[#8c8c8c] disabled:cursor-not-allowed bg-[#5C0F08] text-white hover:bg-[#7a1810] active:scale-[0.98] shadow-sm"
+                      >
+                        Confirmar Reserva
+                      </button>
+                    </form>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </main>
   );
 }

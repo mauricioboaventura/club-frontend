@@ -163,3 +163,17 @@ export function formatTournamentTime(dateStr: string): string {
     minute: "2-digit",
   });
 }
+
+export function formatCentsToCompact(cents: number | null | undefined): string {
+  if (cents == null || !Number.isFinite(cents)) return "R$ 0";
+  const reais = cents / 100;
+  if (reais >= 1_000_000) {
+    const v = reais / 1_000_000;
+    return `R$ ${Number.isInteger(v) ? v : v.toFixed(1).replace(/\.0$/, "")}M`;
+  }
+  if (reais >= 1_000) {
+    const v = reais / 1_000;
+    return `R$ ${Number.isInteger(v) ? v : v.toFixed(1).replace(/\.0$/, "")}K`;
+  }
+  return formatCentsToReal(cents);
+}
