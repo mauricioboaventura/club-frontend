@@ -27,7 +27,7 @@ export function formatChips(value: number): string {
 
 export function getTournamentDetails(tournament: PokerTournament): TournamentDetail[] {
   const details: TournamentDetail[] = [
-    { label: "Data e Horário", value: formatTournamentDate(tournament.startDate) },
+    { label: "Data", value: formatTournamentDate(tournament.startDate) },
     { label: "Buy-in", value: formatCentsToReal(tournament.buyInCents), tone: "strong" },
     {
       label: "Garantido",

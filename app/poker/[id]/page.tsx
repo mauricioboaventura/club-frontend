@@ -19,76 +19,23 @@ import {
   type PokerTournament,
 } from "@/lib/api/poker-tournaments";
 import { getTournamentDetails, type TournamentDetail } from "@/lib/poker-utils";
+import {
+  fetchBlindStructureWithLevels,
+  type BlindStructure,
+} from "@/lib/api/blind-structures";
 
 const BG_BEIGE = "#f9f8f0";
 
-// ─── Blinds mock data ───────────────────────────────────────────────────────
-
-type BlindLevel = { level: number; time: string; sb: string; bb: string; ante: string };
-type BlindBreak = { breakLabel: string };
-type BlindRow = BlindLevel | BlindBreak;
-
-function isBreak(row: BlindRow): row is BlindBreak {
-  return "breakLabel" in row;
-}
-
-function buildBlindStructure(minutesAfterEight: string): BlindRow[] {
-  const t = minutesAfterEight; // "20 min" or "15 min"
-  return [
-    { level: 1, time: "20 min", sb: "100", bb: "200", ante: "200" },
-    { level: 2, time: "20 min", sb: "200", bb: "300", ante: "300" },
-    { level: 3, time: "20 min", sb: "200", bb: "400", ante: "400" },
-    { level: 4, time: "20 min", sb: "300", bb: "500", ante: "500" },
-    { level: 5, time: "20 min", sb: "300", bb: "600", ante: "600" },
-    { level: 6, time: "20 min", sb: "400", bb: "800", ante: "800" },
-    { level: 7, time: "20 min", sb: "500", bb: "1.000", ante: "1.000" },
-    { level: 8, time: "20 min", sb: "600", bb: "1.200", ante: "1.200" },
-    { breakLabel: "INTERVALO LATE REGISTER" },
-    { level: 9, time: t, sb: "1.000", bb: "1.500", ante: "1.500" },
-    { level: 10, time: t, sb: "1.000", bb: "2.000", ante: "2.000" },
-    { level: 11, time: t, sb: "1.500", bb: "3.000", ante: "3.000" },
-    { level: 12, time: t, sb: "2.000", bb: "4.000", ante: "4.000" },
-    { level: 13, time: t, sb: "3.000", bb: "5.000", ante: "5.000" },
-    { level: 14, time: t, sb: "3.000", bb: "6.000", ante: "6.000" },
-    { level: 15, time: t, sb: "4.000", bb: "8.000", ante: "8.000" },
-    { level: 16, time: t, sb: "5.000", bb: "10.000", ante: "10.000" },
-    { level: 17, time: t, sb: "6.000", bb: "12.000", ante: "12.000" },
-    { breakLabel: "INTERVALO | 10 MINUTOS" },
-    { level: 18, time: t, sb: "10.000", bb: "15.000", ante: "15.000" },
-    { level: 19, time: t, sb: "10.000", bb: "20.000", ante: "20.000" },
-    { level: 20, time: t, sb: "10.000", bb: "25.000", ante: "25.000" },
-    { level: 21, time: t, sb: "15.000", bb: "30.000", ante: "30.000" },
-    { level: 22, time: t, sb: "20.000", bb: "40.000", ante: "40.000" },
-    { level: 23, time: t, sb: "25.000", bb: "50.000", ante: "50.000" },
-    { level: 24, time: t, sb: "30.000", bb: "60.000", ante: "60.000" },
-    { level: 25, time: t, sb: "35.000", bb: "70.000", ante: "70.000" },
-    { breakLabel: "INTERVALO | 10 MINUTOS" },
-    { level: 26, time: t, sb: "40.000", bb: "80.000", ante: "80.000" },
-    { level: 27, time: t, sb: "50.000", bb: "100.000", ante: "100.000" },
-    { level: 28, time: t, sb: "60.000", bb: "120.000", ante: "120.000" },
-    { level: 29, time: t, sb: "80.000", bb: "150.000", ante: "150.000" },
-    { level: 30, time: t, sb: "100.000", bb: "200.000", ante: "200.000" },
-    { level: 31, time: t, sb: "100.000", bb: "250.000", ante: "250.000" },
-    { level: 32, time: t, sb: "150.000", bb: "300.000", ante: "300.000" },
-    { level: 33, time: t, sb: "200.000", bb: "400.000", ante: "400.000" },
-    { level: 34, time: t, sb: "250.000", bb: "500.000", ante: "500.000" },
-    { level: 35, time: t, sb: "300.000", bb: "600.000", ante: "600.000" },
-    { level: 36, time: t, sb: "400.000", bb: "800.000", ante: "800.000" },
-    { level: 37, time: t, sb: "500.000", bb: "1.000.000", ante: "1.000.000" },
-  ];
-}
-
-
-
 // ─── Tab types ──────────────────────────────────────────────────────────────
 
-type DetailTab = "info" | "blinds" | "ranking" | "regulamento";
+type DetailTab = "info" | "blinds";
+// type DetailTab = "info" | "blinds" | "ranking" | "regulamento";
 
 const TABS: { key: DetailTab; label: string; icon: React.ReactNode }[] = [
   { key: "info", label: "Informações", icon: <FileText className="h-4 w-4" /> },
   { key: "blinds", label: "Blinds", icon: <Clock className="h-4 w-4" /> },
-  { key: "ranking", label: "Ranking", icon: <Award className="h-4 w-4" /> },
-  { key: "regulamento", label: "Regulamento", icon: <BookOpen className="h-4 w-4" /> },
+  // { key: "ranking", label: "Ranking", icon: <Award className="h-4 w-4" /> },
+  // { key: "regulamento", label: "Regulamento", icon: <BookOpen className="h-4 w-4" /> },
 ];
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -234,10 +181,10 @@ export default function TournamentDetailPage() {
         )}
 
         {activeTab === "blinds" && (
-          <BlindsPanel />
+          <BlindsPanel blindStructureId={tournament.blindStructureId ?? null} />
         )}
 
-        {activeTab === "ranking" && (
+        {/* {activeTab === "ranking" && (
           <PlaceholderPanel
             icon={<Award className="h-12 w-12 text-[#c5c0b8]" />}
             title="Ranking"
@@ -251,7 +198,7 @@ export default function TournamentDetailPage() {
             title="Regulamento"
             message="O regulamento deste torneio ainda não está disponível."
           />
-        )}
+        )} */}
       </div>
     </main>
   );
@@ -292,15 +239,65 @@ function InfoPanel({ details }: { details: TournamentDetail[] }) {
 
 // ─── Blinds Panel ───────────────────────────────────────────────────────────
 
-function BlindsPanel() {
-  const rows = buildBlindStructure("20 min");
+function formatNumber(value: number | null | undefined): string {
+  if (value == null) return "—";
+  return value.toLocaleString("pt-BR");
+}
+
+function BlindsPanel({ blindStructureId }: { blindStructureId: string | null }) {
+  const [structure, setStructure] = useState<BlindStructure | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!blindStructureId) {
+      setLoading(false);
+      return;
+    }
+    fetchBlindStructureWithLevels(blindStructureId).then((data) => {
+      setStructure(data);
+      setLoading(false);
+    });
+  }, [blindStructureId]);
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-2xl border border-[#e5e0d5] shadow-sm overflow-hidden">
+        <div className="px-5 py-3 border-b border-[#e5e0d5] bg-[#fcfaf6]">
+          <div className="h-4 w-40 rounded bg-[#e5e0d5] animate-pulse" />
+        </div>
+        <div className="px-5 py-4 space-y-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="h-8 rounded bg-[#e5e0d5] animate-pulse" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!structure || structure.blind_structure_levels.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl border border-[#e5e0d5] shadow-sm overflow-hidden">
+        <div className="flex flex-col items-center justify-center py-12 px-4">
+          <Clock className="h-12 w-12 text-[#c5c0b8]" />
+          <h3 className="text-lg font-bold text-[#2A0303] mt-3">Estrutura de Blinds</h3>
+          <p className="text-sm text-[#6b6660] mt-1 text-center">
+            A estrutura de blinds deste torneio ainda não está disponível.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const levels = [...structure.blind_structure_levels].sort(
+    (a, b) => a.position - b.position,
+  );
 
   return (
     <div className="bg-white rounded-2xl border border-[#e5e0d5] shadow-sm overflow-hidden">
       {/* Header */}
       <div className="px-5 py-3 border-b border-[#e5e0d5] bg-[#fcfaf6]">
         <span className="text-xs font-black uppercase tracking-wider text-[#5C0F08]">
-          Estrutura de Blinds
+          {structure.name}
         </span>
       </div>
 
@@ -317,10 +314,10 @@ function BlindsPanel() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, idx) => {
-              if (isBreak(row)) {
+            {levels.map((row) => {
+              if (row.type === "break") {
                 return (
-                  <tr key={`break-${idx}`} className="bg-[#5C0F08]/5">
+                  <tr key={row.id} className="bg-[#5C0F08]/5">
                     <td colSpan={5} className="px-3 py-2.5 text-center">
                       <span className="text-[11px] font-black uppercase tracking-widest text-[#5C0F08]">
                         {row.breakLabel}
@@ -332,16 +329,16 @@ function BlindsPanel() {
 
               return (
                 <tr
-                  key={`level-${row.level}`}
+                  key={row.id}
                   className="border-b border-[#f0eee9] last:border-b-0 hover:bg-[#fcfaf6] transition-colors"
                 >
                   <td className="px-3 py-2 font-bold text-[#2A0303]">
-                    {String(row.level).padStart(2, "0")}
+                    {row.level != null ? String(row.level).padStart(2, "0") : "—"}
                   </td>
-                  <td className="px-3 py-2 text-[#6b6660]">{row.time}</td>
-                  <td className="px-3 py-2 text-right font-medium text-[#1a1a1a]">{row.sb}</td>
-                  <td className="px-3 py-2 text-right font-medium text-[#1a1a1a]">{row.bb}</td>
-                  <td className="px-3 py-2 text-right font-medium text-[#1a1a1a]">{row.ante}</td>
+                  <td className="px-3 py-2 text-[#6b6660]">{row.duration ?? "—"}</td>
+                  <td className="px-3 py-2 text-right font-medium text-[#1a1a1a]">{formatNumber(row.smallBlind)}</td>
+                  <td className="px-3 py-2 text-right font-medium text-[#1a1a1a]">{formatNumber(row.bigBlind)}</td>
+                  <td className="px-3 py-2 text-right font-medium text-[#1a1a1a]">{formatNumber(row.ante)}</td>
                 </tr>
               );
             })}

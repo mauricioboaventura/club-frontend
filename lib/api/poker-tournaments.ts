@@ -34,6 +34,7 @@ export type PokerTournament = {
   timeChipChips: number | null;
   hasRabbit: boolean | null;
   chipLeaderBonusCents: number | null;
+  blindStructureId: string | null;
 };
 
 type TournamentsResponse = {
