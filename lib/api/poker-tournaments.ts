@@ -52,6 +52,27 @@ export function fetchPokerTournaments(): Promise<PokerTournament[]> {
   return withCache("poker-tournaments", _fetchPokerTournaments, TTL.DEFAULT);
 }
 
+export async function fetchPokerTournamentById(
+  id: string,
+): Promise<PokerTournament | null> {
+  const cacheKey = `poker-tournament-${id}`;
+  return withCache(cacheKey, () => _fetchById(id), TTL.DEFAULT);
+}
+
+async function _fetchById(id: string): Promise<PokerTournament | null> {
+  try {
+    const res = await fetch(`${TOURNAMENTS_API_URL}/${encodeURIComponent(id)}`);
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json ?? null;
+  } catch (err) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[fetchPokerTournamentById]", err);
+    }
+    return null;
+  }
+}
+
 export async function fetchPokerTournamentsPaginated(
   page: number,
   limit: number = PAGE_SIZE,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { 
   List, 
@@ -19,10 +19,8 @@ import {
 } from "lucide-react";
 import {
   fetchPokerTournamentsPaginated,
-  formatCentsToCompact,
   formatCentsToReal,
   formatTournamentDate,
-  formatTournamentDateHours,
   formatTournamentTime,
   type PokerTournament,
 } from "@/lib/api/poker-tournaments";
@@ -61,147 +59,16 @@ function formatOpenTime(minutes: number): string {
   return `${m}min`;
 }
 
-type TournamentDetailTone = "default" | "strong" | "gold";
 
-type TournamentDetail = {
-  label: string;
-  value: string;
-  tone?: TournamentDetailTone;
-  multiline?: boolean;
-};
-
-function hasTextValue(value: string | null | undefined): value is string {
-  return typeof value === "string" && value.trim().length > 0;
-}
-
-function hasNumberValue(value: number | null | undefined): value is number {
-  return typeof value === "number" && Number.isFinite(value);
-}
-
-function formatChips(value: number): string {
-  return `${value.toLocaleString("pt-BR")} fichas`;
-}
-
-function getTournamentDetails(tournament: PokerTournament): TournamentDetail[] {
-  const details: TournamentDetail[] = [
-    // { label: "ID", value: tournament.id },
-    // { label: "Slug", value: tournament.slug },
-    { label: "Data e Horário", value: formatTournamentDate(tournament.startDate) },
-    // { label: "Ativo", value: tournament.isActive ? "Sim" : "Não" },
-    // { label: "Destaque", value: tournament.isFeatured ? "Sim" : "Não" },
-    { label: "Buy-in", value: formatCentsToReal(tournament.buyInCents), tone: "strong" },
-    {
-      label: "Garantido",
-      value: formatCentsToCompact(tournament.guaranteedPrizeCents),
-      tone: "gold",
-    },
-  ];
-
-  // if (hasTextValue(tournament.status)) {
-  //   details.push({ label: "Status", value: tournament.status });
-  // }
-
-  if (hasTextValue(tournament.tournamentType)) {
-    details.push({ label: "Tipo de Torneio", value: tournament.tournamentType });
-  }
-
-  if (hasTextValue(tournament.coverImageUrl)) {
-    details.push({
-      label: "Imagem de Capa",
-      value: tournament.coverImageUrl,
-      multiline: true,
-    });
-  }
-
-  if (hasTextValue(tournament.lateRegister)) {
-    details.push({ label: "Late Register", value: tournament.lateRegister });
-  }
-
-  if (hasTextValue(tournament.blindDuration)) {
-    details.push({ label: "Duração dos Blinds", value: tournament.blindDuration });
-  }
-
-  if (hasNumberValue(tournament.startingStack)) {
-    details.push({ label: "Stack Inicial", value: formatChips(tournament.startingStack) });
-  }
-
-  if (hasNumberValue(tournament.buyPromoChips)) {
-    details.push({ label: "Buy Promo (Fichas)", value: formatChips(tournament.buyPromoChips) });
-  }
-
-  if (hasNumberValue(tournament.buyPromoCents)) {
-    details.push({ label: "Buy Promo", value: formatCentsToReal(tournament.buyPromoCents) });
-  }
-
-  if (hasNumberValue(tournament.rebuyChips)) {
-    details.push({ label: "Rebuy (Fichas)", value: formatChips(tournament.rebuyChips) });
-  }
-
-  if (hasNumberValue(tournament.rebuyCents)) {
-    details.push({ label: "Rebuy", value: formatCentsToReal(tournament.rebuyCents) });
-  }
-
-  if (hasNumberValue(tournament.rebuyPromoChips)) {
-    details.push({
-      label: "Rebuy Promo (Fichas)",
-      value: formatChips(tournament.rebuyPromoChips),
-    });
-  }
-
-  if (hasNumberValue(tournament.rebuyPromoCents)) {
-    details.push({ label: "Rebuy Promo", value: formatCentsToReal(tournament.rebuyPromoCents) });
-  }
-
-  if (hasNumberValue(tournament.addonChips)) {
-    details.push({ label: "Addon (Fichas)", value: formatChips(tournament.addonChips) });
-  }
-
-  if (hasNumberValue(tournament.addonCents)) {
-    details.push({ label: "Addon", value: formatCentsToReal(tournament.addonCents) });
-  }
-
-  if (hasNumberValue(tournament.staffTaxChips)) {
-    details.push({ label: "Taxa Staff (Fichas)", value: formatChips(tournament.staffTaxChips) });
-  }
-
-  if (hasNumberValue(tournament.staffTaxCents)) {
-    details.push({ label: "Taxa Staff", value: formatCentsToReal(tournament.staffTaxCents) });
-  }
-
-  if (hasNumberValue(tournament.bonusRankingChips)) {
-    details.push({
-      label: "Bônus Ranking (Fichas)",
-      value: formatChips(tournament.bonusRankingChips),
-    });
-  }
-
-  if (hasNumberValue(tournament.timeChipChips)) {
-    details.push({ label: "Time Chip (Fichas)", value: formatChips(tournament.timeChipChips) });
-  }
-
-  if (tournament.hasRabbit !== null) {
-    details.push({ label: "Rabbit", value: tournament.hasRabbit ? "Sim" : "Não" });
-  }
-
-  if (hasNumberValue(tournament.chipLeaderBonusCents)) {
-    details.push({
-      label: "Bônus Chip Leader",
-      value: formatCentsToReal(tournament.chipLeaderBonusCents),
-      tone: "gold",
-    });
-  }
-
-  return details;
-}
 
 function PokerContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const tabParam = searchParams.get("tab");
   const [viewMode, setViewMode] = useState<"torneios" | "cashgame">(
     tabParam === "cashgame" ? "cashgame" : "torneios"
   );
   const [tournaments, setTournaments] = useState<PokerTournament[]>([]);
-  const [selectedTournament, setSelectedTournament] = useState<PokerTournament | null>(null);
 
   // Cash game sub-tabs
   const [cashSubTab, setCashSubTab] = useState<"modalidades" | "aovivo">("modalidades");
@@ -304,17 +171,13 @@ function PokerContent() {
 
   // Trava o scroll do body quando qualquer modal abre
   useEffect(() => {
-    if (selectedTournament || reserveTableId !== null) {
+    if (reserveTableId !== null) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
     return () => { document.body.style.overflow = 'unset'; };
-  }, [selectedTournament, reserveTableId]);
-
-  const selectedTournamentDetails = selectedTournament
-    ? getTournamentDetails(selectedTournament)
-    : [];
+  }, [reserveTableId]);
 
   return (
     <main className="min-h-screen mt-[56px] flex flex-col" style={{ background: BG_BEIGE }}>
@@ -409,7 +272,7 @@ function PokerContent() {
                         {tournamentsByDay[day].map((t) => (
                           <button
                             key={t.id}
-                            onClick={() => setSelectedTournament(t)}
+                            onClick={() => router.push(`/poker/${t.id}`)}
                             className="w-full text-left group bg-white p-4 rounded-xl border border-[#e5e0d5] hover:border-[#5C0F08]/40 hover:shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5C0F08] active:scale-[0.99] flex items-center gap-3 sm:gap-4"
                             aria-label={`Ver detalhes do torneio ${t.name}`}
                           >
@@ -625,113 +488,6 @@ function PokerContent() {
           )}
         </section>
       </div>
-
-      {/* Modal */}
-      {selectedTournament && (
-        <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity duration-200"
-          onClick={() => setSelectedTournament(null)}
-          role="dialog"
-          aria-modal="true"
-        >
-          <div
-            className="bg-white w-full sm:max-w-md lg:max-w-3xl rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
-            style={{ maxHeight: '90dvh' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Cover image banner */}
-            {selectedTournament.coverImageUrl && (
-              <div className="relative w-full aspect-[21/9] lg:aspect-[21/7] rounded-t-2xl overflow-hidden bg-black">
-                <Image
-                  src={selectedTournament.coverImageUrl}
-                  alt={selectedTournament.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 672px"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              </div>
-            )}
-
-            {/* Header */}
-            <div className={`sticky top-0 bg-white/95 backdrop-blur z-10 px-6 py-4 border-b border-[#e5e0d5] flex justify-between items-start ${!selectedTournament.coverImageUrl ? 'rounded-t-2xl sm:rounded-t-2xl' : ''}`}>
-              <div className="flex items-center gap-2 flex-wrap pr-4">
-                <h2 className="text-lg font-black text-[#1a1a1a] uppercase leading-tight">
-                  {selectedTournament.name}
-                </h2>
-                {selectedTournament.isFeatured && (
-                  <span className="shrink-0 text-[10px] font-bold bg-[#5C0F08] text-white px-1.5 py-0.5 rounded tracking-wider">
-                    DESTAQUE
-                  </span>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => setSelectedTournament(null)}
-                className="shrink-0 p-1 -mr-2 text-[#8c8c8c] hover:text-[#1a1a1a] hover:bg-[#f0eee9] rounded-full transition-colors"
-                aria-label="Fechar modal"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-
-            <div className="overflow-y-auto px-6 py-5 space-y-5">
-              {/* Highlighted stats */}
-              <div className="grid grid-cols-3 gap-3 lg:gap-4">
-                <div className="bg-[#fcfaf6] rounded-xl p-3 lg:p-4 text-center border border-[#e5e0d5]">
-                  <span className="block text-[10px] lg:text-xs font-bold text-[#8c8c8c] uppercase tracking-wider mb-1">Buy-in</span>
-                  <span className="block text-base lg:text-xl font-black text-[#2A0303] leading-tight">
-                    {formatCentsToReal(selectedTournament.buyInCents)}
-                  </span>
-                </div>
-                <div className="bg-amber-50 rounded-xl p-3 lg:p-4 text-center border border-amber-200/60">
-                  <span className="block text-[10px] lg:text-xs font-bold text-amber-500 uppercase tracking-wider mb-1">Garantido</span>
-                  <span className="block text-base lg:text-xl font-black text-amber-600 leading-tight">
-                    {formatCentsToCompact(selectedTournament.guaranteedPrizeCents)}
-                  </span>
-                </div>
-                <div className="bg-[#fcfaf6] rounded-xl p-3 lg:p-4 text-center border border-[#e5e0d5]">
-                  <span className="block text-[10px] lg:text-xs font-bold text-[#8c8c8c] uppercase tracking-wider mb-1">Horário</span>
-                  <span className="block text-base lg:text-xl font-black text-[#1a1a1a] leading-tight">
-                    {formatTournamentTime(selectedTournament.startDate)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Detail rows — 2-column grid on desktop */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8">
-                {selectedTournamentDetails
-                  .filter((d) => d.label !== "Buy-in" && d.label !== "Garantido")
-                  .map((detail, index) => {
-                    const valueTone =
-                      detail.tone === "gold"
-                        ? "text-sm font-black text-amber-600"
-                        : detail.tone === "strong"
-                          ? "text-sm font-black text-[#2A0303]"
-                          : "text-sm font-bold text-[#1a1a1a]";
-
-                    return (
-                      <div
-                        key={`${detail.label}-${index}`}
-                        className="flex justify-between items-start gap-4 py-2.5 border-b border-[#f0eee9]"
-                      >
-                        <span className="text-sm text-[#6b6660]">{detail.label}</span>
-                        <span
-                          className={`${valueTone} text-right ${
-                            detail.multiline ? "break-all" : ""
-                          }`}
-                        >
-                          {detail.value}
-                        </span>
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-            <div className="p-4 pt-0 sm:pb-6" />
-          </div>
-        </div>
-      )}
 
       {/* Reserve Modal */}
       {reserveTableId !== null && (() => {
