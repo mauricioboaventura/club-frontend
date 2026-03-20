@@ -35,6 +35,7 @@ export type PokerTournament = {
   hasRabbit: boolean | null;
   chipLeaderBonusCents: number | null;
   blindStructureId: string | null;
+  observations: string | null;
 };
 
 type TournamentsResponse = {
@@ -158,6 +159,15 @@ export function formatCentsToReal(cents: number): string {
   });
 }
 
+export function formatCentsToRealNoCents(cents: number): string {
+  return (cents / 100).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+}
+
 export function formatTournamentDate(dateStr: string): string {
   const date = new Date(dateStr);
   return date.toLocaleDateString("pt-BR", {
@@ -191,11 +201,12 @@ export function formatCentsToCompact(cents: number | null | undefined): string {
   const reais = cents / 100;
   if (reais >= 1_000_000) {
     const v = reais / 1_000_000;
-    return `R$ ${Number.isInteger(v) ? v : v.toFixed(1).replace(/\.0$/, "")}M`;
+    const formatted = Number.isInteger(v) ? String(v) : v.toFixed(1).replace(/\.0$/, "").replace(".", ",");
+    return `R$ ${formatted} ${v === 1 ? "milhão" : "milhões"}`;
   }
   if (reais >= 1_000) {
     const v = reais / 1_000;
-    return `R$ ${Number.isInteger(v) ? v : v.toFixed(1).replace(/\.0$/, "")}K`;
+    return `R$ ${Number.isInteger(v) ? v : v.toFixed(1).replace(/\.0$/, "").replace(".", ",")}K`;
   }
   return formatCentsToReal(cents);
 }

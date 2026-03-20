@@ -10,6 +10,7 @@ import {
   FileText,
   Award,
   BookOpen,
+  MessageSquareText,
 } from "lucide-react";
 import {
   fetchPokerTournamentById,
@@ -140,9 +141,9 @@ export default function TournamentDetailPage() {
               {formatCentsToReal(tournament.buyInCents)}
             </span>
           </div>
-          <div className="bg-amber-50 rounded-xl p-3 lg:p-4 text-center border border-amber-200/60 shadow-sm">
-            <span className="block text-[10px] lg:text-xs font-bold text-amber-500 uppercase tracking-wider mb-1">Garantido</span>
-            <span className="block text-base lg:text-xl font-black text-amber-600 leading-tight">
+          <div className="rounded-xl p-3 lg:p-4 text-center border border-amber-400/70 shadow-md bg-gradient-to-b from-amber-100 to-amber-50 ring-1 ring-amber-300/40">
+            <span className="block text-[10px] lg:text-xs font-black text-amber-600 uppercase tracking-wider mb-1">Garantido</span>
+            <span className="block text-base lg:text-xl font-black text-amber-700 leading-tight">
               {formatCentsToCompact(tournament.guaranteedPrizeCents)}
             </span>
           </div>
@@ -153,6 +154,16 @@ export default function TournamentDetailPage() {
             </span>
           </div>
         </div>
+
+        {/* Promo card — mobile only */}
+        {tournament.buyPromoCents != null && tournament.buyPromoCents > 0 && (
+          <div className="sm:hidden rounded-xl p-3 text-center border border-[#e5e0d5] shadow-sm bg-white">
+            <span className="block text-[10px] font-black uppercase tracking-wider mb-1" style={{ color: "#650201" }}>Buyin Promo 1º nível</span>
+            <span className="block text-base font-black text-[#2A0303] leading-tight">
+              {formatCentsToReal(tournament.buyPromoCents)}
+            </span>
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="flex bg-[#e5e0d5]/60 p-1 rounded-xl shadow-inner overflow-x-auto" role="tablist">
@@ -177,7 +188,10 @@ export default function TournamentDetailPage() {
 
         {/* Tab Panels */}
         {activeTab === "info" && (
-          <InfoPanel details={details} />
+          <>
+            <InfoPanel details={details} />
+            <ObservationsPanel observations={tournament.observations ?? "Será premiado de 15% a 18% do field"} />
+          </>
         )}
 
         {activeTab === "blinds" && (
@@ -213,6 +227,23 @@ function InfoPanel({ details }: { details: TournamentDetail[] }) {
         {details
           .filter((d) => d.label !== "Buy-in" && d.label !== "Garantido")
           .map((detail, index) => {
+            if (detail.tone === "promo") {
+              return (
+                <div
+                  key={`${detail.label}-${index}`}
+                  className="col-span-full hidden sm:flex justify-between items-center gap-4 py-3 px-4 my-1 rounded-xl bg-emerald-50 border border-emerald-200/60"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-emerald-700">{detail.label}</span>
+                    <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-600 text-white px-1.5 py-0.5 rounded">Promo</span>
+                  </div>
+                  <span className="text-sm font-black text-emerald-700 text-right">
+                    {detail.value}
+                  </span>
+                </div>
+              );
+            }
+
             const valueTone =
               detail.tone === "gold"
                 ? "text-sm font-black text-amber-600"
@@ -232,6 +263,24 @@ function InfoPanel({ details }: { details: TournamentDetail[] }) {
               </div>
             );
           })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Observations Panel ─────────────────────────────────────────────────────
+
+function ObservationsPanel({ observations }: { observations: string | null }) {
+  return (
+    <div className="bg-white rounded-2xl border border-[#e5e0d5] shadow-sm overflow-hidden">
+      <div className="px-5 py-3 border-b border-[#e5e0d5] bg-[#fcfaf6] flex items-center gap-2">
+        <MessageSquareText className="h-4 w-4 text-[#5C0F08]" />
+        <span className="text-xs font-black uppercase tracking-wider text-[#5C0F08]">Observação</span>
+      </div>
+      <div className="px-5 py-4">
+        <p className={`text-sm ${observations ? "text-[#1a1a1a]" : "text-[#8c8c8c] italic"}`}>
+          {observations ?? "Sem observações"}
+        </p>
       </div>
     </div>
   );

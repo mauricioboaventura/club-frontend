@@ -128,7 +128,7 @@ function buildTournamentDetailSections(
       formatChipsAndCurrency(tournament.addonChips, tournament.addonCents),
     ),
     getDetail(
-      "Taxa staff",
+      "Taxa ADM",
       formatChipsAndCurrency(tournament.staffTaxChips, tournament.staffTaxCents),
     ),
     getDetail(

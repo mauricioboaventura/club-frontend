@@ -387,7 +387,7 @@ export default function SigmaPokerTourPage() {
         <div className="absolute inset-0 bg-[#1a0505]">
           {/* Desktop */}
           <Image
-            src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-WEB-SPCity.png"
+            src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/site/images/Banner-interno-Pagina-Sigma.png"
             alt="Sigma Poker Tour"
             fill
             className="object-cover object-top hidden md:block"
@@ -399,7 +399,7 @@ export default function SigmaPokerTourPage() {
           />
           {/* Mobile */}
           <Image
-            src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/banners/banners-site-SiGMA-MOBILE-SPCity.png"
+            src="https://ppvlzlzceuwxnishsotz.supabase.co/storage/v1/object/public/site/images/banners-site-SiGMA-MOBILE-op2.png"
             alt="Sigma Poker Tour"
             fill
             className="object-cover object-top block md:hidden"

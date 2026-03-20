@@ -154,6 +154,23 @@ body {
   );
 }
 
+/* Hero carousel – desktop animations */
+@keyframes kenBurns {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* RD Station floating button - position above bottom nav on mobile */
 @media (max-width: 1023px) {
   .floating-button[class*="rdstation-popup-position"] {

@@ -5,7 +5,7 @@ import {
   type PokerTournament,
 } from "@/lib/api/poker-tournaments";
 
-export type TournamentDetailTone = "default" | "strong" | "gold";
+export type TournamentDetailTone = "default" | "strong" | "gold" | "promo";
 
 export type TournamentDetail = {
   label: string;
@@ -17,16 +17,49 @@ function hasTextValue(value: string | null | undefined): value is string {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-function hasNumberValue(value: number | null | undefined): value is number {
-  return typeof value === "number" && Number.isFinite(value);
+function hasPositiveNumber(value: number | null | undefined): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value > 0;
 }
 
 export function formatChips(value: number): string {
   return `${value.toLocaleString("pt-BR")} fichas`;
 }
 
+export function formatChipsCompact(value: number): string {
+  if (value >= 1_000_000) {
+    const v = value / 1_000_000;
+    const formatted = Number.isInteger(v) ? String(v) : v.toFixed(1).replace(/\.0$/, "").replace(".", ",");
+    return `${formatted} ${v === 1 ? "milhão" : "milhões"}`;
+  }
+  if (value >= 1_000) {
+    const v = value / 1_000;
+    return `${Number.isInteger(v) ? v : v.toFixed(1).replace(/\.0$/, "").replace(".", ",")}K`;
+  }
+  return String(value);
+}
+
+function formatCombined(
+  cents: number | null | undefined,
+  chips: number | null | undefined,
+): string | null {
+  const hasCents = hasPositiveNumber(cents);
+  const hasChips = hasPositiveNumber(chips);
+  if (!hasCents && !hasChips) return null;
+  if (hasCents && hasChips) return `${formatCentsToReal(cents)}/${formatChipsCompact(chips)} fichas`;
+  if (hasCents) return formatCentsToReal(cents);
+  return `${formatChipsCompact(chips!)} fichas`;
+}
+
 export function getTournamentDetails(tournament: PokerTournament): TournamentDetail[] {
-  const details: TournamentDetail[] = [
+  const details: TournamentDetail[] = [];
+
+  // Buy-in Promo — combinado em 1 linha, destacado como "1º nível" (topo absoluto)
+  const buyPromoFormatted = formatCombined(tournament.buyPromoCents, tournament.buyPromoChips);
+  if (buyPromoFormatted) {
+    details.push({ label: "Buy-in Promo (1º nível)", value: buyPromoFormatted, tone: "promo" });
+  }
+
+  details.push(
     { label: "Data", value: formatTournamentDate(tournament.startDate) },
     { label: "Buy-in", value: formatCentsToReal(tournament.buyInCents), tone: "strong" },
     {
@@ -34,7 +67,7 @@ export function getTournamentDetails(tournament: PokerTournament): TournamentDet
       value: formatCentsToCompact(tournament.guaranteedPrizeCents),
       tone: "gold",
     },
-  ];
+  );
 
   if (hasTextValue(tournament.tournamentType)) {
     details.push({ label: "Tipo de Torneio", value: tournament.tournamentType });
@@ -48,69 +81,50 @@ export function getTournamentDetails(tournament: PokerTournament): TournamentDet
     details.push({ label: "Duração dos Blinds", value: tournament.blindDuration });
   }
 
-  if (hasNumberValue(tournament.startingStack)) {
-    details.push({ label: "Stack Inicial", value: formatChips(tournament.startingStack) });
+  if (hasPositiveNumber(tournament.startingStack)) {
+    details.push({ label: "Stack Inicial", value: `${formatChipsCompact(tournament.startingStack)} fichas` });
   }
 
-  if (hasNumberValue(tournament.buyPromoChips)) {
-    details.push({ label: "Buy Promo (Fichas)", value: formatChips(tournament.buyPromoChips) });
+  // Rebuy — combinado em 1 linha
+  const rebuyFormatted = formatCombined(tournament.rebuyCents, tournament.rebuyChips);
+  if (rebuyFormatted) {
+    details.push({ label: "Rebuy", value: rebuyFormatted });
   }
 
-  if (hasNumberValue(tournament.buyPromoCents)) {
-    details.push({ label: "Buy Promo", value: formatCentsToReal(tournament.buyPromoCents) });
+  // Rebuy Promo — combinado em 1 linha
+  const rebuyPromoFormatted = formatCombined(tournament.rebuyPromoCents, tournament.rebuyPromoChips);
+  if (rebuyPromoFormatted) {
+    details.push({ label: "Rebuy Promo", value: rebuyPromoFormatted });
   }
 
-  if (hasNumberValue(tournament.rebuyChips)) {
-    details.push({ label: "Rebuy (Fichas)", value: formatChips(tournament.rebuyChips) });
+  // Addon — combinado em 1 linha
+  const addonFormatted = formatCombined(tournament.addonCents, tournament.addonChips);
+  if (addonFormatted) {
+    details.push({ label: "Addon", value: addonFormatted });
   }
 
-  if (hasNumberValue(tournament.rebuyCents)) {
-    details.push({ label: "Rebuy", value: formatCentsToReal(tournament.rebuyCents) });
+  // Taxa Staff — combinado em 1 linha
+  const staffTaxFormatted = formatCombined(tournament.staffTaxCents, tournament.staffTaxChips);
+  if (staffTaxFormatted) {
+    details.push({ label: "Taxa ADM", value: staffTaxFormatted });
   }
 
-  if (hasNumberValue(tournament.rebuyPromoChips)) {
+  if (hasPositiveNumber(tournament.bonusRankingChips)) {
     details.push({
-      label: "Rebuy Promo (Fichas)",
-      value: formatChips(tournament.rebuyPromoChips),
+      label: "Bônus Ranking",
+      value: `${formatChipsCompact(tournament.bonusRankingChips)} fichas`,
     });
   }
 
-  if (hasNumberValue(tournament.rebuyPromoCents)) {
-    details.push({ label: "Rebuy Promo", value: formatCentsToReal(tournament.rebuyPromoCents) });
-  }
-
-  if (hasNumberValue(tournament.addonChips)) {
-    details.push({ label: "Addon (Fichas)", value: formatChips(tournament.addonChips) });
-  }
-
-  if (hasNumberValue(tournament.addonCents)) {
-    details.push({ label: "Addon", value: formatCentsToReal(tournament.addonCents) });
-  }
-
-  if (hasNumberValue(tournament.staffTaxChips)) {
-    details.push({ label: "Taxa Staff (Fichas)", value: formatChips(tournament.staffTaxChips) });
-  }
-
-  if (hasNumberValue(tournament.staffTaxCents)) {
-    details.push({ label: "Taxa Staff", value: formatCentsToReal(tournament.staffTaxCents) });
-  }
-
-  if (hasNumberValue(tournament.bonusRankingChips)) {
-    details.push({
-      label: "Bônus Ranking (Fichas)",
-      value: formatChips(tournament.bonusRankingChips),
-    });
-  }
-
-  if (hasNumberValue(tournament.timeChipChips)) {
-    details.push({ label: "Time Chip (Fichas)", value: formatChips(tournament.timeChipChips) });
+  if (hasPositiveNumber(tournament.timeChipChips)) {
+    details.push({ label: "Time Chip", value: `${formatChipsCompact(tournament.timeChipChips)} fichas` });
   }
 
   if (tournament.hasRabbit !== null) {
     details.push({ label: "Rabbit", value: tournament.hasRabbit ? "Sim" : "Não" });
   }
 
-  if (hasNumberValue(tournament.chipLeaderBonusCents)) {
+  if (hasPositiveNumber(tournament.chipLeaderBonusCents)) {
     details.push({
       label: "Bônus Chip Leader",
       value: formatCentsToReal(tournament.chipLeaderBonusCents),

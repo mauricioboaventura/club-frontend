@@ -93,6 +93,22 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
     }
   }, [internalIndex, len]);
 
+  // Desktop fade: reset transitioning after opacity transition completes
+  const handleFadeTransitionEnd = useCallback(
+    (e: React.TransitionEvent) => {
+      if (e.propertyName !== "opacity") return;
+      isTransitioning.current = false;
+      if (internalIndex >= len + 1) {
+        setAnimate(false);
+        setInternalIndex(1);
+      } else if (internalIndex <= 0) {
+        setAnimate(false);
+        setInternalIndex(len);
+      }
+    },
+    [internalIndex, len],
+  );
+
   useEffect(() => {
     const timer = setInterval(() => {
       if (!paused.current) next();
@@ -168,51 +184,104 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
     >
-      <div className="overflow-hidden">
-        <div
-          className={`flex${animate && !isDragging.current ? " transition-transform duration-500 ease-out" : ""}`}
-          style={{
-            transform: `translate3d(calc(-${internalIndex * 100}% + ${dragOffset}px), 0px, 0px)`,
-          }}
-          onTransitionEnd={handleTransitionEnd}
-        >
-          {extendedSlides.map((s, i) => (
+      {/* Desktop: crossfade */}
+      {!isMobile && (
+        <div className="relative aspect-[21/9]">
+          {slides.map((s, i) => (
             <div
-              key={`${s.id}-${i}`}
-              className="relative flex-[0_0_100%] min-w-0 aspect-[4/5] lg:aspect-[21/9]"
+              key={s.id}
+              className={`absolute inset-0 transition-opacity duration-[1200ms] ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
+                i === realIndex ? "opacity-100 z-10" : "opacity-0 z-0"
+              }`}
+              onTransitionEnd={
+                i === realIndex ? handleFadeTransitionEnd : undefined
+              }
             >
               <Image
-                src={isMobile && s.mobileImage ? s.mobileImage : s.image}
+                src={s.image}
                 alt={s.imageAlt ?? s.title.replace(/\n/g, " ")}
                 fill
-                className="object-cover"
+                className={`object-cover${
+                  i === realIndex
+                    ? " animate-[kenBurns_7s_ease-out_forwards]"
+                    : ""
+                }`}
                 sizes="100vw"
-                priority={i === 1}
+                priority={i === 0}
               />
             </div>
           ))}
         </div>
-      </div>
+      )}
+
+      {/* Mobile: horizontal slide */}
+      {isMobile && (
+        <div className="overflow-hidden">
+          <div
+            className={`flex${
+              animate && !isDragging.current
+                ? " transition-transform duration-500 ease-out"
+                : ""
+            }`}
+            style={{
+              transform: `translate3d(calc(-${internalIndex * 100}% + ${dragOffset}px), 0px, 0px)`,
+            }}
+            onTransitionEnd={handleTransitionEnd}
+          >
+            {extendedSlides.map((s, i) => (
+              <div
+                key={`${s.id}-${i}`}
+                className="relative flex-[0_0_100%] min-w-0 aspect-[4/5]"
+              >
+                <Image
+                  src={s.mobileImage ? s.mobileImage : s.image}
+                  alt={s.imageAlt ?? s.title.replace(/\n/g, " ")}
+                  fill
+                  className="object-cover"
+                  sizes="100vw"
+                  priority={i === 1}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[45%] z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
         aria-hidden="true"
       />
 
       {/* Bottom content - overlays the slider */}
-      <div className="absolute bottom-0 left-0 right-0 p-6">
-        <div className="text-center space-y-4 lg:max-w-2xl lg:mx-auto">
+      <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+        <div key={realIndex} className="text-center space-y-4 lg:max-w-2xl lg:mx-auto">
           <div className="space-y-1">
-            <h1 className="text-3xl lg:text-5xl font-bold tracking-wide text-white whitespace-pre-line">
+            <h1
+              className={`text-3xl lg:text-5xl font-bold tracking-wide text-white whitespace-pre-line${
+                !isMobile
+                  ? " animate-[fadeInUp_0.7s_ease-out_0.1s_both]"
+                  : ""
+              }`}
+            >
               {slide.title}
             </h1>
           </div>
-          <p className="text-white/80 text-sm tracking-wide max-w-xs mx-auto hidden sm:block">
+          <p
+            className={`text-white/80 text-sm tracking-wide max-w-xs mx-auto hidden sm:block${
+              !isMobile
+                ? " animate-[fadeInUp_0.7s_ease-out_0.25s_both]"
+                : ""
+            }`}
+          >
             {slide?.subtitle}
           </p>
           <Link
             href={slide?.ctaLink ?? "#"}
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md h-10 mt-4 px-8 py-3 text-base font-semibold tracking-wide border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#121212] transition-all duration-300"
+            className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md h-10 mt-4 px-8 py-3 text-base font-semibold tracking-wide border-2 border-white bg-transparent text-white hover:bg-white hover:text-[#121212] transition-all duration-300${
+              !isMobile
+                ? " animate-[fadeInUp_0.7s_ease-out_0.4s_both]"
+                : ""
+            }`}
           >
             {slide?.cta}
           </Link>
@@ -222,10 +291,10 @@ export default function HeroCarousel({ initialSlides }: HeroCarouselProps) {
                 key={i}
                 type="button"
                 onClick={() => goTo(i)}
-                className={`rounded-full transition-all duration-300 ${
+                className={`rounded-full transition-all duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] ${
                   i === realIndex
                     ? "h-2 w-6 bg-white"
-                    : "w-2 h-2 bg-white/30"
+                    : "w-2 h-2 bg-white/30 hover:bg-white/50"
                 }`}
                 aria-label={`Slide ${i + 1}`}
               />
