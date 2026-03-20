@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_01" data-name="01" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Gradiente_sem_nome_5);
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+
+      .cls-3 {
+        clip-path: url(#clippath-1);
+      }
+
+      .cls-4 {
+        clip-path: url(#clippath-2);
+      }
+
+      .cls-5 {
+        fill: url(#Gradiente_sem_nome_5-3);
+      }
+
+      .cls-6 {
+        fill: url(#Gradiente_sem_nome_5-2);
+      }
+
+      .cls-7 {
+        clip-path: url(#clippath);
+      }
+    </style>
+    <clipPath id="clippath">
+      <polygon class="cls-2" points="20.22 10.84 19.94 11.35 19.43 12.28 19.43 12.28 17.54 15.73 17.54 15.73 17.04 16.65 13.02 23.98 13.02 23.98 17.07 31.34 17.58 32.26 17.58 32.26 19.48 35.71 19.48 35.72 19.48 35.72 19.98 36.64 20.25 37.12 24.04 44 27.8 37.12 28.07 36.63 28.57 35.71 28.57 35.71 28.57 35.7 30.45 32.25 30.46 32.26 30.96 31.34 34.98 23.98 31.2 23.98 28.56 28.81 26.67 32.26 24.03 37.1 21.37 32.27 19.47 28.82 16.8 23.98 18.93 20.08 19.44 19.17 19.44 19.16 21.33 15.72 21.33 15.71 21.84 14.8 23.97 10.89 26.13 14.79 27.75 11.84 28.02 11.34 27.74 10.84 23.96 4 20.22 10.84"/>
+    </clipPath>
+    <linearGradient id="Gradiente_sem_nome_5" data-name="Gradiente sem nome 5" x1="-936.31" y1="623.31" x2="-936.01" y2="623.31" gradientTransform="translate(-119536.38 179585.99) rotate(90) scale(191.82 -191.82)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f5c78c"/>
+      <stop offset="1" stop-color="#da8e44"/>
+    </linearGradient>
+    <clipPath id="clippath-1">
+      <polygon class="cls-2" points="11.14 10.83 3.94 23.96 3.92 23.99 11.14 37.11 14.95 44.01 16.83 40.56 16.53 40.02 16.53 40.01 16.53 40.01 14.93 37.11 14.93 37.11 14.63 36.56 14.63 36.56 14.12 35.64 14.13 35.64 7.71 23.99 7.72 23.96 14.88 10.9 17.03 14.81 18.66 11.85 18.93 11.36 18.63 10.83 14.87 4.01 11.14 10.83"/>
+    </clipPath>
+    <linearGradient id="Gradiente_sem_nome_5-2" data-name="Gradiente sem nome 5" x1="-936.31" y1="623.37" x2="-936.01" y2="623.37" gradientTransform="translate(-119560.23 179595.8) rotate(90) scale(191.82 -191.82)" xlink:href="#Gradiente_sem_nome_5"/>
+    <clipPath id="clippath-2">
+      <polygon class="cls-2" points="29.31 10.83 28.53 12.26 26.63 15.71 23.99 20.53 21.84 16.63 20.21 19.59 19.95 20.08 22.09 23.96 22.11 23.96 22.11 23.97 24.01 27.42 25.89 23.98 25.88 23.96 25.89 23.96 28.53 19.14 30.43 15.7 33.07 10.88 40.29 23.96 33.46 36.46 33.46 36.46 32.96 37.38 32.95 37.38 31.23 40.53 33.13 43.99 36.89 37.11 44.07 23.96 44.08 23.96 36.83 10.83 33.05 3.99 29.31 10.83"/>
+    </clipPath>
+    <linearGradient id="Gradiente_sem_nome_5-3" data-name="Gradiente sem nome 5" x1="-936.31" y1="623.24" x2="-936.01" y2="623.24" gradientTransform="translate(-119514.6 179579.57) rotate(90) scale(191.82 -191.82)" xlink:href="#Gradiente_sem_nome_5"/>
+  </defs>
+  <g class="cls-7">
+    <rect class="cls-1" x="1.49" y="3.01" width="45.02" height="41.98" transform="translate(-9.7 28.04) rotate(-51.84)"/>
+  </g>
+  <g class="cls-3">
+    <rect class="cls-6" x="-8.94" y="5.76" width="40.72" height="36.51" transform="translate(-14.51 18.16) rotate(-51.84)"/>
+  </g>
+  <g class="cls-4">
+    <rect class="cls-5" x="8.83" y="2.14" width="46.36" height="43.69" transform="translate(-6.63 34.34) rotate(-51.84)"/>
+  </g>
+</svg>

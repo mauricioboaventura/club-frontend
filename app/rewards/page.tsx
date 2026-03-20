@@ -37,11 +37,11 @@ const MAIS_REWARDS_CARDS = [
 ];
 
 const MAIS_INFOS = [
-  "Perguntas Frequentes MC Rewards",
-  "Saiba Mais Sobre o MC Rewards",
-  "Programa para Militares e Veteranos",
-  "Cartão Mastercard MC Rewards",
-  "Regras do Programa",
+  { label: "Perguntas Frequentes MC Rewards", href: "#" },
+  { label: "Saiba Mais Sobre o MC Rewards", href: "#" },
+  { label: "Programa para Militares e Veteranos", href: "#" },
+  { label: "Cartão Mastercard MC Rewards", href: "#" },
+  { label: "Regras do Programa", href: "/REGULAMENTO-DE-TORNEIOS-MC-2026.pdf" },
 ];
 
 export default function RewardsPage() {
@@ -122,7 +122,9 @@ export default function RewardsPage() {
             Entrar ou Registrar
           </Link>
           <Link
-            href="#regras"
+            href="/REGULAMENTO-DE-TORNEIOS-MC-2026.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center h-10 py-2 border border-[#525252] text-[#525252] hover:bg-[#525252] hover:text-white rounded-full px-6 text-sm font-medium transition-colors"
           >
             Regras do Programa
@@ -361,17 +363,19 @@ export default function RewardsPage() {
       {/* Mais Informações */}
       <div className="px-4 py-6 lg:max-w-7xl lg:mx-auto lg:px-6">
         <div>
-          {MAIS_INFOS.map((label, i) => (
-            <button
+          {MAIS_INFOS.map((item, i) => (
+            <Link
               key={i}
-              type="button"
+              href={item.href}
+              target={item.href.endsWith('.pdf') ? '_blank' : undefined}
+              rel={item.href.endsWith('.pdf') ? 'noopener noreferrer' : undefined}
               className="w-full flex items-center justify-between py-4 text-left transition-colors hover:bg-white/50 rounded-lg"
             >
               <span className="text-[#525252] text-sm underline underline-offset-2">
-                {label}
+                {item.label}
               </span>
               <ChevronRight className="h-4 w-4 text-[#8C8C8C]" strokeWidth={2} />
-            </button>
+            </Link>
           ))}
         </div>
       </div>

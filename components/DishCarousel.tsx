@@ -289,7 +289,7 @@ export default function DishCarousel({ items }: DishCarouselProps) {
       {/* ════════════ DESKTOP COVERFLOW (lg+) ════════════ */}
       <div
         ref={isDesktop ? containerRef : undefined}
-        className={`relative w-full select-none${isDesktop ? "" : " hidden"}`}
+        className={`relative w-full max-w-2xl mx-auto select-none${isDesktop ? "" : " hidden"}`}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -307,7 +307,7 @@ export default function DishCarousel({ items }: DishCarouselProps) {
                 key={`d-${item.id}`}
                 className="w-[55%] pointer-events-auto"
                 style={{
-                  transform: `translateX(${offset * 45}%) scale(${isCenter ? 1 : 0.85})`,
+                  transform: `translateX(${offset * 55}%) scale(${isCenter ? 1 : 0.85})`,
                   zIndex: isCenter ? 10 : isVisible ? 5 : 0,
                   opacity: isCenter ? 1 : isVisible ? 0.55 : 0,
                   transition: animate

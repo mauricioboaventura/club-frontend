@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   title: "Monte Carlo Poker Club",
   description:
     "Monte Carlo Poker Club - Experiência exclusiva em poker, gastronomia e entretenimento",
+  icons: {
+    icon: [
+      { url: "/images/favicon/favicon.svg", type: "image/svg+xml" },
+      { url: "/images/favicon/favicon.png", type: "image/png" },
+    ],
+    apple: "/images/favicon/favicon.png",
+  },
 };
   
 export const viewport: Viewport = {

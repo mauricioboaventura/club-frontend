@@ -130,7 +130,7 @@ export const accordionItems = [
       { label: "Cash Game", href: "/poker?tab=cashgame" },
       { label: "Torneios", href: "/poker?tab=torneios" },
       { label: "Calendário", href: "/poker" },
-      { label: "Regras", href: "/poker" },
+      { label: "Regras", href: "/REGULAMENTO-DE-TORNEIOS-MC-2026.pdf" },
     ],
   },
   {
