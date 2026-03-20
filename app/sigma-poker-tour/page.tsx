@@ -262,7 +262,7 @@ const SCHEDULE: DaySchedule[] = [
       {
         time: "14:00",
         title: "SPT Main Event — Day 2 (15% ITM)",
-        buyIn: "Registro Encerrado",
+        // buyIn: "Registro Encerrado",
         blind: "50'",
       },
       {
@@ -308,20 +308,20 @@ const SCHEDULE: DaySchedule[] = [
       {
         time: "14:00",
         title: "SPT Main — Dia 3 & Mesa Final",
-        buyIn: "Registro Encerrado",
+        // buyIn: "Registro Encerrado",
         blind: "50'",
         guaranteed: "R$ 1 MILHÃO Garantido!",
         modality: "9 Jogadores — Live Stream",
       },
-      {
-        time: "19:00",
-        title: "Cubeia Platinum Freeroll (Somente Convidados)",
-        buyIn: "Freeroll",
-        blind: "20'",
-        stack: "30K",
-        late: "10 LVL",
-        modality: "Freeze Out",
-      },
+      // {
+      //   time: "19:00",
+      //   title: "Cubeia Platinum Freeroll (Somente Convidados)",
+      //   buyIn: "Freeroll",
+      //   blind: "20'",
+      //   stack: "30K",
+      //   late: "10 LVL",
+      //   modality: "Freeze Out",
+      // },
       {
         time: "22:00",
         title: "SPT Last Chance",
@@ -410,30 +410,32 @@ export default function SigmaPokerTourPage() {
             }}
           />
           {/* Overlay */}
-          <div className="absolute inset-0 bg-[#1a0505]/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         </div>
 
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 pb-16 pt-24">
-          <span className="inline-flex items-center gap-1.5 text-[#e5b62a] text-sm font-semibold uppercase tracking-wider mb-4">
-            <Trophy className="h-4 w-4" />
-            Evento Exclusivo
-          </span>
-          <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight">
-            {EVENT_INFO.title}
-          </h1>
-          <p className="mt-4 text-lg lg:text-xl text-white/85 max-w-2xl leading-relaxed">
-            {EVENT_INFO.subtitle}
-          </p>
+          <div className="hidden md:block">
+            <span className="inline-flex items-center gap-1.5 text-[#e5b62a] text-sm font-semibold uppercase tracking-wider mb-4">
+              <Trophy className="h-4 w-4" />
+              Evento Exclusivo
+            </span>
+            <h1 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight">
+              {EVENT_INFO.title}
+            </h1>
+            <p className="mt-4 text-lg lg:text-xl text-white/85 max-w-2xl leading-relaxed">
+              {EVENT_INFO.subtitle}
+            </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-4 text-white/80 text-sm">
-            <span className="flex items-center gap-1.5">
-              <Calendar className="h-4 w-4 text-[#e5b62a]" />
-              {EVENT_INFO.dates}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <MapPin className="h-4 w-4 text-[#e5b62a]" />
-              {EVENT_INFO.location} — {EVENT_INFO.address}
-            </span>
+            <div className="mt-8 flex flex-wrap items-center gap-4 text-white/80 text-sm">
+              <span className="flex items-center gap-1.5">
+                <Calendar className="h-4 w-4 text-[#e5b62a]" />
+                {EVENT_INFO.dates}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <MapPin className="h-4 w-4 text-[#e5b62a]" />
+                {EVENT_INFO.location} — {EVENT_INFO.address}
+              </span>
+            </div>
           </div>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
