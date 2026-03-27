@@ -39,6 +39,19 @@ const TABS: { key: DetailTab; label: string; icon: React.ReactNode }[] = [
   // { key: "regulamento", label: "Regulamento", icon: <BookOpen className="h-4 w-4" /> },
 ];
 
+function getDefaultObservationByDate(startDate: string): string {
+  const match = startDate.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    const month = Number(match[2]);
+    const day = Number(match[3]);
+    if (month === 4 && day >= 1 && day <= 4) {
+      return "Será jogado até 15% do field";
+    }
+  }
+
+  return "Será premiado de 15% a 18% do field";
+}
+
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function TournamentDetailPage() {
@@ -100,6 +113,7 @@ export default function TournamentDetailPage() {
   }
 
   const details = getTournamentDetails(tournament);
+  const defaultObservation = getDefaultObservationByDate(tournament.startDate);
 
   return (
     <main className="min-h-screen mt-[56px] flex flex-col" style={{ background: BG_BEIGE }}>
@@ -190,7 +204,7 @@ export default function TournamentDetailPage() {
         {activeTab === "info" && (
           <>
             <InfoPanel details={details} />
-            <ObservationsPanel observations={tournament.observations ?? "Será premiado de 15% a 18% do field"} />
+            <ObservationsPanel observations={tournament.observations ?? defaultObservation} />
           </>
         )}
 
